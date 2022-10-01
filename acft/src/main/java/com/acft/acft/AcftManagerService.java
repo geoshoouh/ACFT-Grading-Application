@@ -1,5 +1,6 @@
 package com.acft.acft;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,15 @@ public class AcftManagerService {
 
     public List<Soldier> getSoldiersByLastNameAndTestGroupId(String lastName, Long testGroupId){
         return soldierRepository.findByLastNameAndTestGroupId(lastName, testGroupId);
+    }
+
+    public List<Long> getAllTestGroups(){
+        List<TestGroup> allTestGroups =  testGroupRepository.findAll();
+        List<Long> allTestGroupIds = new ArrayList<>();
+        for (TestGroup testGroup : allTestGroups){
+            allTestGroupIds.add(testGroup.getId());
+        }
+        return allTestGroupIds;
     }
 
 }

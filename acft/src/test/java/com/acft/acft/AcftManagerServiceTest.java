@@ -60,4 +60,12 @@ public class AcftManagerServiceTest {
         Assert.isTrue(queryResult.size() == 2, "error in retrieval of soldiers by lastName and groupId");
     }
 
+    @Test
+    void getAllTestGroupsShouldReturnAllExistingTestGroupIds(){
+        int n = 5;
+        for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
+        List<Long> allExistingTestGroupIds = acftManagerService.getAllTestGroups();
+        Assert.isTrue(allExistingTestGroupIds.size() == n, "getAllTestGroups returned unexpected size");
+    }
+
 }

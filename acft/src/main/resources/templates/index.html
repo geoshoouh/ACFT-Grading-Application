@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        <div>
+            <h1>ACFT Grading App Testing Interface</h1>
+        </div>
+        <div>
+            <button id='createTestGroupButton'>Create Test Group</button>
+            <button id='createNewSoldierButton'>Create Soldier</button>
+        </div>
+        <div>
+            <label for='lastNameField'>Last Name:</label>
+            <input type='text' id='lastNameField'><br>
+            <label for='firstNameField'>First Name:</label>
+            <input type='text' id='firstNameField'><br>
+            <label for='ageField'>Age</label>
+            <input type='number' id='ageField'><br>
+            <label for='genderField'>Gender:</label>
+            <select name="Gender" id="genderField">
+                <option value="true">Male</option>
+                <option value="false">Female</option>
+            </select><br>
+        </div>
+        <div>
+            <h2 id='displayText'>Request Response Goes Here</h2>
+        </div>
+        <script type='module'>
+            import { createNewTestGroupController, createNewSoldierController } from '/main.js';
+            document.getElementById('createTestGroupButton').addEventListener('click', createNewTestGroupController);
+            document.getElementById('createNewSoldierButton').addEventListener('click', createNewSoldierController);
+        </script>
+    </body>
+</html>

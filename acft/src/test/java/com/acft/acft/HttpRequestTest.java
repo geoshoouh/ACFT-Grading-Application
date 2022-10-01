@@ -118,4 +118,19 @@ public class HttpRequestTest {
         Assert.isTrue(queryResult.size() == 2, "error in retrieval of soldiers by lastName and groupId");
     }
 
+    @Test
+    void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception{
+        int n = 5;
+        for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
+        Type listOfTestGroupIds = new TypeToken<ArrayList<Long>>() {}.getType();
+        List<Long> requestResult = gson.fromJson(
+            mockMvc.perform(
+                get("/testGroup/get/all")
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(), listOfTestGroupIds);
+        Assert.isTrue(requestResult.size() == n, "getAllTestGroupsShouldReturnAllExistingTestGroupIds returned incorrectly sized array");
+    }
+
 }
