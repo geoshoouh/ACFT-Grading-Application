@@ -4,7 +4,7 @@ export async function createNewTestGroup(){
         method: 'POST'
       }).then((response) => response.json())
         .catch((error) => {
-          console.error('Error:', error);
+          console.error('Error: ', error);
         });
     return groupId
 }
@@ -15,8 +15,17 @@ export async function createNewSoldier(testGroupId, lastName, firstName, age, is
     {method: 'POST'})
     .then((response) => response.json())
     .catch((error) => {
-      console.error('Error:', error);
+      console.error('Error: ', error);
     });
   return soldierId;
+}
+
+export async function getAllTestGroups(){
+  let testGroupIds = await fetch('http://localhost:8080/testGroup/get/all')
+    .then((response => response.json()))
+    .catch((error) => {
+      console.error('Error: ', error);
+    });
+  return testGroupIds;
 }
 

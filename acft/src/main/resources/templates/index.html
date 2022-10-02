@@ -2,6 +2,12 @@
 <html>
     <head>
         <link rel="stylesheet" href="main.css">
+        <script type='module'>
+            import * as Controller from '/main.js';
+            window.onload = Controller.getAllTestGroupsController;
+            document.getElementById('createTestGroupButton').addEventListener('click', Controller.createNewTestGroupController);
+            document.getElementById('createNewSoldierButton').addEventListener('click', Controller.createNewSoldierController);
+        </script>
     </head>
     <body>
         <div>
@@ -20,17 +26,16 @@
             <input type='number' id='ageField'><br>
             <label for='genderField'>Gender:</label>
             <select name="Gender" id="genderField">
-                <option value="true">Male</option>
-                <option value="false">Female</option>
+                <option value=true>Male</option>
+                <option value=false>Female</option>
             </select><br>
+        </div>
+        <div>
+            <label for='existingTestGroups'>Test Group:</label>
+            <select name='Existing Test Groups' id='existingTestGroups'></select>
         </div>
         <div>
             <h2 id='displayText'>Request Response Goes Here</h2>
         </div>
-        <script type='module'>
-            import { createNewTestGroupController, createNewSoldierController } from '/main.js';
-            document.getElementById('createTestGroupButton').addEventListener('click', createNewTestGroupController);
-            document.getElementById('createNewSoldierButton').addEventListener('click', createNewSoldierController);
-        </script>
     </body>
 </html>
