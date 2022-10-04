@@ -30,7 +30,8 @@ public class HttpRequestTest {
     @Autowired
     MockMvc mockMvc;
 
-    Gson gson = new Gson();
+    @Autowired
+    Gson gson;
 
   
     @Test
@@ -94,7 +95,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void getSoldiersByLastNameAndTestGroupIdShouldReturnSoldier() throws Exception{
+    void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
@@ -116,6 +117,31 @@ public class HttpRequestTest {
             .getContentAsString()
             , listOfSoldierObjects);
         Assert.isTrue(queryResult.size() == 2, "error in retrieval of soldiers by lastName and groupId");
+    }
+
+    @Test
+    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        int n = 5;
+        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
+        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
+        int[] ages = {26, 18, 19, 30, 23};
+        boolean[] genders = {true, true, true, true, false};
+        for (int i = 0; i < n; i++){
+            acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
+        }
+        Type listOfSoldierObjects = new TypeToken<ArrayList<Soldier>>() {}.getType();
+        List<Soldier> queryResult = gson.fromJson(
+            mockMvc.perform(
+                get("/testGroup/getSoldiers/{testGroupId}",
+                testGroupId)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+            , listOfSoldierObjects);
+            Assert.isTrue(queryResult.size() == n, "getSoldiersByTestGroupId returned array of unexpected size");
     }
 
     @Test

@@ -34,6 +34,11 @@ public class AcftManagerServiceController {
         return acftManagerService.getSoldierById(soldierId);
     }
 
+    @GetMapping("/testGroup/getSoldiers/{testGroupId}")
+    List<Soldier> getSoldiersByTestGroupId(@PathVariable Long testGroupId){
+        return acftManagerService.getSoldiersByTestGroupId(testGroupId);
+    }
+
     @GetMapping("/testGroup/get/byLastNameAndGroup/{lastName}/{testGroupId}")
     List<Soldier> getSoldiersByLastNameAndTestGroupId(@PathVariable String lastName, @PathVariable Long testGroupId){
         return acftManagerService.getSoldiersByLastNameAndTestGroupId(lastName, testGroupId);

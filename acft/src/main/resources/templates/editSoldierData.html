@@ -4,11 +4,29 @@
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/main.js';
+            window.onload = Controller.getAllTestGroupsController;
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
+            document.getElementById('refreshSoldiersButton').addEventListener('click', Controller.populateSoldiersByTestGroupIdController);
         </script>
     </head>
     <body>
         <h1>Edit Soldier Data</h1>
         <button id='returnToIndexButton'>Home</button>
+        <div>
+            <div>
+                <h2 id='displaySoldierName'></h2>
+            </div>
+            <div>
+                <label for='existingTestGroups'>Test Group:</label>
+                <select name='Existing Test Groups' id='existingTestGroups'></select><br>
+            </div>
+            <div>
+                <button id='refreshSoldiersButton'>Refresh Soldiers</button><br>
+            </div>
+            <div>
+                <label for='idsInTestGroup'>Soldier ID:</label>
+                <select name='Soldier IDs in Selected Test Group' id='idsInTestGroup'></select><br>
+            </div>
+        </div>
     </body>
 </html>

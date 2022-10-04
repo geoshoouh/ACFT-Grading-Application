@@ -37,3 +37,25 @@ export async function getHomePageView(){
   location.replace('http://localhost:8080');
 }
 
+export async function getSoldiersByTestGroupId(testGroupId){
+  let response = await fetch(
+    `http://localhost:8080/testGroup/getSoldiers/${testGroupId}`
+  ).then((response) => response.json())
+  .catch((error) => {
+    console.error('Error: ', error);
+  });
+  return response;
+}
+
+export async function getSoldierById(soldierId){
+  let response = await fetch(
+    `http://localhost:8080/soldier/get/${soldierId}`
+  ).then((response) => response.json())
+  .catch((error) => {
+    console.error('Error: ', error);
+  });
+  return response;
+}
+
+
+

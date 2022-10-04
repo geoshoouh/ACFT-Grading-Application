@@ -37,6 +37,19 @@ export async function getAllTestGroupsController(){
     });
 }
 
+export async function populateSoldiersByTestGroupIdController(){
+    let testGroupMenu = document.getElementById('existingTestGroups');
+    let soldierIdArray = await API.getSoldiersByTestGroupId(testGroupMenu.value);
+    let soldierMenu = document.getElementById('idsInTestGroup');
+    console.log(soldierIdArray.length);
+    soldierIdArray.forEach((soldier) => {
+        let element = document.createElement('option');
+        element.textContent = soldier.id;
+        element.value = soldier.id;
+        soldierMenu.appendChild(element);
+    });
+}
+
 export async function showEditSoldierDataViewController(){
     await API.getEditSoldierDataView();
 }

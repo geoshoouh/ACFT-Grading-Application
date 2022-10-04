@@ -45,6 +45,10 @@ public class AcftManagerService {
         return soldierRepository.findByLastNameAndTestGroupId(lastName, testGroupId);
     }
 
+    public List<Soldier> getSoldiersByTestGroupId(Long testGroupId){
+        return soldierRepository.findByTestGroupId(testGroupId);
+    }
+
     public List<Long> getAllTestGroups(){
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();
         List<Long> allTestGroupIds = new ArrayList<>();

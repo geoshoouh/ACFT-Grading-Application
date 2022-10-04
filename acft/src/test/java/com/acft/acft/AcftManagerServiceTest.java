@@ -65,7 +65,22 @@ public class AcftManagerServiceTest {
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
         List<Long> allExistingTestGroupIds = acftManagerService.getAllTestGroups();
-        Assert.isTrue(allExistingTestGroupIds.size() == n, "getAllTestGroups returned unexpected size");
+        Assert.isTrue(allExistingTestGroupIds.size() == n, "getAllTestGroups returned array of unexpected size");
     }
 
+    @Test
+    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId(){
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        int n = 5;
+        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
+        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
+        int[] ages = {26, 18, 19, 30, 23};
+        boolean[] genders = {true, true, true, true, false};
+        for (int i = 0; i < n; i++){
+            acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
+        }
+        List<Soldier> soldiersWithCertainGroupId = acftManagerService.getSoldiersByTestGroupId(testGroupId);
+        Assert.isTrue(soldiersWithCertainGroupId.size() == n, "getSoldiersByTestGroupId returned array of unexpected size");
+    }
 }
