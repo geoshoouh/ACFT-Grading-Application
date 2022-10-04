@@ -13,16 +13,23 @@ export async function createNewTestGroupController(){
 
 export async function createNewSoldierController(){
     let outputText = document.getElementById('displayText'); //DOM Obj
-    let testGroup = document.getElementById('existingTestGroups').value; //Number
-    let lastName = document.getElementById('lastNameField').value; //String
-    let firstName = document.getElementById('firstNameField').value; //String
-    let age = document.getElementById('ageField').value; //Number
-    let gender = document.getElementById('genderField').value; //Boolean
+    let testGroup = document.getElementById('existingTestGroups'); //DOM Obj
+    let lastName = document.getElementById('lastNameField'); //DOM Obj
+    let firstName = document.getElementById('firstNameField'); //DOM Obj
+    let age = document.getElementById('ageField'); //DOM Obj
+    let gender = document.getElementById('genderField') //DOM Obj
     if (lastName.length == 0 || firstName.length == 0 || age.length == 0){
         outputText.innerHTML = 'One or more required fields are empty';
     } else {
-        let response = await API.createNewSoldier(testGroup, lastName, firstName, age, gender); //Number
+        let response = await API.createNewSoldier(testGroup.value, 
+                                                    lastName.value, 
+                                                    firstName.value, 
+                                                    age.value, 
+                                                    gender.value); //Number
         outputText.innerHTML = `New soldier has ID ${response}`;
+        lastName.value = null;
+        firstName.value = null;
+        age.value = null;
     }
 }
 
