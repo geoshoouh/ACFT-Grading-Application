@@ -7,6 +7,7 @@
             window.onload = Controller.getAllTestGroupsController;
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
             document.getElementById('refreshSoldiersButton').addEventListener('click', Controller.populateSoldiersByTestGroupIdController);
+            document.getElementById('displaySelectedSoldierNameButton').addEventListener('click', Controller.displaySoldierName);
         </script>
     </head>
     <body>
@@ -18,14 +19,17 @@
             </div>
             <div>
                 <label for='existingTestGroups'>Test Group:</label>
-                <select name='Existing Test Groups' id='existingTestGroups'></select><br>
+                <select name='Existing Test Groups' id='existingTestGroups'></select>
             </div>
             <div>
-                <button id='refreshSoldiersButton'>Refresh Soldiers</button><br>
+                <button id='refreshSoldiersButton'>Refresh Soldiers</button>
             </div>
             <div>
                 <label for='idsInTestGroup'>Soldier ID:</label>
-                <select name='Soldier IDs in Selected Test Group' id='idsInTestGroup'></select><br>
+                <select name='Soldier IDs in Selected Test Group' id='idsInTestGroup'></select>
+            </div>
+            <div>
+                <button id='displaySelectedSoldierNameButton'>Display Soldier</button>
             </div>
         </div>
     </body>

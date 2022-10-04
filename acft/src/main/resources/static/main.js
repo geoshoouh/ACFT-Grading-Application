@@ -41,7 +41,6 @@ export async function populateSoldiersByTestGroupIdController(){
     let testGroupMenu = document.getElementById('existingTestGroups');
     let soldierIdArray = await API.getSoldiersByTestGroupId(testGroupMenu.value);
     let soldierMenu = document.getElementById('idsInTestGroup');
-    console.log(soldierIdArray.length);
     soldierIdArray.forEach((soldier) => {
         let element = document.createElement('option');
         element.textContent = soldier.id;
@@ -56,6 +55,14 @@ export async function showEditSoldierDataViewController(){
 
 export async function getHomePageViewController(){
     await API.getHomePageView();
+}
+
+export async function displaySoldierName(){
+    let output = document.getElementById('displaySoldierName');
+    let soldierId = document.getElementById('idsInTestGroup').value;
+    let soldier = await API.getSoldierById(soldierId);
+    let stringOutput = `Soldier: ${soldier.lastName}, ${soldier.firstName}`
+    output.innerHTML = stringOutput;
 }
 
 
