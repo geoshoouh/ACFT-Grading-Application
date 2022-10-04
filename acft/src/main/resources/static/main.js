@@ -18,7 +18,7 @@ export async function createNewSoldierController(){
     let firstName = document.getElementById('firstNameField'); //DOM Obj
     let age = document.getElementById('ageField'); //DOM Obj
     let gender = document.getElementById('genderField') //DOM Obj
-    if (lastName.length == 0 || firstName.length == 0 || age.length == 0){
+    if (lastName.value.length == 0 || firstName.value.length == 0 || age.value.length == 0){
         outputText.innerHTML = 'One or more required fields are empty';
     } else {
         let response = await API.createNewSoldier(testGroup.value, 
