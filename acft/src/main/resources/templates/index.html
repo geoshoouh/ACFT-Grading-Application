@@ -7,11 +7,13 @@
             window.onload = Controller.getAllTestGroupsController;
             document.getElementById('createTestGroupButton').addEventListener('click', Controller.createNewTestGroupController);
             document.getElementById('createNewSoldierButton').addEventListener('click', Controller.createNewSoldierController);
+            document.getElementById('editSoldierDataViewButton').addEventListener('click', Controller.showEditSoldierDataViewController);
         </script>
     </head>
     <body>
         <div>
-            <h1>ACFT Grading App Testing Interface</h1>
+            <h1>ACFT Grader</h1>
+            <button id='editSoldierDataViewButton'>Edit Soldier Data</button>
         </div>
         <div>
             <button id='createTestGroupButton'>Create Test Group</button>
@@ -22,7 +24,7 @@
             <input type='text' id='lastNameField'><br>
             <label for='firstNameField'>First Name:</label>
             <input type='text' id='firstNameField'><br>
-            <label for='ageField'>Age</label>
+            <label for='ageField'>Age:</label>
             <input type='number' id='ageField'><br>
             <label for='genderField'>Gender:</label>
             <select name="Gender" id="genderField">

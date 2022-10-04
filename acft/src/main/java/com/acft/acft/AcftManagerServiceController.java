@@ -43,5 +43,4 @@ public class AcftManagerServiceController {
     List<Long> getAllTestGroupIds(){
         return acftManagerService.getAllTestGroups();
     }
-    
 }

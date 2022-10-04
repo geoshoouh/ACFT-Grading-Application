@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="main.css">
+        <script type='module'>
+            import * as Controller from '/main.js';
+            document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
+        </script>
+    </head>
+    <body>
+        <h1>Edit Soldier Data</h1>
+        <button id='returnToIndexButton'>Home</button>
+    </body>
+</html>

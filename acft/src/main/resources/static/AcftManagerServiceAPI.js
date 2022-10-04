@@ -6,7 +6,7 @@ export async function createNewTestGroup(){
         .catch((error) => {
           console.error('Error: ', error);
         });
-    return groupId
+    return groupId;
 }
 
 export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale){
@@ -27,5 +27,13 @@ export async function getAllTestGroups(){
       console.error('Error: ', error);
     });
   return testGroupIds;
+}
+
+export async function getEditSoldierDataView(){
+  location.replace('http://localhost:8080/editSoldierData');
+}
+
+export async function getHomePageView(){
+  location.replace('http://localhost:8080');
 }
 
