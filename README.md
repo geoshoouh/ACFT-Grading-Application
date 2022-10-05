@@ -14,6 +14,7 @@ Features:
 
 Project specs:
 -Backend written in Java using Spring Boot
--Spring Boot Dependencies: Spring Data JPA, Thymeleaf, Spring Web, 
+-Dependencies: Spring Data JPA, Thymeleaf, Spring Web, H2 Database, Spring Boot Dev Tools, GSON
 -Front-end exclusively HTML, CSS, JS
+
 
