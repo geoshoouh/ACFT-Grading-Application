@@ -17,4 +17,9 @@ Project specs:
 -Dependencies: Spring Data JPA, Thymeleaf, Spring Web, H2 Database, Spring Boot Dev Tools, GSON
 -Front-end exclusively HTML, CSS, JS
 
+Development progress:
+-Stack fully integrated
+-Can persist test groups and soldiers via the UI
+-Can retrieve test groups and associated soldiers via the UI
+
 
