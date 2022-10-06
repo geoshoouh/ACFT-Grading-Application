@@ -35,7 +35,12 @@ export async function createNewSoldierController(){
 
 export async function getAllTestGroupsController(){
     let dropDownMenu = document.getElementById('existingTestGroups');
-    let testGroupIdArray = await API.getAllTestGroups(); //{Number}
+    let testGroupIdArray;
+    try{
+        testGroupIdArray = await API.getAllTestGroups(); //{Number}
+    } catch (error){
+        console.log(error);
+    }
     testGroupIdArray.forEach((id) => {
         let element = document.createElement("option");
         element.textContent = id;
@@ -46,8 +51,22 @@ export async function getAllTestGroupsController(){
 
 export async function populateSoldiersByTestGroupIdController(){
     let testGroupMenu = document.getElementById('existingTestGroups');
-    let soldierIdArray = await API.getSoldiersByTestGroupId(testGroupMenu.value);
+    if (testGroupMenu.length == 0){
+        document.getElementById('messageText').innerHTML = "No available test groups";
+        return;
+    }
+    let testGroup;
+    try {
+        testGroup = await API.getTestGroupById(testGroupMenu.value);
+    } catch(error){
+        console.log(error);
+    }
+    let soldierIdArray = testGroup.soldierPopulation;
+    if (soldierIdArray.length == 0) return;
     let soldierMenu = document.getElementById('idsInTestGroup');
+    for (let i = 0; i < soldierMenu.length; i++){
+        soldierMenu.remove(0);
+    }
     soldierIdArray.forEach((soldier) => {
         let element = document.createElement('option');
         element.textContent = soldier.id;
@@ -66,14 +85,37 @@ export async function getHomePageViewController(){
 
 export async function displaySoldierName(){
     let output = document.getElementById('displaySoldierName');
-    let soldierId = document.getElementById('idsInTestGroup').value;
-    let soldier = await API.getSoldierById(soldierId);
+    let messageText = document.getElementById('messageText');
+    let testGroups = document.getElementById('existingTestGroups');
+    let soldierId = document.getElementById('idsInTestGroup');
+    if (testGroups.length == 0){
+        messageText.innerHTML = 'No available test groups';
+        return;
+    }
+    if (soldierId.length == 0){
+        messageText.innerHTML = 'No available soldiers';
+        return;
+    }
+    let soldier;
+    soldier = await API.getSoldierById(soldierId.value);
+    if (soldier.status === 404){
+        messageText.innerHTML = 'No soldiers created for this test group';
+        return;
+    }
     let stringOutput = `Soldier: ${soldier.lastName}, ${soldier.firstName}`
     output.innerHTML = stringOutput;
 }
 
-
-
+export async function getTestGroupByIdController(){
+    let testGroup;
+    let testGroupId = document.getElementById('existingTestGroups').value;
+    try{
+        testGroup = await API.getTestGroupById(testGroupId);
+        return testGroup;
+    } catch (error){
+        console.log(error);
+    }
+}
 
 
 

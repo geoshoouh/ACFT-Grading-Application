@@ -38,6 +38,10 @@ export async function getHomePageView(){
 }
 
 export async function getSoldiersByTestGroupId(testGroupId){
+  if (typeof testGroupId != "number"){
+    console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof soldierId} passed`);
+    return;
+  }
   let response = await fetch(
     `http://localhost:8080/testGroup/getSoldiers/${testGroupId}`
   ).then((response) => response.json())
@@ -50,6 +54,16 @@ export async function getSoldiersByTestGroupId(testGroupId){
 export async function getSoldierById(soldierId){
   let response = await fetch(
     `http://localhost:8080/soldier/get/${soldierId}`
+  ).then((response) => response.json())
+  .catch((error) => {
+    console.error('Error: ', error);
+  });
+  return response;
+}
+
+export async function getTestGroupById(testGroupId){
+  let response = await fetch(
+    `http://localhost:8080/testGroup/get/${testGroupId}`
   ).then((response) => response.json())
   .catch((error) => {
     console.error('Error: ', error);
