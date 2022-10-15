@@ -64,9 +64,7 @@ export async function populateSoldiersByTestGroupIdController(){
     let soldierIdArray = testGroup.soldierPopulation;
     if (soldierIdArray.length == 0) return;
     let soldierMenu = document.getElementById('idsInTestGroup');
-    for (let i = 0; i < soldierMenu.length; i++){
-        soldierMenu.remove(0);
-    }
+    soldierMenu.length = 0;
     soldierIdArray.forEach((soldier) => {
         let element = document.createElement('option');
         element.textContent = soldier.id;
