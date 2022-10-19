@@ -115,5 +115,20 @@ export async function getTestGroupByIdController(){
     }
 }
 
+export async function populateDatabase(){
+    let n = 3;
+    let groupIdArray = [];
+    let lastNames = ["Smith", "Jones", "Samuels", "Smith", "Conway"];
+    let firstNames = ["Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"];
+    let ages = [26, 18, 19, 30, 23];
+    let genders = [true, true, true, true, false];
+    for (let i = 0; i < n; i++) groupIdArray.push(await API.createNewTestGroup());
+    let j = 0;
+    for (let i = 0; i < lastNames.length; i++){
+        await API.createNewSoldier(groupIdArray[j], lastNames[i], firstNames[i], ages[i], genders[i]);
+        j = (j == 2) ? 0 : j+1;
+    }
+}
+
 
 

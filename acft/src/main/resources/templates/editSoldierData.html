@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/main.js';
-            window.onload = Controller.getAllTestGroupsController
+            window.onload = Controller.getAllTestGroupsController;
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
             document.getElementById('refreshSoldiersButton').addEventListener('click', Controller.populateSoldiersByTestGroupIdController);
             document.getElementById('displaySelectedSoldierNameButton').addEventListener('click', Controller.displaySoldierName);
