@@ -19,6 +19,9 @@ public class AcftManagerService {
     @Autowired
     private SoldierRepository soldierRepository;
 
+    @Autowired
+    private AcftDataConversion acftDataConversion;
+
     public Long createNewTestGroup(){
         TestGroup testGroup = new TestGroup();
         testGroupRepository.save(testGroup);
@@ -58,4 +61,38 @@ public class AcftManagerService {
         return allTestGroupIds;
     }
 
+    public int updateSoldierScore(Long soldierId, int eventId, int rawScore){
+        Soldier soldier = getSoldierById(soldierId);
+        int scaledScore = acftDataConversion.getScore(eventId, rawScore, soldier.isMale(), soldier.getAge());
+        switch (eventId){
+            case 0:
+                soldier.setMaxDeadliftRaw(rawScore);
+                soldier.setMaxDeadlift(scaledScore);
+                break;
+            case 1:
+                soldier.setStandingPowerThrowRaw(rawScore);
+                soldier.setStandingPowerThrow(scaledScore);
+                break;
+            case 2:
+                soldier.setHandReleasePushupsRaw(rawScore);
+                soldier.setHandReleasePushups(scaledScore);
+                break;
+            case 3:
+                soldier.setSprintDragCarryRaw(rawScore);
+                soldier.setSprintDragCarry(scaledScore);
+                break;
+            case 4:
+                soldier.setPlankRaw(rawScore);
+                soldier.setPlank(scaledScore);
+                break;
+            case 5:
+                soldier.setTwoMileRunRaw(rawScore);
+                soldier.setTwoMileRun(scaledScore);
+                break;
+            default:
+                break;
+        }
+        return scaledScore;
+    }
+    
 }

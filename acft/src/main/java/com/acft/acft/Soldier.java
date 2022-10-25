@@ -47,20 +47,38 @@ public class Soldier {
     @Column(name = "max_deadlift")
     private int maxDeadlift = 0;
 
+    @Column(name = "max_deadlist_raw")
+    private int maxDeadliftRaw = 0;
+
     @Column(name = "standing_power_throw")
     private int standingPowerThrow = 0;
+
+    @Column(name = "standing_power_throw_raw")
+    private int standingPowerThrowRaw = 0;
 
     @Column(name = "hand_release_pushups")
     private int handReleasePushups = 0;
 
+    @Column(name = "hand_realease_pushups_raw")
+    private int handReleasePushupsRaw = 0;
+
     @Column(name = "sprint_drag_carry")
     private int sprintDragCarry = 0;
+
+    @Column(name = "sprint_drag_carry_raw")
+    private int sprintDragCarryRaw = 0;
 
     @Column(name = "plank")
     private int plank = 0;
 
+    @Column(name = "plank_raw")
+    private int plankRaw = 0;
+
     @Column(name = "two_mile_run")
     private int twoMileRun = 0;
+
+    @Column(name = "two_mile_run_raw")
+    private int twoMileRunRaw = 0;
 
     public Soldier(TestGroup testGroup, String lastName, String firstName, int age, boolean isMale) {
         this.testGroup = testGroup;
@@ -168,6 +186,96 @@ public class Soldier {
 
     public void setTwoMileRun(int twoMileRun) {
         this.twoMileRun = twoMileRun;
+    }
+
+
+    public int getMaxDeadlift() {
+        return maxDeadlift;
+    }
+
+
+    public int getMaxDeadliftRaw() {
+        return maxDeadliftRaw;
+    }
+
+
+    public void setMaxDeadliftRaw(int maxDeadliftRaw) {
+        this.maxDeadliftRaw = maxDeadliftRaw;
+    }
+
+
+    public int getStandingPowerThrow() {
+        return standingPowerThrow;
+    }
+
+
+    public int getStandingPowerThrowRaw() {
+        return standingPowerThrowRaw;
+    }
+
+
+    public void setStandingPowerThrowRaw(int standingPowerThrowRaw) {
+        this.standingPowerThrowRaw = standingPowerThrowRaw;
+    }
+
+
+    public int getHandReleasePushups() {
+        return handReleasePushups;
+    }
+
+
+    public int getHandReleasePushupsRaw() {
+        return handReleasePushupsRaw;
+    }
+
+
+    public void setHandReleasePushupsRaw(int handReleasePushupsRaw) {
+        this.handReleasePushupsRaw = handReleasePushupsRaw;
+    }
+
+
+    public int getSprintDragCarry() {
+        return sprintDragCarry;
+    }
+
+
+    public int getSprintDragCarryRaw() {
+        return sprintDragCarryRaw;
+    }
+
+
+    public void setSprintDragCarryRaw(int sprintDragCarryRaw) {
+        this.sprintDragCarryRaw = sprintDragCarryRaw;
+    }
+
+
+    public int getPlank() {
+        return plank;
+    }
+
+
+    public int getPlankRaw() {
+        return plankRaw;
+    }
+
+
+    public void setPlankRaw(int plank_raw) {
+        this.plankRaw = plank_raw;
+    }
+
+
+    public int getTwoMileRun() {
+        return twoMileRun;
+    }
+
+
+    public int getTwoMileRunRaw() {
+        return twoMileRunRaw;
+    }
+
+
+    public void setTwoMileRunRaw(int twoMileRunRaw) {
+        this.twoMileRunRaw = twoMileRunRaw;
     }
 
     

@@ -71,5 +71,16 @@ export async function getTestGroupById(testGroupId){
   return response;
 }
 
+export async function updateSoldierScore(soldierId, eventId, rawScore){
+  let convertedScore = await fetch(
+    `http://localhost:8080/soldier/updateScore/${soldierId}/${eventId}/${rawScore}`,
+    {method: 'POST'})
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error('Error: ', error);
+    });
+  return convertedScore;
+}
+
 
 

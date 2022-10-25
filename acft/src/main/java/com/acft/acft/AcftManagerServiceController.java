@@ -48,4 +48,9 @@ public class AcftManagerServiceController {
     List<Long> getAllTestGroupIds(){
         return acftManagerService.getAllTestGroups();
     }
+
+    @PostMapping("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}")
+    int updateSoldierScore(@PathVariable Long soldierId, @PathVariable int eventId, @PathVariable int rawScore){
+        return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore);
+    }
 }

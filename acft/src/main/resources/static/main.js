@@ -1,5 +1,6 @@
 import * as API from './AcftManagerServiceAPI.js';
 
+//**************** REST Functions ************************************
 export async function createNewTestGroupController(){
     let outputText = document.getElementById('displayText'); //DOM Obj
     let response = await API.createNewTestGroup(); //Long
@@ -48,7 +49,11 @@ export async function getAllTestGroupsController(){
         dropDownMenu.appendChild(element);
     });
 }
+//**************** REST Functions ************************************
 
+
+
+//**************** UI Functions ************************************** 
 export async function populateSoldiersByTestGroupIdController(){
     let testGroupMenu = document.getElementById('existingTestGroups');
     if (testGroupMenu.length == 0){
@@ -82,10 +87,10 @@ export async function getHomePageViewController(){
 }
 
 export async function displaySoldierName(){
-    let output = document.getElementById('displaySoldierName');
-    let messageText = document.getElementById('messageText');
-    let testGroups = document.getElementById('existingTestGroups');
-    let soldierId = document.getElementById('idsInTestGroup');
+    const output = document.getElementById('displaySoldierName');
+    const messageText = document.getElementById('messageText');
+    const testGroups = document.getElementById('existingTestGroups');
+    const soldierId = document.getElementById('idsInTestGroup');
     if (testGroups.length == 0){
         messageText.innerHTML = 'No available test groups';
         return;
@@ -128,7 +133,119 @@ export async function populateDatabase(){
         await API.createNewSoldier(groupIdArray[j], lastNames[i], firstNames[i], ages[i], genders[i]);
         j = (j == 2) ? 0 : j+1;
     }
+    getAllTestGroupsController();
 }
+//**************** UI Functions ************************************** 
+
+
+
+//*******Generate input fields by Event Type**********
+
+
+
+export function generateInputForTimedEvents(){
+    const minutesId = 'minutes';
+    const minutes = document.createElement('input');
+    minutes.type = 'number';
+    minutes.id = minutesId;
+    const secondsId = 'seconds';
+    const seconds = document.createElement('input');
+    seconds.type = 'number';
+    seconds.id = secondsId;
+    const targetElement = document.getElementById('soldierIdAndEventSelectionDiv');
+    targetElement.append("Minutes: ");
+    targetElement.appendChild(minutes);
+    targetElement.append(" Seconds: ");
+    targetElement.appendChild('seconds');
+}
+
+export function eventInputController(){
+    const eventId =  parseInt(document.getElementById('eventSelector').value);
+    const targetElement = document.getElementById('soldierIdAndEventSelectionDiv');
+    if (targetElement.childElementCount > 0) targetElement.removeChild(targetElement.firstChild);
+    targetElement.textContent = '';
+    switch (eventId){
+        case 1:
+            const mdlInput = document.createElement('input');
+            mdlInput.type = 'number';
+            mdlInput.id = 'mdlInputField';
+            targetElement.appendChild(mdlInput);
+            targetElement.append("  [ lbs ]");
+            break;
+        case 2:
+            const meters  = document.createElement('input');
+            meters.type = 'number';
+            meters.id = 'sptMetersInput';
+            const meterTenths = document.createElement('input');
+            meterTenths.type = 'number';
+            meterTenths.id = 'sptMeterTenthsInput';
+            targetElement.append("Meters: ");
+            targetElement.appendChild(meters);
+            targetElement.append(" Meter Tenths: ");
+            targetElement.appendChild(meterTenths);
+            break;
+        case 3:
+            const hrpInput = document.createElement('input');
+            hrpInput.type = 'number';
+            hrpInput.id = 'hrpInputField';
+            targetElement.appendChild(hrpInput);
+            targetElement.append("  [ repetitions ]");
+            break;
+        //Placed into blocks to circumvent redefinition warning
+        case 4:
+            {
+            const minutes = document.createElement('input');
+            minutes.type = 'number';
+            minutes.id = 'minutesInput'
+            const seconds = document.createElement('input');
+            seconds.type = 'number';
+            seconds.id = 'secondsInput';
+            targetElement.append("Minutes: ");
+            targetElement.appendChild(minutes);
+            targetElement.append(" Seconds: ");
+            targetElement.appendChild(seconds);
+            }
+            break;
+        case 5:
+            {
+            const minutes = document.createElement('input');
+            minutes.type = 'number';
+            minutes.id = 'minutesInput'
+            const seconds = document.createElement('input');
+            seconds.type = 'number';
+            seconds.id = 'secondsInput';
+            targetElement.append("Minutes: ");
+            targetElement.appendChild(minutes);
+            targetElement.append(" Seconds: ");
+            targetElement.appendChild(seconds);
+            }
+            break;
+        case 6:
+            const minutes = document.createElement('input');
+            minutes.type = 'number';
+            minutes.id = 'minutesInput'
+            const seconds = document.createElement('input');
+            seconds.type = 'number';
+            seconds.id = 'secondsInput';
+            targetElement.append("Minutes: ");
+            targetElement.appendChild(minutes);
+            targetElement.append(" Seconds: ");
+            targetElement.appendChild(seconds);
+            break;
+        default: break;
+    }
+}
+//****************************************************
+
+
+
+//******* Setup function  ****************************
+export async function onload(){
+    await getAllTestGroupsController();
+    await populateSoldiersByTestGroupIdController();
+    eventInputController();
+}
+
 
 
 

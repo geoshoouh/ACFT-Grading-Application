@@ -34,7 +34,7 @@ public class AcftDataConversionTest {
     //Prints resulting matrix, no assertions
     @Test
     void convertSheetValuesToIntMatrixShouldReturnIntMatrix(){
-        int eventId = 0;
+        int eventId = 1;
         List<List<String>> sheetValues = acftDataConversion.getSheetValues(eventId);
         int[][] intMatrix = acftDataConversion.convertSheetValuesToIntMatrix(sheetValues, eventId);
         for (int[] row : intMatrix){
@@ -58,8 +58,8 @@ public class AcftDataConversionTest {
     void getScoreReturnsProperScore(){
 
         //Test typical case above 60 points
-        int correctScore = 87;
-        int score = acftDataConversion.getScore(0, 165, false, 25);
+        int correctScore = 90;
+        int score = acftDataConversion.getScore(1, 110, true, 31);
         Assert.isTrue(score == correctScore, "score from acftDataConversion.getScore() was supposed to be " + correctScore + " but was " + score);
 
         //Test exceptional case below 60, which should be different for MDL and SPT

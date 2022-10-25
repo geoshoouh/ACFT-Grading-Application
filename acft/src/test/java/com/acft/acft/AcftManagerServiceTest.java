@@ -83,4 +83,16 @@ public class AcftManagerServiceTest {
         List<Soldier> soldiersWithCertainGroupId = acftManagerService.getSoldiersByTestGroupId(testGroupId);
         Assert.isTrue(soldiersWithCertainGroupId.size() == n, "getSoldiersByTestGroupId returned array of unexpected size");
     }
+
+    @Test
+    void updateSoldierScoreShouldReturnCorrectScaledScore(){
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate" , "Joshua", 31, true);
+        int convertedScore = acftManagerService.updateSoldierScore(soldierId, 1, 110);
+        //Expected conversion for 31 year old male scoring 110 cm on the standing power throw is 90 points
+        int expectedScore = 90;
+        Assert.isTrue(convertedScore == 90, "expected score was " + expectedScore + " and actual score was " + convertedScore);
+    }
+
 }

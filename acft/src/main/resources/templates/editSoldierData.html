@@ -4,10 +4,11 @@
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/main.js';
-            window.onload = Controller.getAllTestGroupsController;
+            window.onload = Controller.onload;
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
             document.getElementById('refreshSoldiersButton').addEventListener('click', Controller.populateSoldiersByTestGroupIdController);
             document.getElementById('displaySelectedSoldierNameButton').addEventListener('click', Controller.displaySoldierName);
+            document.getElementById('eventSelector').addEventListener('change', Controller.eventInputController);
         </script>
     </head>
     <body>
@@ -31,7 +32,16 @@
             </div>
             <div>
                 <button id='displaySelectedSoldierNameButton'>Display Soldier</button>
+                <select name='Event Id' id='eventSelector'>
+                    <option value='1'>Max Deadlift</option>
+                    <option value='2'>Standing Power Throw</option>
+                    <option value='3'>Hand Release Pushups</option>
+                    <option value='4'>Sprint Drag Carry</option>
+                    <option value='5'>Plank</option>
+                    <option value='6'>Two-mile Run</option>
+                </select>
             </div>
+            <div id='soldierIdAndEventSelectionDiv'></div>
         </div>
     </body>
 </html>

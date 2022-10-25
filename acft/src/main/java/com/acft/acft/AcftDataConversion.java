@@ -17,17 +17,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class AcftDataConversion {
 
-    private FileInputStream file;
-    private Workbook workbook;
     private int[][][] scoreTable = new int[6][101][20];
 
 
     public AcftDataConversion(){
-        this.file = getFile();
-        this.workbook = getWorkbook(file);
-        int n = workbook.getNumberOfSheets();
         try{
-            for (int i = 0; i < n; i++){
+            for (int i = 0; i < 5; i++){
                 scoreTable[i] = convertSheetValuesToIntMatrix(getSheetValues(i), i);
             }
         } catch (IndexOutOfBoundsException e){
@@ -124,7 +119,7 @@ public class AcftDataConversion {
                 result = (int)Float.parseFloat(stringValue);
                 break;
             case 1:
-                 result = (int)(Float.parseFloat(stringValue) * 100);
+                 result = (int)(Float.parseFloat(stringValue) * 10);
                  break;
             case 2:
                 result = (int)Float.parseFloat(stringValue);
@@ -166,6 +161,7 @@ public class AcftDataConversion {
         System.out.println();
     }
     
+    //Implement memoization at some point so a long-established server can compute scores quicker
     public int binarySearch(int eventId, int column, int bottom, int top, int target){
         if (bottom > top){
             int mid = (bottom + top) / 2;
@@ -184,6 +180,7 @@ public class AcftDataConversion {
         else ageBracket = (age - 22) / 4;
         int column = (isMale) ? ageBracket : ageBracket + 1;
         int row = binarySearch(eventId, column, 100, 0, rawScore);
+        System.out.println("Binary Search produced " + row);
         if (row != 100) {
             while (scoreTable[eventId][row+1][column] == scoreTable[eventId][row][column]) row++;
         }
@@ -192,4 +189,6 @@ public class AcftDataConversion {
         if ((eventId == 0 || eventId == 2) && result < 60) result = 60 - (60 - result) * 10;
         return result;
     }
+
+
 }
