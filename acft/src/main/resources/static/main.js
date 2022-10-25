@@ -49,7 +49,53 @@ export async function getAllTestGroupsController(){
         dropDownMenu.appendChild(element);
     });
 }
-//**************** REST Functions ************************************
+
+export async function updateSoldierScoreController(){
+    const soldierId = parseInt(document.getElementById('idsInTestGroup').value);
+    const messageText = document.getElementById('messageText');
+    const displayText = document.getElementById('displaySoldierName');
+    messageText.textContent = '';
+    if (soldierId.length == 0) messageText.textContent = 'No available soldiers';
+    const eventId = parseInt(document.getElementById('eventSelector').value);
+
+    const diplayErrorMessage = () => {
+        messageText.textContent = 'Invalid Input'
+    };
+
+    const displayHttpErrorMessage = () => {
+        messageText.textContent = 'Server Error';
+    };
+    
+    switch (eventId){
+        case 1:
+            let mdlScoreString = document.getElementById('mdlInputField').value;
+            console.log(typeof(mdlScoreString));
+            if (mdlScoreString.length == 0){
+                diplayErrorMessage();
+                break;
+            }
+            const mdlScore = parseInt(mdlScoreString);
+            let response = await API.updateSoldierScore(soldierId, eventId, mdlScore);
+            if (response.status != 200){
+                displayHttpErrorMessage();
+                return -1;
+            }
+            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${mdlScore}`;
+            return response;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        default: break;
+    }
+}
+//*******************************************************************
 
 
 
@@ -135,30 +181,11 @@ export async function populateDatabase(){
     }
     getAllTestGroupsController();
 }
-//**************** UI Functions ************************************** 
+//******************************************************************** 
 
 
 
 //*******Generate input fields by Event Type**********
-
-
-
-export function generateInputForTimedEvents(){
-    const minutesId = 'minutes';
-    const minutes = document.createElement('input');
-    minutes.type = 'number';
-    minutes.id = minutesId;
-    const secondsId = 'seconds';
-    const seconds = document.createElement('input');
-    seconds.type = 'number';
-    seconds.id = secondsId;
-    const targetElement = document.getElementById('soldierIdAndEventSelectionDiv');
-    targetElement.append("Minutes: ");
-    targetElement.appendChild(minutes);
-    targetElement.append(" Seconds: ");
-    targetElement.appendChild('seconds');
-}
-
 export function eventInputController(){
     const eventId =  parseInt(document.getElementById('eventSelector').value);
     const targetElement = document.getElementById('soldierIdAndEventSelectionDiv');
@@ -239,11 +266,15 @@ export function eventInputController(){
 
 
 
-//******* Setup function  ****************************
-export async function onload(){
+//******* Setup functions  ****************************
+export async function editSoldierDataViewOnLoad(){
     await getAllTestGroupsController();
     await populateSoldiersByTestGroupIdController();
     eventInputController();
+}
+
+export async function indexOnLoad(){
+    getAllTestGroupsController();
 }
 
 

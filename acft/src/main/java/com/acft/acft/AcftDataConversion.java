@@ -163,9 +163,11 @@ public class AcftDataConversion {
     
     //Implement memoization at some point so a long-established server can compute scores quicker
     public int binarySearch(int eventId, int column, int bottom, int top, int target){
+        System.out.println("======= Binary Search Called =====");
         if (bottom > top){
             int mid = (bottom + top) / 2;
             int midVal = this.scoreTable[eventId][mid][column];
+            System.out.println("midIndex = " + mid + " midVal = " + midVal);
             if (midVal == target) return mid;
             if (midVal > target) return binarySearch(eventId, column, bottom, mid + 1, target);
             return binarySearch(eventId, column, mid - 1, top, target);
@@ -177,15 +179,18 @@ public class AcftDataConversion {
         int ageBracket;
         if (age < 22) ageBracket = 0;
         else if (age > 62) ageBracket = 9;
-        else ageBracket = (age - 22) / 4;
+        else ageBracket = (age - 23) / 4;
         int column = (isMale) ? ageBracket : ageBracket + 1;
         int row = binarySearch(eventId, column, 100, 0, rawScore);
-        System.out.println("Binary Search produced " + row);
-        if (row != 100) {
-            while (scoreTable[eventId][row+1][column] == scoreTable[eventId][row][column]) row++;
+        if (scoreTable[eventId][row][column] > rawScore && row < 100){
+            while (scoreTable[eventId][row][column] > rawScore) row++;
+        }
+        if (row != 100 && scoreTable[eventId][row+1][column] == scoreTable[eventId][row][column]) {
+            row++;
+            while (scoreTable[eventId][row-1][column] == scoreTable[eventId][row][column]) row++;
         }
         int result = 100 - row;
-        System.out.println("Intermediate result for gender " + isMale + " age " + age + " and rawScore " + rawScore + " is " + result);
+        //System.out.println("Intermediate result for gender " + isMale + " age " + age + " and rawScore " + rawScore + " is " + result);
         if ((eventId == 0 || eventId == 2) && result < 60) result = 60 - (60 - result) * 10;
         return result;
     }

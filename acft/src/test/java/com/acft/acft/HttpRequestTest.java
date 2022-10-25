@@ -159,4 +159,23 @@ public class HttpRequestTest {
         Assert.isTrue(requestResult.size() == n, "getAllTestGroupsShouldReturnAllExistingTestGroupIds returned incorrectly sized array");
     }
 
+    @Test
+    void updateSoldierScoreShouldReturnCorrectConvertedScore() throws Exception{
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
+        int eventId = 0;
+        int rawScore = 205;
+        int expectedConversion = 71;
+        int requestResult = Integer.parseInt(
+            mockMvc.perform(
+                post("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}",
+                soldierId, eventId, rawScore)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+            );
+        Assert.isTrue(requestResult == expectedConversion, "For update score request: expected result was " + expectedConversion + ", actual result was " + requestResult);
+    }
 }

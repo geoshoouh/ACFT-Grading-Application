@@ -4,7 +4,7 @@
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/main.js';
-            window.onload = Controller.getAllTestGroupsController;
+            window.onload = Controller.indexOnLoad;
             document.getElementById('createTestGroupButton').addEventListener('click', Controller.createNewTestGroupController);
             document.getElementById('createNewSoldierButton').addEventListener('click', Controller.createNewSoldierController);
             document.getElementById('editSoldierDataViewButton').addEventListener('click', Controller.showEditSoldierDataViewController);

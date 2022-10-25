@@ -4,11 +4,12 @@
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/main.js';
-            window.onload = Controller.onload;
+            window.onload = Controller.editSoldierDataViewOnLoad;
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
             document.getElementById('refreshSoldiersButton').addEventListener('click', Controller.populateSoldiersByTestGroupIdController);
             document.getElementById('displaySelectedSoldierNameButton').addEventListener('click', Controller.displaySoldierName);
             document.getElementById('eventSelector').addEventListener('change', Controller.eventInputController);
+            document.getElementById('updateSoldierScoreButton').addEventListener('click', Controller.updateSoldierScoreController);
         </script>
     </head>
     <body>
@@ -17,6 +18,7 @@
         <h2 id='messageText'></h2>
         <div>
             <div>
+                <!----Also used to display soldier score after updating-->
                 <h2 id='displaySoldierName'></h2>
             </div>
             <div>
@@ -24,7 +26,7 @@
                 <select name='Existing Test Groups' id='existingTestGroups'></select>
             </div>
             <div>
-                <button id='refreshSoldiersButton'>Refresh Soldiers</button>
+                <button id='refreshSoldiersButton'>Refresh Population</button>
             </div>
             <div>
                 <label for='idsInTestGroup'>Soldier ID:</label>
@@ -42,6 +44,9 @@
                 </select>
             </div>
             <div id='soldierIdAndEventSelectionDiv'></div>
+            <div>
+                <button id='updateSoldierScoreButton'>Update</button>
+            </div>
         </div>
     </body>
 </html>
