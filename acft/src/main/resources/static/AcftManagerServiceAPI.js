@@ -73,7 +73,8 @@ export async function getTestGroupById(testGroupId){
 
 export async function updateSoldierScore(soldierId, eventId, rawScore){
   let convertedScore = await fetch(
-    `http://localhost:8080/soldier/updateScore/${soldierId}/${eventId}/${rawScore}`,
+    //eventId is 0-indexed in the backend, so it is decremented here
+    `http://localhost:8080/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}`,
     {method: 'POST'})
     .then((response) => response.json())
     .catch((error) => {

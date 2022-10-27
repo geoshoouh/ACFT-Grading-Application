@@ -58,39 +58,126 @@ export async function updateSoldierScoreController(){
     if (soldierId.length == 0) messageText.textContent = 'No available soldiers';
     const eventId = parseInt(document.getElementById('eventSelector').value);
 
-    const diplayErrorMessage = () => {
+    const displayErrorMessage = () => {
+        displayText.textContent = '';
         messageText.textContent = 'Invalid Input'
     };
 
     const displayHttpErrorMessage = () => {
+        displayText.textContent = '';
         messageText.textContent = 'Server Error';
     };
     
+    //Blocks are used here in some cases to reduce variable scope and prevent redifinition warnings
     switch (eventId){
         case 1:
             let mdlScoreString = document.getElementById('mdlInputField').value;
-            console.log(typeof(mdlScoreString));
             if (mdlScoreString.length == 0){
-                diplayErrorMessage();
+                displayErrorMessage();
                 break;
             }
             const mdlScore = parseInt(mdlScoreString);
+            if (mdlScore < 0) diplayErrorMessage();
             let response = await API.updateSoldierScore(soldierId, eventId, mdlScore);
-            if (response.status != 200){
+            if (response === undefined){
                 displayHttpErrorMessage();
-                return -1;
             }
             displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${mdlScore}`;
-            return response;
         case 2:
+            {let sptMetersInput = document.getElementById('sptMetersInput');
+            let sptMeterTenthsInput = document.getElementById('sptMeterTenthsInput');
+            if (sptMetersInput.value.length == 0){
+                displayErrorMessage();
+                break;
+            }
+            const sptMeters = parseInt(sptMetersInput.value);
+            const sptMeterTenths = (sptMeterTenthsInput.value.length > 0) ? parseInt(sptMeterTenthsInput.value) : 0;
+            if (sptMeters < 0 || sptMeterTenths < 0 || sptMeterTenths > 9){
+                displayErrorMessage();
+                break;
+            } 
+            const sptScore = sptMeters * 10 + sptMeterTenths;
+            let response = await API.updateSoldierScore(soldierId, eventId, sptScore);
+            if (response === undefined) displayHttpErrorMessage();
+            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${sptMeters}.${sptMeterTenths}`;}
             break;
         case 3:
+            {let hrpInput = document.getElementById('hrpInputField');
+            if (hrpInput.value.length == 0){
+                displayErrorMessage();
+                break;
+            }
+            const hrpReps = parseInt(hrpInput.value);
+            if (hrpReps < 0){
+                displayErrorMessage();
+                break;
+            }
+            let response = await API.updateSoldierScore(soldierId, eventId, hrpReps);
+            if (response === undefined) displayHttpErrorMessage();
+            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${hrpReps}`;}
             break;
         case 4:
+            {
+            let minutesInput = document.getElementById('minutesInput');
+            let secondsInput = document.getElementById('secondsInput');
+            if (minutesInput.value.length == 0){
+                displayErrorMessage();
+                break;
+            }
+            const minutes = parseInt(minutesInput.value);
+            const seconds = (secondsInput.value.length > 0) ? parseInt(secondsInput.value) : 0;
+
+            if (minutes < 0 || seconds < 0 || seconds > 59){
+                displayErrorMessage();
+                break;
+            }
+            let response = await API.updateSoldierScore(soldierId, eventId, minutes * 60 + seconds);
+            if (response === undefined) displayHttpErrorMessage();
+            const secondsString = (seconds < 10) ? '0' + seconds : seconds;
+            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
+            }
             break;
         case 5:
+            {
+                let minutesInput = document.getElementById('minutesInput');
+                let secondsInput = document.getElementById('secondsInput');
+                if (minutesInput.value.length == 0){
+                    displayErrorMessage();
+                    break;
+                }
+                const minutes = parseInt(minutesInput.value);
+                const seconds = (secondsInput.value.length > 0) ? parseInt(secondsInput.value) : 0;
+    
+                if (minutes < 0 || seconds < 0 || seconds > 59){
+                    displayErrorMessage();
+                    break;
+                }
+                let response = await API.updateSoldierScore(soldierId, eventId, minutes * 60 + seconds);
+                if (response === undefined) displayHttpErrorMessage();
+                const secondsString = (seconds < 10) ? '0' + seconds : seconds;
+                displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
+                }
             break;
         case 6:
+            {
+                let minutesInput = document.getElementById('minutesInput');
+                let secondsInput = document.getElementById('secondsInput');
+                if (minutesInput.value.length == 0){
+                    displayErrorMessage();
+                    break;
+                }
+                const minutes = parseInt(minutesInput.value);
+                const seconds = (secondsInput.value.length > 0) ? parseInt(secondsInput.value) : 0;
+    
+                if (minutes < 0 || seconds < 0 || seconds > 59){
+                    displayErrorMessage();
+                    break;
+                }
+                let response = await API.updateSoldierScore(soldierId, eventId, minutes * 60 + seconds);
+                if (response === undefined) displayHttpErrorMessage();
+                const secondsString = (seconds < 10) ? '0' + seconds : seconds;
+                displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
+                }
             break;
         default: break;
     }

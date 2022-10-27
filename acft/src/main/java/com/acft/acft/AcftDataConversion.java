@@ -22,7 +22,7 @@ public class AcftDataConversion {
 
     public AcftDataConversion(){
         try{
-            for (int i = 0; i < 5; i++){
+            for (int i = 0; i < 6; i++){
                 scoreTable[i] = convertSheetValuesToIntMatrix(getSheetValues(i), i);
             }
         } catch (IndexOutOfBoundsException e){
@@ -163,14 +163,18 @@ public class AcftDataConversion {
     
     //Implement memoization at some point so a long-established server can compute scores quicker
     public int binarySearch(int eventId, int column, int bottom, int top, int target){
-        System.out.println("======= Binary Search Called =====");
         if (bottom > top){
             int mid = (bottom + top) / 2;
             int midVal = this.scoreTable[eventId][mid][column];
-            System.out.println("midIndex = " + mid + " midVal = " + midVal);
             if (midVal == target) return mid;
-            if (midVal > target) return binarySearch(eventId, column, bottom, mid + 1, target);
-            return binarySearch(eventId, column, mid - 1, top, target);
+            if (eventId != 3 && eventId != 5){
+                if (midVal < target) return binarySearch(eventId, column, mid - 1, top, target);
+                return binarySearch(eventId, column, bottom, mid + 1, target);
+            }
+            else {
+                if (midVal < target) return binarySearch(eventId, column, bottom, mid + 1, target);
+                return binarySearch(eventId, column, mid - 1, top, target);
+            }
         }
         return bottom;
     }
@@ -178,20 +182,26 @@ public class AcftDataConversion {
     public int getScore(int eventId, int rawScore, boolean isMale, int age){
         int ageBracket;
         if (age < 22) ageBracket = 0;
-        else if (age > 62) ageBracket = 9;
-        else ageBracket = (age - 23) / 4;
+        else if (age > 62) ageBracket = 18;
+        else ageBracket = (1 + (age - 22) / 5) * 2;
         int column = (isMale) ? ageBracket : ageBracket + 1;
+        int maxScore = scoreTable[eventId][0][column];
+        int minScore = scoreTable[eventId][100][column];
+        boolean lowNumHighScore = (eventId == 3 || eventId == 5) ? true : false;
+        if ((!lowNumHighScore && rawScore >= maxScore) || (lowNumHighScore && rawScore <= maxScore)) return 100;
+        else if ((!lowNumHighScore && rawScore <= minScore) || (lowNumHighScore && rawScore >= minScore)) return 0;
         int row = binarySearch(eventId, column, 100, 0, rawScore);
-        if (scoreTable[eventId][row][column] > rawScore && row < 100){
-            while (scoreTable[eventId][row][column] > rawScore) row++;
-        }
-        if (row != 100 && scoreTable[eventId][row+1][column] == scoreTable[eventId][row][column]) {
+        
+        if ((!lowNumHighScore && scoreTable[eventId][row][column] > rawScore) || (lowNumHighScore && scoreTable[eventId][row][column] < rawScore)){
             row++;
-            while (scoreTable[eventId][row-1][column] == scoreTable[eventId][row][column]) row++;
         }
+
+        while (scoreTable[eventId][row][column] == scoreTable[eventId][row+1][column]) row++;
         int result = 100 - row;
-        //System.out.println("Intermediate result for gender " + isMale + " age " + age + " and rawScore " + rawScore + " is " + result);
-        if ((eventId == 0 || eventId == 2) && result < 60) result = 60 - (60 - result) * 10;
+        if ((eventId == 0 || eventId == 2) && result < 60) {
+            if (result > 45) result = 0;
+            else result = 60 - (60 - result) * 10;
+        }
         return result;
     }
 
