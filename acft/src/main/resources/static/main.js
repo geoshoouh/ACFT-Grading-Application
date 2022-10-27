@@ -77,7 +77,10 @@ export async function updateSoldierScoreController(){
                 break;
             }
             const mdlScore = parseInt(mdlScoreString);
-            if (mdlScore < 0) diplayErrorMessage();
+            if (mdlScore < 0){
+                displayErrorMessage();
+                break;
+            }
             let response = await API.updateSoldierScore(soldierId, eventId, mdlScore);
             if (response === undefined){
                 displayHttpErrorMessage();
@@ -361,7 +364,7 @@ export async function editSoldierDataViewOnLoad(){
 }
 
 export async function indexOnLoad(){
-    getAllTestGroupsController();
+    await getAllTestGroupsController();
 }
 
 

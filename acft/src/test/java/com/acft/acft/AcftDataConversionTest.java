@@ -81,5 +81,10 @@ public class AcftDataConversionTest {
         int correctScore_6 = 100;
         int score_6 = acftDataConversion.getScore(5, 120, false, 102);
         Assert.isTrue(score_6 == correctScore_6, "score from acftDataConversion.getScore() was supposed to be " + correctScore_6 + " but was " + score_6);
+
+        int correctScore_7 = 0;
+        int score_7 = acftDataConversion.getScore(0, 10, true, 26);
+        Assert.isTrue(score_7 == correctScore_7, "score from acftDataConversion.getScore() was supposed to be " + correctScore_7 + " but was " + score_7);
+
     }
 }
