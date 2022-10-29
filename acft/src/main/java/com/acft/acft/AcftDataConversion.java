@@ -192,8 +192,6 @@ public class AcftDataConversion {
         } else {
             minScore = scoreTable[eventId][100][column];
         }
-        System.out.println("minScore = " + minScore + " maxScore " + maxScore);
-        System.out.println("rawScore = " + rawScore);
         boolean lowNumHighScore = (eventId == 3 || eventId == 5) ? true : false;
         if ((!lowNumHighScore && rawScore >= maxScore) || (lowNumHighScore && rawScore <= maxScore)) return 100;
         else if ((!lowNumHighScore && rawScore <= minScore) || (lowNumHighScore && rawScore >= minScore)) return 0;
@@ -204,7 +202,6 @@ public class AcftDataConversion {
         }
 
         while (row < 100 && scoreTable[eventId][row][column] == scoreTable[eventId][row+1][column]) row++;
-        System.out.println("row = " + row);
         int result = 100 - row;
         if ((eventId == 0 || eventId == 2) && result < 60) {
             if (result > 45) result = 0;

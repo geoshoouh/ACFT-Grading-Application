@@ -21,16 +21,26 @@ public class AcftManagerServiceTest {
     }
 
     @Test
+    void createNewTestGroupWithPasscodeShouldReturnId(){
+        String passcode = "password";
+        Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        Assert.notNull(testGroupId, "createNewTestGroup returned null");
+        Assert.isTrue(testGroup.getPasscode() == passcode, "createNewTestGroup w/passcode failed to create instance with expected passcode attribute");
+    }
+
+    @Test
     void getTestGroupShouldReturnTestGroup(){
-        Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        String passcode = "password";
+        Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
         Assert.isTrue(testGroup.getId() == testGroupId, "getTestGroup returned the incorrect group");
     }
 
     @Test
     void createNewSoldierShouldReturnId(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
     }
@@ -38,7 +48,7 @@ public class AcftManagerServiceTest {
     @Test 
     void getSoldierByIdShouldReturnSoldier(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
         Assert.isTrue(soldier.getId() == soldierId, "getSoldierById returned the incorrect Soldier");
@@ -47,7 +57,7 @@ public class AcftManagerServiceTest {
     @Test 
     void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -71,7 +81,7 @@ public class AcftManagerServiceTest {
     @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -87,7 +97,7 @@ public class AcftManagerServiceTest {
     @Test
     void updateSoldierScoreShouldReturnCorrectScaledScore(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate" , "Joshua", 31, true);
         int convertedScore = acftManagerService.updateSoldierScore(soldierId, 1, 110);
         //Expected conversion for 31 year old male scoring 110 cm on the standing power throw is 90 points

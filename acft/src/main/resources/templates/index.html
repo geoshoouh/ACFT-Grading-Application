@@ -9,6 +9,8 @@
             document.getElementById('createNewSoldierButton').addEventListener('click', Controller.createNewSoldierController);
             document.getElementById('editSoldierDataViewButton').addEventListener('click', Controller.showEditSoldierDataViewController);
             document.getElementById('populateDatabaseButton').addEventListener('click', Controller.populateDatabase);
+            document.getElementById('storePasscodeButton').addEventListener('click', Controller.storeUserPasscode);
+            document.getElementById('showUserPasscodeButton').addEventListener('click', Controller.showUserPasscode)
         </script>
     </head>
     <body>
@@ -20,6 +22,12 @@
             <button id='createTestGroupButton'>Create Test Group</button>
             <button id='createNewSoldierButton'>Create Soldier</button>
             <button id='populateDatabaseButton'>Populate Database</button>
+        </div>
+        <div>
+            <label for='createTestGroupPasscodeField'>Passcode: </label>
+            <input type='text' id='createTestGroupPasscodeField'>
+            <button id='storePasscodeButton'>Set User Passcode</button>
+            <button id='showUserPasscodeButton'>Show User Passcode</button>
         </div>
         <div>
             <label for='lastNameField'>Last Name:</label>
@@ -40,6 +48,7 @@
         </div>
         <div>
             <h2 id='displayText'>Request Response Goes Here</h2>
+            <h3 class='errorText' id='messageText'></h3>
         </div>
     </body>
 </html>

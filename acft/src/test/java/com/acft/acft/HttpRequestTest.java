@@ -33,7 +33,6 @@ public class HttpRequestTest {
     @Autowired
     Gson gson;
 
-  
     @Test
     void postNewTestGroupShouldReturnGroupId() throws Exception{
         Long testGroupId = Long.parseLong(
@@ -48,17 +47,35 @@ public class HttpRequestTest {
     }
 
     @Test
+    void postNewTestGroupWithPasscodeShouldReturnGroupId() throws Exception{
+        String passcode = "password";
+        Long testGroupId = Long.parseLong(
+            mockMvc.perform(
+                post("/testGroup/new/{passcode}", passcode)
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString()
+                );
+        Assert.notNull(testGroupId, "Response to /testGroup/new was null");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
+        Assert.isTrue(testGroup.getPasscode().equals(passcode), "in postNewTestGroup w/passcode, expected passcode was " + passcode + ",actual passcode was " + testGroup.getPasscode());
+    }
+
+    @Test
     void getTestGroupShouldReturnTestGroup() throws Exception{
-        Long testGroupId = acftManagerService.createNewTestGroup();
+        String passcode = "password";
+        Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroup = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/get/{testGroupId}", testGroupId)
+                get("/testGroup/get/{testGroupId}/{passcode}", testGroupId, passcode)
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(), 
             TestGroup.class
             );
+        System.out.println(testGroup);
         Assert.isTrue(testGroup.getId() == testGroupId, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
     }
 
@@ -80,7 +97,7 @@ public class HttpRequestTest {
     @Test
     void getSoldierByIdShouldReturnSoldier() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         Soldier soldier = gson.fromJson(
             mockMvc.perform(
@@ -97,7 +114,7 @@ public class HttpRequestTest {
     @Test
     void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -122,7 +139,7 @@ public class HttpRequestTest {
     @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -162,7 +179,7 @@ public class HttpRequestTest {
     @Test
     void updateSoldierScoreShouldReturnCorrectConvertedScore() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         int eventId = 0;
         int rawScore = 205;

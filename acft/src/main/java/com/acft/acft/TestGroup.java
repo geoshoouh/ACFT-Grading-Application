@@ -20,10 +20,17 @@ public class TestGroup {
     @Column(name = "test_group_id")
     private Long id;
 
+    @Column(name = "passcode")
+    private String passcode = "";
+
     @OneToMany(mappedBy = "testGroup")
     public List<Soldier> soldierPopulation = new ArrayList<>();
 
-    protected TestGroup(){}
+    public TestGroup(){}
+
+    public TestGroup(String passcode){
+        this.passcode = passcode;
+    }
 
     public List<Soldier> getSoldierPopulation(){
         return soldierPopulation;
@@ -40,7 +47,23 @@ public class TestGroup {
 
     @Override
     public String toString() {
-        return "TestGroup [id=" + id + ", soldierPopulation=" + soldierPopulation + "]";
+        return "TestGroup [id=" + id + ", passcode=" + passcode + ", soldierPopulation=" + soldierPopulation + "]";
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPasscode() {
+        return passcode;
+    }
+
+    public void setPasscode(String passcode) {
+        this.passcode = passcode;
+    }
+
+    public void setSoldierPopulation(List<Soldier> soldierPopulation) {
+        this.soldierPopulation = soldierPopulation;
     }
 
 }

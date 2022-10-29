@@ -19,9 +19,14 @@ public class AcftManagerServiceController {
         return acftManagerService.createNewTestGroup();
     }
 
-    @GetMapping("/testGroup/get/{testGroupId}")
-    TestGroup getTestGroup(@PathVariable Long testGroupId){
-        return acftManagerService.getTestGroup(testGroupId);
+    @PostMapping("/testGroup/new/{passcode}")
+    Long postNewTestGroup(@PathVariable String passcode){
+        return acftManagerService.createNewTestGroup(passcode);
+    }
+
+    @GetMapping("/testGroup/get/{testGroupId}/{passcode}")
+    TestGroup getTestGroup(@PathVariable Long testGroupId, @PathVariable String passcode){
+        return acftManagerService.getTestGroup(testGroupId, passcode);
     }
 
     @PostMapping("/testGroup/post/{testGroup}/{lastName}/{firstName}/{age}/{isMale}")

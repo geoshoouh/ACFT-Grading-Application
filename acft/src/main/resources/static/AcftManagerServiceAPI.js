@@ -4,7 +4,19 @@ export async function createNewTestGroup(){
         method: 'POST'
       }).then((response) => response.json())
         .catch((error) => {
-          console.error('Error: ', error);
+          console.log(error);
+          return undefined;
+        });
+    return groupId;
+}
+
+export async function createNewTestGroupWithPasscode(passcode){
+  let groupId = await fetch(`http://localhost:8080/testGroup/new/${passcode}`, {
+        method: 'POST'
+      }).then((response) => response.json())
+        .catch((error) => {
+          console.log(error);
+          return undefined;
         });
     return groupId;
 }
@@ -15,7 +27,8 @@ export async function createNewSoldier(testGroupId, lastName, firstName, age, is
     {method: 'POST'})
     .then((response) => response.json())
     .catch((error) => {
-      console.error('Error: ', error);
+      console.log(error);
+      return undefined;
     });
   return soldierId;
 }
@@ -24,7 +37,8 @@ export async function getAllTestGroups(){
   let testGroupIds = await fetch('http://localhost:8080/testGroup/get/all')
     .then((response => response.json()))
     .catch((error) => {
-      console.error('Error: ', error);
+      console.log(error);
+      return undefined;
     });
   return testGroupIds;
 }
@@ -56,18 +70,16 @@ export async function getSoldierById(soldierId){
     `http://localhost:8080/soldier/get/${soldierId}`
   ).then((response) => response.json())
   .catch((error) => {
-    console.error('Error: ', error);
+    console.error('Error: ' + error);
   });
   return response;
 }
 
-export async function getTestGroupById(testGroupId){
+export async function getTestGroupById(testGroupId, passcode){
   let response = await fetch(
-    `http://localhost:8080/testGroup/get/${testGroupId}`
+    `http://localhost:8080/testGroup/get/${testGroupId}/${passcode}`
   ).then((response) => response.json())
-  .catch((error) => {
-    console.error('Error: ', error);
-  });
+  .catch((error) => console.log(error));
   return response;
 }
 
@@ -78,7 +90,8 @@ export async function updateSoldierScore(soldierId, eventId, rawScore){
     {method: 'POST'})
     .then((response) => response.json())
     .catch((error) => {
-      console.error('Error: ', error);
+      console.log(error);
+      return undefined;
     });
   return convertedScore;
 }

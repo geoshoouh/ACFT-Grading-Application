@@ -2,19 +2,40 @@ import * as API from './AcftManagerServiceAPI.js';
 
 //**************** REST Functions ************************************
 export async function createNewTestGroupController(){
-    let outputText = document.getElementById('displayText'); //DOM Obj
-    let response = await API.createNewTestGroup(); //Long
-    let dropDownMenu = document.getElementById('existingTestGroups');
-    let element = document.createElement("option");
+    const passcodeInput = document.getElementById('createTestGroupPasscodeField');
+    const outputText = document.getElementById('displayText'); //DOM Obj
+    outputText.textContent = "";
+    const errorText = document.getElementById('messageText');
+    errorText.textContent = "";
+    let response;
+    if (passcodeInput.value.length == 0){
+        response = await API.createNewTestGroup();
+        errorText.textContent = "WARNING: Test Group created without passcode";
+        outputText.innerHTML = `New testgroup has ID ${response}`;
+    } else{
+        response = await API.createNewTestGroupWithPasscode(passcodeInput.value);
+        outputText.innerHTML = `New testgroup has ID ${response} and passcode ${passcodeInput.value}`;
+    }
+    const dropDownMenu = document.getElementById('existingTestGroups');
+    const element = document.createElement("option");
     element.textContent = response;
     element.value = response;
     dropDownMenu.appendChild(element);
-    outputText.innerHTML = `New testgroup has ID ${response}`;
+    passcodeInput.value = null;
 }
 
 export async function createNewSoldierController(){
-    let outputText = document.getElementById('displayText'); //DOM Obj
-    let testGroup = document.getElementById('existingTestGroups'); //DOM Obj
+    const outputText = document.getElementById('displayText'); //DOM Obj
+    const messageText = document.getElementById('messageText');
+    outputText.textContent = null;
+    messageText.textContent = null;
+    const testGroup = document.getElementById('existingTestGroups'); //DOM Obj
+    let authorizationResponse = await API.getTestGroupById(testGroup.value, sessionStorage.getItem('userPasscode'));
+    if (authorizationResponse.status === 500){
+        displayAccessUnauthorizedMessage();
+        return;
+    }
+    
     let lastName = document.getElementById('lastNameField'); //DOM Obj
     let firstName = document.getElementById('firstNameField'); //DOM Obj
     let age = document.getElementById('ageField'); //DOM Obj
@@ -51,7 +72,7 @@ export async function getAllTestGroupsController(){
 }
 
 export async function updateSoldierScoreController(){
-    const soldierId = parseInt(document.getElementById('idsInTestGroup').value);
+    const soldierId = parseInt(document.getElementById('soldierIdSelector').value);
     const messageText = document.getElementById('messageText');
     const displayText = document.getElementById('displaySoldierName');
     messageText.textContent = '';
@@ -190,21 +211,22 @@ export async function updateSoldierScoreController(){
 
 
 //**************** UI Functions ************************************** 
+
+export function displayAccessUnauthorizedMessage(){
+    document.getElementById('messageText').textContent = "Stored passcode invalid for selected test group";
+}
+
 export async function populateSoldiersByTestGroupIdController(){
-    let testGroupMenu = document.getElementById('existingTestGroups');
-    if (testGroupMenu.length == 0){
-        document.getElementById('messageText').innerHTML = "No available test groups";
-        return;
-    }
     let testGroup;
     try {
-        testGroup = await API.getTestGroupById(testGroupMenu.value);
+        testGroup = await API.getTestGroupById(sessionStorage.getItem('selectedTestGroupId'), sessionStorage.getItem('userPasscode'));
     } catch(error){
         console.log(error);
     }
     let soldierIdArray = testGroup.soldierPopulation;
+    console.log(soldierIdArray);
     if (soldierIdArray.length == 0) return;
-    let soldierMenu = document.getElementById('idsInTestGroup');
+    let soldierMenu = document.getElementById('soldierIdSelector');
     soldierMenu.length = 0;
     soldierIdArray.forEach((soldier) => {
         let element = document.createElement('option');
@@ -215,6 +237,15 @@ export async function populateSoldiersByTestGroupIdController(){
 }
 
 export async function showEditSoldierDataViewController(){
+    const selectedTestGroupId = document.getElementById('existingTestGroups').value;
+    if (sessionStorage.getItem('userPasscode')){
+        let response = await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'));
+        console.log(response);
+        if (response.status == 401){
+            document.getElementById('messageText').textContent = "Not authorized to edit this test group";
+        }
+    }
+    sessionStorage.setItem('selectedTestGroupId', selectedTestGroupId);
     await API.getEditSoldierDataView();
 }
 
@@ -225,12 +256,7 @@ export async function getHomePageViewController(){
 export async function displaySoldierName(){
     const output = document.getElementById('displaySoldierName');
     const messageText = document.getElementById('messageText');
-    const testGroups = document.getElementById('existingTestGroups');
-    const soldierId = document.getElementById('idsInTestGroup');
-    if (testGroups.length == 0){
-        messageText.innerHTML = 'No available test groups';
-        return;
-    }
+    const soldierId = document.getElementById('soldierIdSelector');
     if (soldierId.length == 0){
         messageText.innerHTML = 'No available soldiers';
         return;
@@ -270,6 +296,29 @@ export async function populateDatabase(){
         j = (j == 2) ? 0 : j+1;
     }
     getAllTestGroupsController();
+}
+
+export function storeUserPasscode(){
+    const messageText = document.getElementById('messageText');
+    messageText.textContent = null;
+    document.getElementById('displayText').textContent = null;
+    const passcodeInputField = document.getElementById('createTestGroupPasscodeField');
+    if (passcodeInputField.value == ""){
+        messageText.textContent = "Passcode cannot be null"
+        return;
+    }
+    sessionStorage.setItem('userPasscode', passcodeInputField.value);
+    passcodeInputField.value = null;
+}
+
+export function showUserPasscode(){
+    const messageText = document.getElementById('messageText');
+    const displayText = document.getElementById('displayText');
+    messageText.textContent = null;
+    displayText.textContent = null;
+    const passcodeStorageElement = document.getElementById('passcodeStorage');
+    if (passcodeStorageElement.var !== undefined) displayText.textContent = `User Passcode: ${passcodeStorageElement.var}`;
+    else messageText.textContent = "User passcode is empty"
 }
 //******************************************************************** 
 
@@ -358,9 +407,9 @@ export function eventInputController(){
 
 //******* Setup functions  ****************************
 export async function editSoldierDataViewOnLoad(){
-    await getAllTestGroupsController();
     await populateSoldiersByTestGroupIdController();
     eventInputController();
+    document.getElementById('testGroupText').textContent = `Editing data in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
 }
 
 export async function indexOnLoad(){

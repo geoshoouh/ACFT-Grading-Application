@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Exceptions.SoldierNotFoundException;
 import com.acft.acft.Exceptions.TestGroupNotFoundException;
 
@@ -28,9 +29,17 @@ public class AcftManagerService {
         return testGroup.getId();
     }
 
-    public TestGroup getTestGroup(Long testGroupId){
-        return testGroupRepository.findById(testGroupId)
+    public Long createNewTestGroup(String passcode){
+        TestGroup testGroup = new TestGroup(passcode);
+        testGroupRepository.save(testGroup);
+        return testGroup.getId();
+    }
+
+    public TestGroup getTestGroup(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{
+        TestGroup testGroup = testGroupRepository.findById(testGroupId)
             .orElseThrow(() -> new TestGroupNotFoundException(testGroupId));
+        if (testGroup.getPasscode().length() > 0 && !passcode.equals(testGroup.getPasscode())) throw new InvalidPasscodeException(testGroupId);
+        return testGroup;
     }
 
     public Long createNewSoldier(TestGroup testGroup, String lastName, String firstName, int age, boolean isMale){
@@ -39,7 +48,7 @@ public class AcftManagerService {
         return soldier.getId();
     }
 
-    public Soldier getSoldierById(Long soldierId){
+    public Soldier getSoldierById(Long soldierId) throws SoldierNotFoundException{
         return soldierRepository.findById(soldierId)
             .orElseThrow(() -> new SoldierNotFoundException(soldierId));
     }

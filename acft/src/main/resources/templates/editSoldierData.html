@@ -9,25 +9,21 @@
             document.getElementById('displaySelectedSoldierNameButton').addEventListener('click', Controller.displaySoldierName);
             document.getElementById('eventSelector').addEventListener('change', Controller.eventInputController);
             document.getElementById('updateSoldierScoreButton').addEventListener('click', Controller.updateSoldierScoreController);
-            document.getElementById('existingTestGroups').addEventListener('change', Controller.populateSoldiersByTestGroupIdController);
         </script>
     </head>
-    <body>
+    <body id='body'>
         <h1>Edit Soldier Data</h1>
         <button id='returnToIndexButton'>Home</button>
         <h2 id='messageText'></h2>
         <div>
             <div>
                 <!----Also used to display soldier score after updating-->
+                <h3 id='testGroupText'></h3><br>
                 <h2 id='displaySoldierName'></h2>
             </div>
             <div>
-                <label for='existingTestGroups'>Test Group:</label>
-                <select name='Existing Test Groups' id='existingTestGroups'></select>
-            </div>
-            <div>
-                <label for='idsInTestGroup'>Soldier ID:</label>
-                <select name='Soldier IDs in Selected Test Group' id='idsInTestGroup'></select>
+                <label for='soldierIdSelector'>Soldier ID: </label>
+                <select name='Soldiers in Test Group' id='soldierIdSelector'></select>
             </div>
             <div>
                 <button id='displaySelectedSoldierNameButton'>Display Soldier</button>
