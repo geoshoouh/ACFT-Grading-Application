@@ -30,7 +30,14 @@ export async function createNewSoldierController(){
     outputText.textContent = null;
     messageText.textContent = null;
     const testGroup = document.getElementById('existingTestGroups'); //DOM Obj
-    let authorizationResponse = await API.getTestGroupById(testGroup.value, sessionStorage.getItem('userPasscode'));
+    let authorizationResponse =  null;
+    try {
+        authorizationResponse = await API.getTestGroupById(testGroup.value, sessionStorage.getItem('userPasscode'));
+    } catch (error) {
+        displayAccessUnauthorizedMessage();
+        console.log(error);
+        return;
+    }
     if (authorizationResponse.status === 500){
         displayAccessUnauthorizedMessage();
         return;
@@ -55,6 +62,18 @@ export async function createNewSoldierController(){
     }
 }
 
+export async function getTestGroupByIdController(){
+    let testGroup;
+    let testGroupId = document.getElementById('existingTestGroups').value;
+    try{
+        testGroup = await API.getTestGroupById(testGroupId);
+    } catch (error){
+        console.log(error);
+        return;
+    }
+    return testGroup;
+}
+
 export async function getAllTestGroupsController(){
     let dropDownMenu = document.getElementById('existingTestGroups');
     let testGroupIdArray;
@@ -62,6 +81,7 @@ export async function getAllTestGroupsController(){
         testGroupIdArray = await API.getAllTestGroups(); //{Number}
     } catch (error){
         console.log(error);
+        return;
     }
     testGroupIdArray.forEach((id) => {
         let element = document.createElement("option");
@@ -213,18 +233,27 @@ export async function updateSoldierScoreController(){
 //**************** UI Functions ************************************** 
 
 export function displayAccessUnauthorizedMessage(){
-    document.getElementById('messageText').textContent = "Stored passcode invalid for selected test group";
+    const view = sessionStorage.getItem('view');
+    switch (view){
+        case '0':
+            document.getElementById('messageText').textContent = "Stored passcode invalid for selected test group";
+        case '1':
+            document.getElementById('errorText').textContent = "User passcode invalid for selected test group; cannot access soldier data"
+        default:
+            console.log('No unauthorized access behavior defined for the view value stored');
+    }
+    
 }
 
 export async function populateSoldiersByTestGroupIdController(){
-    let testGroup;
+    let testGroup = null;
     try {
         testGroup = await API.getTestGroupById(sessionStorage.getItem('selectedTestGroupId'), sessionStorage.getItem('userPasscode'));
     } catch(error){
         console.log(error);
+        return;
     }
     let soldierIdArray = testGroup.soldierPopulation;
-    console.log(soldierIdArray);
     if (soldierIdArray.length == 0) return;
     let soldierMenu = document.getElementById('soldierIdSelector');
     soldierMenu.length = 0;
@@ -238,12 +267,12 @@ export async function populateSoldiersByTestGroupIdController(){
 
 export async function showEditSoldierDataViewController(){
     const selectedTestGroupId = document.getElementById('existingTestGroups').value;
-    if (sessionStorage.getItem('userPasscode')){
-        let response = await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'));
-        console.log(response);
-        if (response.status == 401){
-            document.getElementById('messageText').textContent = "Not authorized to edit this test group";
-        }
+    try {
+        await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'));
+    } catch (error) {
+        console.log(error);
+        document.getElementById('messageText').textContent = 'No available test groups or access to selected test group not authorized';
+        return;    
     }
     sessionStorage.setItem('selectedTestGroupId', selectedTestGroupId);
     await API.getEditSoldierDataView();
@@ -269,17 +298,6 @@ export async function displaySoldierName(){
     }
     let stringOutput = `Soldier: ${soldier.lastName}, ${soldier.firstName}`
     output.innerHTML = stringOutput;
-}
-
-export async function getTestGroupByIdController(){
-    let testGroup;
-    let testGroupId = document.getElementById('existingTestGroups').value;
-    try{
-        testGroup = await API.getTestGroupById(testGroupId);
-        return testGroup;
-    } catch (error){
-        console.log(error);
-    }
 }
 
 export async function populateDatabase(){
@@ -410,10 +428,13 @@ export async function editSoldierDataViewOnLoad(){
     await populateSoldiersByTestGroupIdController();
     eventInputController();
     document.getElementById('testGroupText').textContent = `Editing data in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
+    sessionStorage.setItem('view', '1');
+    if (document.getElementById('soldierIdSelector').length === 0) document.getElementById('testGroupText').textContent = `No soldiers in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
 }
 
 export async function indexOnLoad(){
     await getAllTestGroupsController();
+    sessionStorage.setItem('view', '0');
 }
 
 

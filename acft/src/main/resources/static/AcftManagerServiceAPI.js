@@ -1,46 +1,34 @@
 
 export async function createNewTestGroup(){
-    let groupId = await fetch('http://localhost:8080/testGroup/new', {
+    let response = await fetch('http://localhost:8080/testGroup/new', {
         method: 'POST'
-      }).then((response) => response.json())
-        .catch((error) => {
-          console.log(error);
-          return undefined;
-        });
-    return groupId;
+      }).then((response) => response).catch((error) => console.log(error));
+    if (!response.ok) throw Error(`Response to testGroup/new was ${response.status}`);
+    return response.json();
 }
 
 export async function createNewTestGroupWithPasscode(passcode){
-  let groupId = await fetch(`http://localhost:8080/testGroup/new/${passcode}`, {
+  let response = await fetch(`http://localhost:8080/testGroup/new/${passcode}`, {
         method: 'POST'
-      }).then((response) => response.json())
-        .catch((error) => {
-          console.log(error);
-          return undefined;
-        });
-    return groupId;
+      }).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to testGroup/new/${passcode} was ${response.status}`);
+  return response.json();
 }
 
 export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale){
-  let soldierId = await fetch(
+  let response = await fetch(
     `http://localhost:8080/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`,
     {method: 'POST'})
-    .then((response) => response.json())
-    .catch((error) => {
-      console.log(error);
-      return undefined;
-    });
-  return soldierId;
+    .then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to /testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale} was ${response.status}`);
+  return response.json();
 }
 
 export async function getAllTestGroups(){
-  let testGroupIds = await fetch('http://localhost:8080/testGroup/get/all')
-    .then((response => response.json()))
-    .catch((error) => {
-      console.log(error);
-      return undefined;
-    });
-  return testGroupIds;
+  let response = await fetch('http://localhost:8080/testGroup/get/all')
+    .then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to /testGroup/get/all was ${response.status}`);
+  return response.json();
 }
 
 export async function getEditSoldierDataView(){
@@ -58,42 +46,34 @@ export async function getSoldiersByTestGroupId(testGroupId){
   }
   let response = await fetch(
     `http://localhost:8080/testGroup/getSoldiers/${testGroupId}`
-  ).then((response) => response.json())
-  .catch((error) => {
-    console.error('Error: ', error);
-  });
-  return response;
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to /testGroup/getSoldiers/${testGroupId} was ${response.status}`);
+  return response.json();
 }
 
 export async function getSoldierById(soldierId){
   let response = await fetch(
     `http://localhost:8080/soldier/get/${soldierId}`
-  ).then((response) => response.json())
-  .catch((error) => {
-    console.error('Error: ' + error);
-  });
-  return response;
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to /get/${soldierId} was ${response.status}`);
+  return response.json();
 }
 
 export async function getTestGroupById(testGroupId, passcode){
   let response = await fetch(
     `http://localhost:8080/testGroup/get/${testGroupId}/${passcode}`
-  ).then((response) => response.json())
-  .catch((error) => console.log(error));
-  return response;
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to /testGroup/get/${testGroupId}/${passcode} was ${response.status}`);
+  return response.json();
 }
 
 export async function updateSoldierScore(soldierId, eventId, rawScore){
-  let convertedScore = await fetch(
-    //eventId is 0-indexed in the backend, so it is decremented here
+  let response = await fetch(
     `http://localhost:8080/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}`,
     {method: 'POST'})
-    .then((response) => response.json())
-    .catch((error) => {
-      console.log(error);
-      return undefined;
-    });
-  return convertedScore;
+    .then((response) => response).catch((error) => console.log(error));
+    if (!response.ok) throw Error(`Response to /soldier/updateScore/${soldierId}/${eventId-1}/${rawScore} was ${response.status}`);
+    return response.json();
 }
 
 
