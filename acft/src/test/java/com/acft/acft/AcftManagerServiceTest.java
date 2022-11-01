@@ -4,9 +4,14 @@ package com.acft.acft;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
+
 
 @SpringBootTest
 public class AcftManagerServiceTest {
@@ -105,4 +110,20 @@ public class AcftManagerServiceTest {
         Assert.isTrue(convertedScore == 90, "expected score was " + expectedScore + " and actual score was " + convertedScore);
     }
 
+    @Test
+    @Transactional
+    void deleteTestGroupsOnScheduleDeletesExpiredTestGroups(){
+        Long testGroupId1 = acftManagerService.createNewTestGroup();
+        Long testGroupId2 = acftManagerService.createNewTestGroup();
+        TestGroup testGroup1 = acftManagerService.getTestGroup(testGroupId1, "");
+        TestGroup testGroup2 = acftManagerService.getTestGroup(testGroupId2, "");
+        System.out.println("before changes: " + testGroup1);
+        testGroup1.setExpirationDate(Date.from(Instant.now().minus(5, ChronoUnit.DAYS)));
+        
+        testGroup2.setExpirationDate(Date.from(Instant.now().plus(5, ChronoUnit.DAYS)));
+        //System.out.println("in test: " + testGroup1);
+        //System.out.println("from repo: " + acftManagerService.getTestGroup(testGroupId1, ""));
+        acftManagerService.deleteTestGroupsOnSchedule();
+        Assert.isTrue(acftManagerService.getAllTestGroups().size() == 1, "deleteTestGroupsOnSchedule did not produce expected results. Expected repo size " + 1 + ", size was actually " + acftManagerService.getAllTestGroups().size());
+    }
 }

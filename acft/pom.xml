@@ -110,5 +110,5 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
-
+	<task:annotation-driven/> 
 </project>

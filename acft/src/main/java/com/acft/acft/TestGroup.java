@@ -8,8 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
+import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Entity
 @Table
@@ -23,13 +28,21 @@ public class TestGroup {
     @Column(name = "passcode")
     private String passcode = "";
 
+    //Lack of zone in Date expression can cause ambiguity with precise deletion time, but no more than 24 hour discrepancy possible
+    //This is the case when server IP is in a different timezone. 
+    @Column(name = "expiration_date")
+    private Date expirationDate;
+
     @OneToMany(mappedBy = "testGroup")
     public List<Soldier> soldierPopulation = new ArrayList<>();
 
-    public TestGroup(){}
+    public TestGroup(){
+        this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
+    }
 
     public TestGroup(String passcode){
         this.passcode = passcode;
+        this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
     }
 
     public List<Soldier> getSoldierPopulation(){
@@ -47,7 +60,7 @@ public class TestGroup {
 
     @Override
     public String toString() {
-        return "TestGroup [id=" + id + ", passcode=" + passcode + ", soldierPopulation=" + soldierPopulation + "]";
+        return "TestGroup [id=" + id + ", expirationDate=" + expirationDate + ", passcode=" + passcode + ", soldierPopulation=" + soldierPopulation + "]";
     }
 
     public void setId(Long id) {
@@ -58,12 +71,20 @@ public class TestGroup {
         return passcode;
     }
 
+    public Date getExpirationDate(){
+        return expirationDate;
+    }
+
     public void setPasscode(String passcode) {
         this.passcode = passcode;
     }
 
     public void setSoldierPopulation(List<Soldier> soldierPopulation) {
         this.soldierPopulation = soldierPopulation;
+    }
+
+    public void setExpirationDate(Date expirationDate){
+        this.expirationDate = expirationDate;
     }
 
 }

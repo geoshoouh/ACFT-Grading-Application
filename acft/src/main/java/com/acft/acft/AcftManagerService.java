@@ -1,10 +1,19 @@
 package com.acft.acft;
 
+import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Exceptions.SoldierNotFoundException;
@@ -102,6 +111,21 @@ public class AcftManagerService {
                 break;
         }
         return scaledScore;
+    }
+    
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
+    public void deleteTestGroupsOnSchedule(){
+        Date cutoff = Date.from(Instant.now().minus(2, ChronoUnit.DAYS));
+        System.out.println("Cutoff date: " + cutoff);
+        List<TestGroup> expiredTestGroups = testGroupRepository.findByExpirationDateBefore(cutoff);
+        System.out.println("size of tg pull is: " + expiredTestGroups.size());
+        expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
+        expiredTestGroups.forEach((testGroup) -> {
+            testGroup.getSoldierPopulation().forEach((soldier) -> {
+                soldierRepository.delete(soldier);
+            });
+            testGroupRepository.delete(testGroup);
+        });
     }
     
 }
