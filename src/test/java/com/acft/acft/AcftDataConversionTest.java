@@ -1,5 +1,6 @@
 package com.acft.acft;
 
+import java.io.FileInputStream;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,12 @@ public class AcftDataConversionTest {
     
     @Autowired
     AcftDataConversion acftDataConversion;
+
+    @Test
+    void getFileNotNull(){
+        FileInputStream fileInputStream = acftDataConversion.getFile();
+        Assert.notNull(fileInputStream, "call to file input stream host neutral was null");
+    }
 
     @Test
     void getSheetValuesShouldReturnNonEmptyMatrix(){
@@ -85,6 +92,5 @@ public class AcftDataConversionTest {
         int correctScore_7 = 0;
         int score_7 = acftDataConversion.getScore(0, 10, true, 26);
         Assert.isTrue(score_7 == correctScore_7, "score from acftDataConversion.getScore() was supposed to be " + correctScore_7 + " but was " + score_7);
-
     }
 }

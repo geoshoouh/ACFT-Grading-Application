@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +14,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+
+
 
 @Component
 public class AcftDataConversion {
@@ -41,23 +39,20 @@ public class AcftDataConversion {
         }
     }
     
+    
     public FileInputStream getFile() {
-        String path = "/Users/joshuatate/Documents/GitHub/acft-grading-application/src/main/resources/data/acftScoreTable.xlsx";
+        String path = "src/main/resources/data/acftScoreTable.xlsx";
         FileInputStream file; 
         try {
-            //file = new FileInputStream(resource.getFile());
             file = new FileInputStream(new File(path));
         } catch (FileNotFoundException e) {
             System.out.println("In AcftDataConversion 'FileNotFoundException' caught for filepath " + path);
             file = null;
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-            file = null;
-        }
+        } 
         return file;
     }
 
-    public Workbook getWorkbook(FileInputStream file){
+    public Workbook getWorkbook(InputStream file){
         Workbook workbook;
         try {
             workbook = new XSSFWorkbook(file);

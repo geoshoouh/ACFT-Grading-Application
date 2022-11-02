@@ -163,6 +163,7 @@ public class HttpRequestTest {
 
     @Test
     void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception{
+        int reference = acftManagerService.getAllTestGroups().size();
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
         Type listOfTestGroupIds = new TypeToken<ArrayList<Long>>() {}.getType();
@@ -173,7 +174,7 @@ public class HttpRequestTest {
             .andReturn()
             .getResponse()
             .getContentAsString(), listOfTestGroupIds);
-        Assert.isTrue(requestResult.size() == n, "getAllTestGroupsShouldReturnAllExistingTestGroupIds returned incorrectly sized array");
+        Assert.isTrue(requestResult.size() == reference + n, "getAllTestGroupsShouldReturnAllExistingTestGroupIds returned incorrectly sized array");
     }
 
     @Test
