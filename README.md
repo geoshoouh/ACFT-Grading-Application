@@ -7,7 +7,7 @@
    Springboot
 
 **Features:**
--On-site decentralized digitization of ACFT score data [**Implemented**]
+-Decentralized digitization of ACFT score data [**Implemented**]
 -Password authentication for test group access [**Implemented**]
 -Automatic conversion of raw score data to scaled scores [**Implemented**]
 -Automatic deletion of test groups after 48 hours [**Implemented**]
