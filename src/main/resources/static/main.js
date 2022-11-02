@@ -347,8 +347,7 @@ export function showUserPasscode(){
     const displayText = document.getElementById('displayText');
     messageText.textContent = null;
     displayText.textContent = null;
-    const passcodeStorageElement = document.getElementById('passcodeStorage');
-    if (passcodeStorageElement.var !== undefined) displayText.textContent = `User Passcode: ${passcodeStorageElement.var}`;
+    if (sessionStorage.getItem('userPasscode') !== null) displayText.textContent = `User Passcode: ${sessionStorage.getItem('userPasscode')}`;
     else messageText.textContent = "User passcode is empty"
 }
 //******************************************************************** 
