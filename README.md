@@ -1,5 +1,5 @@
 # ACFT-Grading-Application
-**Description:** Eliminates the need for paper scorecards and manual score consolidation for the Army Combat Fitness Test. Enables decentralized on-site input of test data, automatic score conversion, exportation of data, and test
+**Description:** Eliminates the need for paper scorecards and manual score consolidation for the Army Combat Fitness Test. Enables decentralized on-site input of test data, automatic score conversion, data exportation, and test
 
 **Features:**
 -Decentralized digitization of ACFT score data [**Implemented**]
