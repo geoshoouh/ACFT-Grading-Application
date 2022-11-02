@@ -1,7 +1,11 @@
 import * as API from './AcftManagerServiceAPI.js';
 
 //**************** REST Functions ************************************
+function getHost(){
+    return location.protocol + '//' + location.host;
+}
 export async function createNewTestGroupController(){
+    const host = getHost();
     const passcodeInput = document.getElementById('createTestGroupPasscodeField');
     const outputText = document.getElementById('displayText'); //DOM Obj
     outputText.textContent = "";
@@ -9,11 +13,11 @@ export async function createNewTestGroupController(){
     errorText.textContent = "";
     let response;
     if (passcodeInput.value.length == 0){
-        response = await API.createNewTestGroup();
+        response = await API.createNewTestGroup(host);
         errorText.textContent = "WARNING: Test Group created without passcode";
         outputText.innerHTML = `New testgroup has ID ${response}`;
     } else{
-        response = await API.createNewTestGroupWithPasscode(passcodeInput.value);
+        response = await API.createNewTestGroupWithPasscode(host, passcodeInput.value);
         outputText.innerHTML = `New testgroup has ID ${response} and passcode ${passcodeInput.value}`;
     }
     const dropDownMenu = document.getElementById('existingTestGroups');
@@ -25,6 +29,7 @@ export async function createNewTestGroupController(){
 }
 
 export async function createNewSoldierController(){
+    const host = getHost();
     const outputText = document.getElementById('displayText'); //DOM Obj
     const messageText = document.getElementById('messageText');
     outputText.textContent = null;
@@ -32,7 +37,7 @@ export async function createNewSoldierController(){
     const testGroup = document.getElementById('existingTestGroups'); //DOM Obj
     let authorizationResponse =  null;
     try {
-        authorizationResponse = await API.getTestGroupById(testGroup.value, sessionStorage.getItem('userPasscode'));
+        authorizationResponse = await API.getTestGroupById(host, testGroup.value, sessionStorage.getItem('userPasscode'));
     } catch (error) {
         displayAccessUnauthorizedMessage();
         console.log(error);
@@ -50,7 +55,7 @@ export async function createNewSoldierController(){
     if (lastName.value.length == 0 || firstName.value.length == 0 || age.value.length == 0){
         outputText.innerHTML = 'One or more required fields are empty';
     } else {
-        let response = await API.createNewSoldier(testGroup.value, 
+        let response = await API.createNewSoldier(host, testGroup.value, 
                                                     lastName.value, 
                                                     firstName.value, 
                                                     age.value, 
@@ -63,10 +68,11 @@ export async function createNewSoldierController(){
 }
 
 export async function getTestGroupByIdController(){
+    const host = getHost();
     let testGroup;
     let testGroupId = document.getElementById('existingTestGroups').value;
     try{
-        testGroup = await API.getTestGroupById(testGroupId);
+        testGroup = await API.getTestGroupById(host, testGroupId);
     } catch (error){
         console.log(error);
         return;
@@ -75,10 +81,11 @@ export async function getTestGroupByIdController(){
 }
 
 export async function getAllTestGroupsController(){
+    const host = getHost();
     let dropDownMenu = document.getElementById('existingTestGroups');
     let testGroupIdArray;
     try{
-        testGroupIdArray = await API.getAllTestGroups(); //{Number}
+        testGroupIdArray = await API.getAllTestGroups(host); //{Number}
     } catch (error){
         console.log(error);
         return;
@@ -92,6 +99,7 @@ export async function getAllTestGroupsController(){
 }
 
 export async function updateSoldierScoreController(){
+    const host = getHost();
     const soldierId = parseInt(document.getElementById('soldierIdSelector').value);
     const messageText = document.getElementById('messageText');
     const displayText = document.getElementById('displaySoldierName');
@@ -122,7 +130,7 @@ export async function updateSoldierScoreController(){
                 displayErrorMessage();
                 break;
             }
-            let response = await API.updateSoldierScore(soldierId, eventId, mdlScore);
+            let response = await API.updateSoldierScore(host, soldierId, eventId, mdlScore);
             if (response === undefined){
                 displayHttpErrorMessage();
             }
@@ -141,7 +149,7 @@ export async function updateSoldierScoreController(){
                 break;
             } 
             const sptScore = sptMeters * 10 + sptMeterTenths;
-            let response = await API.updateSoldierScore(soldierId, eventId, sptScore);
+            let response = await API.updateSoldierScore(host, soldierId, eventId, sptScore);
             if (response === undefined) displayHttpErrorMessage();
             displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${sptMeters}.${sptMeterTenths}`;}
             break;
@@ -156,7 +164,7 @@ export async function updateSoldierScoreController(){
                 displayErrorMessage();
                 break;
             }
-            let response = await API.updateSoldierScore(soldierId, eventId, hrpReps);
+            let response = await API.updateSoldierScore(host, soldierId, eventId, hrpReps);
             if (response === undefined) displayHttpErrorMessage();
             displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${hrpReps}`;}
             break;
@@ -175,7 +183,7 @@ export async function updateSoldierScoreController(){
                 displayErrorMessage();
                 break;
             }
-            let response = await API.updateSoldierScore(soldierId, eventId, minutes * 60 + seconds);
+            let response = await API.updateSoldierScore(host, soldierId, eventId, minutes * 60 + seconds);
             if (response === undefined) displayHttpErrorMessage();
             const secondsString = (seconds < 10) ? '0' + seconds : seconds;
             displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
@@ -196,7 +204,7 @@ export async function updateSoldierScoreController(){
                     displayErrorMessage();
                     break;
                 }
-                let response = await API.updateSoldierScore(soldierId, eventId, minutes * 60 + seconds);
+                let response = await API.updateSoldierScore(host, soldierId, eventId, minutes * 60 + seconds);
                 if (response === undefined) displayHttpErrorMessage();
                 const secondsString = (seconds < 10) ? '0' + seconds : seconds;
                 displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
@@ -217,7 +225,7 @@ export async function updateSoldierScoreController(){
                     displayErrorMessage();
                     break;
                 }
-                let response = await API.updateSoldierScore(soldierId, eventId, minutes * 60 + seconds);
+                let response = await API.updateSoldierScore(host, soldierId, eventId, minutes * 60 + seconds);
                 if (response === undefined) displayHttpErrorMessage();
                 const secondsString = (seconds < 10) ? '0' + seconds : seconds;
                 displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
@@ -246,9 +254,10 @@ export function displayAccessUnauthorizedMessage(){
 }
 
 export async function populateSoldiersByTestGroupIdController(){
+    const host = getHost();
     let testGroup = null;
     try {
-        testGroup = await API.getTestGroupById(sessionStorage.getItem('selectedTestGroupId'), sessionStorage.getItem('userPasscode'));
+        testGroup = await API.getTestGroupById(host, sessionStorage.getItem('selectedTestGroupId'), sessionStorage.getItem('userPasscode'));
     } catch(error){
         console.log(error);
         return;
@@ -266,23 +275,26 @@ export async function populateSoldiersByTestGroupIdController(){
 }
 
 export async function showEditSoldierDataViewController(){
+    const host = getHost();
     const selectedTestGroupId = document.getElementById('existingTestGroups').value;
     try {
-        await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'));
+        await API.getTestGroupById(host, selectedTestGroupId, sessionStorage.getItem('userPasscode'));
     } catch (error) {
         console.log(error);
         document.getElementById('messageText').textContent = 'No available test groups or access to selected test group not authorized';
         return;    
     }
     sessionStorage.setItem('selectedTestGroupId', selectedTestGroupId);
-    await API.getEditSoldierDataView();
+    await API.getEditSoldierDataView(host);
 }
 
 export async function getHomePageViewController(){
-    await API.getHomePageView();
+    const host = getHost();
+    await API.getHomePageView(host);
 }
 
 export async function displaySoldierName(){
+    const host = getHost();
     const output = document.getElementById('displaySoldierName');
     const messageText = document.getElementById('messageText');
     const soldierId = document.getElementById('soldierIdSelector');
@@ -291,7 +303,7 @@ export async function displaySoldierName(){
         return;
     }
     let soldier;
-    soldier = await API.getSoldierById(soldierId.value);
+    soldier = await API.getSoldierById(host, soldierId.value);
     if (soldier.status === 404){
         messageText.innerHTML = 'No soldiers created for this test group';
         return;
@@ -301,16 +313,17 @@ export async function displaySoldierName(){
 }
 
 export async function populateDatabase(){
+    const host = getHost();
     let n = 3;
     let groupIdArray = [];
     let lastNames = ["Smith", "Jones", "Samuels", "Smith", "Conway"];
     let firstNames = ["Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"];
     let ages = [26, 18, 19, 30, 23];
     let genders = [true, true, true, true, false];
-    for (let i = 0; i < n; i++) groupIdArray.push(await API.createNewTestGroup());
+    for (let i = 0; i < n; i++) groupIdArray.push(await API.createNewTestGroup(host));
     let j = 0;
     for (let i = 0; i < lastNames.length; i++){
-        await API.createNewSoldier(groupIdArray[j], lastNames[i], firstNames[i], ages[i], genders[i]);
+        await API.createNewSoldier(host, groupIdArray[j], lastNames[i], firstNames[i], ages[i], genders[i]);
         j = (j == 2) ? 0 : j+1;
     }
     getAllTestGroupsController();
