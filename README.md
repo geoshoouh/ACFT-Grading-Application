@@ -1,4 +1,4 @@
-# ACFT-Grading-Application
+# ACFT Manager
 **Description:** Eliminates the need for paper scorecards and manual score consolidation for the Army Combat Fitness Test. Enables decentralized on-site input of test data, automatic score conversion, data exportation, test event progress monitoring, and data visualization
 
 **Features:**
