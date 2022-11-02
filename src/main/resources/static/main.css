@@ -1,0 +1,13 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.errorText{
+    color: red;
+}
+

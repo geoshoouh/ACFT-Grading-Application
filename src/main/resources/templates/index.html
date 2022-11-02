@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="main.css">
+        <script type='module'>
+            import * as Controller from '/main.js';
+            window.onload = Controller.indexOnLoad;
+            document.getElementById('createTestGroupButton').addEventListener('click', Controller.createNewTestGroupController);
+            document.getElementById('createNewSoldierButton').addEventListener('click', Controller.createNewSoldierController);
+            document.getElementById('editSoldierDataViewButton').addEventListener('click', Controller.showEditSoldierDataViewController);
+            document.getElementById('populateDatabaseButton').addEventListener('click', Controller.populateDatabase);
+            document.getElementById('storePasscodeButton').addEventListener('click', Controller.storeUserPasscode);
+            document.getElementById('showUserPasscodeButton').addEventListener('click', Controller.showUserPasscode)
+        </script>
+    </head>
+    <body>
+        <div>
+            <h1>ACFT Grader</h1>
+            <button id='editSoldierDataViewButton'>Edit Soldier Data</button>
+        </div>
+        <div>
+            <button id='createTestGroupButton'>Create Test Group</button>
+            <button id='createNewSoldierButton'>Create Soldier</button>
+            <button id='populateDatabaseButton'>Populate Database</button>
+        </div>
+        <div>
+            <label for='createTestGroupPasscodeField'>Passcode: </label>
+            <input type='text' id='createTestGroupPasscodeField'>
+            <button id='storePasscodeButton'>Set User Passcode</button>
+            <button id='showUserPasscodeButton'>Show User Passcode</button>
+        </div>
+        <div>
+            <label for='lastNameField'>Last Name:</label>
+            <input type='text' id='lastNameField'><br>
+            <label for='firstNameField'>First Name:</label>
+            <input type='text' id='firstNameField'><br>
+            <label for='ageField'>Age:</label>
+            <input type='number' id='ageField'><br>
+            <label for='genderField'>Gender:</label>
+            <select name="Gender" id="genderField">
+                <option value=true>Male</option>
+                <option value=false>Female</option>
+            </select><br>
+        </div>
+        <div>
+            <label for='existingTestGroups'>Test Group:</label>
+            <select name='Existing Test Groups' id='existingTestGroups'></select>
+        </div>
+        <div>
+            <h2 id='displayText'></h2>
+            <h3 class='errorText' id='messageText'></h3>
+        </div>
+    </body>
+</html>
