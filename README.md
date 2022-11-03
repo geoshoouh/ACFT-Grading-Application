@@ -1,7 +1,7 @@
 # ACFT Manager
 **Description:** Eliminates the need for paper scorecards and manual score consolidation for the Army Combat Fitness Test. Enables decentralized on-site input of test data, automatic score conversion, data exportation, test event progress monitoring, and data visualization<br/>
 
-**Features:**
+**Features:**<br/>
 -Decentralized digitization of ACFT score data [**Implemented**]<br/>
 -Password authentication for test group access [**Implemented**]<br/>
 -Automatic conversion of raw score data to scaled scores [**Implemented**]<br/>
