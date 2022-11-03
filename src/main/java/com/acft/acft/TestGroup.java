@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
 import java.time.Instant;
@@ -25,6 +26,7 @@ public class TestGroup {
     @Column(name = "test_group_id")
     private Long id;
 
+    @JsonIgnore
     @Column(name = "passcode")
     private String passcode = "";
 

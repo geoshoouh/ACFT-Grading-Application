@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.ArrayList;
 
+import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -34,7 +35,8 @@ public class HttpRequestTest {
     Gson gson;
 
     @Test
-    void postNewTestGroupShouldReturnGroupId() throws Exception{
+    void postNewTestGroupShouldReturnGroupIdAndPasswordNotIncludedInResponse() throws Exception{
+
         Long testGroupId = Long.parseLong(
             mockMvc.perform(
                 post("/testGroup/new")
@@ -43,6 +45,7 @@ public class HttpRequestTest {
                 .getResponse()
                 .getContentAsString()
                 );
+        
         Assert.notNull(testGroupId, "Response to /testGroup/new was null");
     }
 
@@ -62,11 +65,12 @@ public class HttpRequestTest {
         Assert.isTrue(testGroup.getPasscode().equals(passcode), "in postNewTestGroup w/passcode, expected passcode was " + passcode + ",actual passcode was " + testGroup.getPasscode());
     }
 
+    //Ensures a test group's passcode cannot be fetched by making a getAllTestGroups request and inspecting the Json
     @Test
     void getTestGroupShouldReturnTestGroup() throws Exception{
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
-        TestGroup testGroup = gson.fromJson(
+        TestGroup testGroupFromResponse = gson.fromJson(
             mockMvc.perform(
                 get("/testGroup/get/{testGroupId}/{passcode}", testGroupId, passcode)
                 ).andExpect(status().isOk())
@@ -75,8 +79,32 @@ public class HttpRequestTest {
                 .getContentAsString(), 
             TestGroup.class
             );
-        System.out.println(testGroup);
-        Assert.isTrue(testGroup.getId() == testGroupId, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
+        Assert.isTrue(testGroupFromResponse.getId() == testGroupId, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
+    }
+
+     //Ensures a test group's passcode cannot be fetched by making a getAllTestGroups request and inspecting the Json
+     //Test group passcodes never reach the client side after instantiation
+    @Test
+    void testGroupPasscodeNotVisibleInJsonRepresentiation() throws Exception{
+        String passcode = "password";
+        Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
+        TestGroup testGroupFromResponse = gson.fromJson(
+            mockMvc.perform(
+                get("/testGroup/get/{testGroupId}/{passcode}", testGroupId, passcode)
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(), 
+            TestGroup.class
+        );
+        boolean exceptionCaught = false;
+        try {
+            acftManagerService.getTestGroup(testGroupId, testGroupFromResponse.getPasscode());
+        } catch (InvalidPasscodeException e) {
+            exceptionCaught = true;
+        }
+        Assert.isTrue(exceptionCaught, "Passcode received from json conversion of testGroup should have been null and resulted in a thrown exception when attempting to get the same test group");
     }
 
     @Test

@@ -4,6 +4,7 @@ import * as API from './AcftManagerServiceAPI.js';
 function getHost(){
     return location.protocol + '//' + location.host;
 }
+
 export async function createNewTestGroupController(){
     const host = getHost();
     const passcodeInput = document.getElementById('createTestGroupPasscodeField');
