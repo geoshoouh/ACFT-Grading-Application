@@ -1,7 +1,4 @@
-
-const host = 'http://localhost:8080';
-
-export async function createNewTestGroup(){
+export async function createNewTestGroup(host = 'http://localhost:8080'){
     let response = await fetch(host + '/testGroup/new', {
         method: 'POST'
       }).then((response) => response).catch((error) => console.log(error));
@@ -9,7 +6,7 @@ export async function createNewTestGroup(){
     return response.json();
 }
 
-export async function createNewTestGroupWithPasscode(passcode){
+export async function createNewTestGroupWithPasscode(host = 'http://localhost:8080', passcode){
   let response = await fetch(`${host}/testGroup/new/${passcode}`, {
         method: 'POST'
       }).then((response) => response).catch((error) => console.log(error));
@@ -17,7 +14,7 @@ export async function createNewTestGroupWithPasscode(passcode){
   return response.json();
 }
 
-export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale){
+export async function createNewSoldier(host = 'http://localhost:8080', testGroupId, lastName, firstName, age, isMale){
   let response = await fetch(
     `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`,
     {method: 'POST'})
@@ -26,22 +23,22 @@ export async function createNewSoldier(testGroupId, lastName, firstName, age, is
   return response.json();
 }
 
-export async function getAllTestGroups(){
+export async function getAllTestGroups(host = 'http://localhost:8080'){
   let response = await fetch(host + '/testGroup/get/all')
     .then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to /testGroup/get/all was ${response.status}`);
   return response.json();
 }
 
-export async function getEditSoldierDataView(){
+export async function getEditSoldierDataView(host = 'http://localhost:8080'){
   location.replace(host + '/editSoldierData');
 }
 
-export async function getHomePageView(){
+export async function getHomePageView(host = 'http://localhost:8080'){
   location.replace(host);
 }
 
-export async function getSoldiersByTestGroupId(testGroupId){
+export async function getSoldiersByTestGroupId(host = 'http://localhost:8080', testGroupId){
   if (typeof testGroupId != "number"){
     console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof soldierId} passed`);
     return;
@@ -53,7 +50,7 @@ export async function getSoldiersByTestGroupId(testGroupId){
   return response.json();
 }
 
-export async function getSoldierById(soldierId){
+export async function getSoldierById(host = 'http://localhost:8080', soldierId){
   let response = await fetch(
     `${host}/soldier/get/${soldierId}`
   ).then((response) => response).catch((error) => console.log(error));
@@ -61,7 +58,7 @@ export async function getSoldierById(soldierId){
   return response.json();
 }
 
-export async function getTestGroupById(testGroupId, passcode){
+export async function getTestGroupById(host = 'http://localhost:8080', testGroupId, passcode){
   let response = await fetch(
     `${host}/testGroup/get/${testGroupId}/${passcode}`
   ).then((response) => response).catch((error) => console.log(error));
@@ -69,7 +66,7 @@ export async function getTestGroupById(testGroupId, passcode){
   return response.json();
 }
 
-export async function updateSoldierScore(soldierId, eventId, rawScore){
+export async function updateSoldierScore(host = 'http://localhost:8080', soldierId, eventId, rawScore){
   let response = await fetch(
     `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}`,
     {method: 'POST'})

@@ -1,25 +1,35 @@
-# ACFT-Grading-Application
-Eliminates the need for paper scorecards and manual score consolidation for the Army Combat Fitness Test
+# ACFT Manager
+**Description:** Eliminates the need for paper scorecards and manual score consolidation for the Army Combat Fitness Test. Enables decentralized on-site input of test data, automatic score conversion, data exportation, test event progress monitoring, and data visualization
 
-Features:
--On-site decentralized digitization of ACFT score data
--Export testing group data to CSV
--Password authentication for test group access
--Automatic conversion of raw score data to scaled scores
--Distinct admin privileges per testing group
-    *Test group deletion
-    *Lock editing for a test group
-    *Export data
--Test group data is deleted after exportation or 24 hours.
+**Features:**
+-Decentralized digitization of ACFT score data [**Implemented**]
+-Password authentication for test group access [**Implemented**]
+-Automatic conversion of raw score data to scaled scores [**Implemented**]
+-Automatic deletion of test groups after 48 hours [**Implemented**]
+-UI support for data entry [**Implemented**]
+-Test group data is deleted after exportation or 24 hours [**Implemented**]
+-Computes and displays completion status of events
+-Limits on active test groups per IP address
+-Export testing group data to CSV 
+-UI Support for data visualization 
 
-Project specs:
--Backend written in Java using Spring Boot
--Dependencies: Spring Data JPA, Thymeleaf, Spring Web, H2 Database, Spring Boot Dev Tools, GSON
--Front-end exclusively HTML, CSS, JS
+**Tech stack:** 
+   Hibernate 
+   Maven 
+   Springboot
+   
+**Dependencies:**
+   Gson
+   Spring Data JPA
+   H2 DB
+   Apache POI
+   Spring Boot Test
+   Spring Boot Dev Tools
 
-Development progress:
--Stack fully integrated
--Can persist test groups and soldiers via the UI
--Can retrieve test groups and associated soldiers via the UI
+
+
+
+
+
 
 
