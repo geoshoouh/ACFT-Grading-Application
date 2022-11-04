@@ -1,4 +1,4 @@
-package com.acft.acft;
+package com.acft.acft.Services;
 
 import java.util.Date;
 import java.time.Instant;
@@ -13,9 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.acft.acft.Entities.Soldier;
+import com.acft.acft.Entities.TestGroup;
 import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Exceptions.SoldierNotFoundException;
 import com.acft.acft.Exceptions.TestGroupNotFoundException;
+import com.acft.acft.Repositories.SoldierRepository;
+import com.acft.acft.Repositories.TestGroupRepository;
 
 
 @Service

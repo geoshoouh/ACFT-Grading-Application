@@ -1,4 +1,4 @@
-package com.acft.acft;
+package com.acft.acft.Entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

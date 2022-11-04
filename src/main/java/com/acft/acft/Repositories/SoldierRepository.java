@@ -1,6 +1,8 @@
-package com.acft.acft;
+package com.acft.acft.Repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.acft.acft.Entities.Soldier;
 
 import java.util.List;
 

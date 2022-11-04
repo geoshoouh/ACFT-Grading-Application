@@ -7,6 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.acft.acft.Entities.Soldier;
+import com.acft.acft.Entities.TestGroup;
+import com.acft.acft.Services.AcftManagerService;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;

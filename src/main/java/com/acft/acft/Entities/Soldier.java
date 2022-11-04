@@ -1,4 +1,4 @@
-package com.acft.acft;
+package com.acft.acft.Entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,11 +16,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
+@SequenceGenerator(name="SOLDIER_SEQ", sequenceName = "soldier_sequence")
 @Table(name = "SOLDIERS")
 public class Soldier {
 
     @Id 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SOLDIER_SEQ")
     @Column(name = "soldier_id")
     private Long id;
 

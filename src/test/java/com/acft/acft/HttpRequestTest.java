@@ -15,7 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.ArrayList;
 
+import com.acft.acft.Entities.Soldier;
+import com.acft.acft.Entities.TestGroup;
 import com.acft.acft.Exceptions.InvalidPasscodeException;
+import com.acft.acft.Services.AcftManagerService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -88,7 +91,6 @@ public class HttpRequestTest {
     void testGroupPasscodeNotVisibleInJsonRepresentiation() throws Exception{
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
         TestGroup testGroupFromResponse = gson.fromJson(
             mockMvc.perform(
                 get("/testGroup/get/{testGroupId}/{passcode}", testGroupId, passcode)
