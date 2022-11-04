@@ -112,9 +112,10 @@ public class AcftManagerServiceTest {
         Long testGroupId = acftManagerService.createNewTestGroup();
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate" , "Joshua", 31, true);
-        int convertedScore = acftManagerService.updateSoldierScore(soldierId, 1, 110);
+        acftManagerService.updateSoldierScore(soldierId, 1, 110);
         //Expected conversion for 31 year old male scoring 110 cm on the standing power throw is 90 points
         int expectedScore = 89;
+        int convertedScore = acftManagerService.getSoldierById(soldierId).getStandingPowerThrow();
         Assert.isTrue(convertedScore == expectedScore, "expected score was " + expectedScore + " and actual score was " + convertedScore);
     }
 

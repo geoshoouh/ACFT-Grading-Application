@@ -280,5 +280,81 @@ public class Soldier {
         this.twoMileRunRaw = twoMileRunRaw;
     }
 
-    
+    public int getTotalScore(){
+        return maxDeadlift + standingPowerThrow + handReleasePushups + sprintDragCarry + plank + twoMileRun;
+    }
+
+    public int[] getScoresAsArray(boolean raw){
+        int[] array = new int[6];
+        array[0] = (raw) ? maxDeadliftRaw : maxDeadlift;
+        array[1] = (raw) ? standingPowerThrowRaw : standingPowerThrow;
+        array[2] = (raw) ? handReleasePushupsRaw : handReleasePushups;
+        array[3] = (raw) ? sprintDragCarryRaw : sprintDragCarry;
+        array[4] = (raw) ? plankRaw : plank;
+        array[5] = (raw) ? twoMileRunRaw : twoMileRun;
+        return array;
+    }
+
+    public String getRawScoreAsString(int eventId){
+        String result;
+        switch (eventId){
+            case 0:
+                result = Integer.toString(maxDeadliftRaw);
+                break;
+            case 1:
+                result = Integer.toString(standingPowerThrow / 10) + "." + standingPowerThrow % 10;
+                break;
+            case 2:
+                result = Integer.toString(maxDeadliftRaw);
+                break;
+            case 3:
+                String minutes = Integer.toString(sprintDragCarryRaw / 60);
+                String seconds = Integer.toString(sprintDragCarryRaw % 60);
+                if (seconds.length() < 2) seconds = "0" + seconds;
+                result =  minutes + ":" + seconds;
+                break;
+            case 4:
+                minutes = Integer.toString(plankRaw / 60);
+                seconds = Integer.toString(plankRaw % 60);
+                if (seconds.length() < 2) seconds = "0" + seconds;
+                result =  minutes + ":" + seconds;
+                break;
+            case 5:
+                minutes = Integer.toString(twoMileRunRaw / 60);
+                seconds = Integer.toString(twoMileRunRaw % 60);
+                if (seconds.length() < 2) seconds = "0" + seconds;
+                result =  minutes + ":" + seconds;
+                break;
+            default:
+                result = "";
+        }
+        return result;
+    }
+
+    public int getScoreByEventId(int eventId, boolean raw){
+        int score = 0;
+        switch(eventId){
+            case 0:
+                score = (raw) ? maxDeadliftRaw : maxDeadlift;
+                break;
+            case 1:
+                score = (raw) ? standingPowerThrowRaw : standingPowerThrow;
+                break;
+            case 2:
+                score = (raw) ? handReleasePushupsRaw : handReleasePushups;
+                break;
+            case 3:
+                score = (raw) ? sprintDragCarryRaw : sprintDragCarry;
+                break;
+            case 4:
+                score = (raw) ? plankRaw : plank;
+                break;
+            case 5:
+                score = (raw) ? twoMileRunRaw : twoMileRun;
+                break;
+            default: break;
+        }
+        return score;
+    }
+
 }

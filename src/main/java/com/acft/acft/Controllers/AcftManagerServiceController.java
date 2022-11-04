@@ -2,6 +2,7 @@ package com.acft.acft.Controllers;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,4 +63,5 @@ public class AcftManagerServiceController {
     int updateSoldierScore(@PathVariable Long soldierId, @PathVariable int eventId, @PathVariable int rawScore){
         return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore);
     }
+
 }

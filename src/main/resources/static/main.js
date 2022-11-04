@@ -448,6 +448,8 @@ export async function editSoldierDataViewOnLoad(){
 export async function indexOnLoad(){
     await getAllTestGroupsController();
     sessionStorage.setItem('view', '0');
+    document.getElementById('existingTestGroups').value = sessionStorage.getItem('selectedTestGroupId');
+
 }
 
 

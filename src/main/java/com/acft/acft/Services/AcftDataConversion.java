@@ -14,20 +14,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
 
-@Component
+@Service
 public class AcftDataConversion {
 
     private int[][][] scoreTable = new int[6][101][20];
-
-    /* 
-    @Value("classpath:../../../../../resources/data/acftScoreTable.xlsx")
-    Resource resource;
-    */
-
 
     public AcftDataConversion(){
         try{
@@ -220,5 +214,38 @@ public class AcftDataConversion {
         return result;
     }
 
+    //Utility function for tests
+    public static int generateRandomRawScore(int eventId){
+        int floor = 0;
+        int ceiling = 0;
+        switch (eventId){
+            case 0:
+                floor = 120;
+                ceiling = 340;
+                break;
+            case 1:
+                floor = 39;
+                ceiling = 130;
+                break;
+            case 2:
+                floor = 10;
+                ceiling = 61;
+                break;
+            case 3:
+                floor = 89;
+                ceiling = 300;
+                break;
+            case 4:
+                floor = 70;
+                ceiling = 220;
+                break;
+            case 5:
+                floor = 780;
+                ceiling = 1500;
+                break;
+            default: break;
+        }
+        return (int)(Math.random() * (ceiling - floor)) + floor;
+    }
 
 }

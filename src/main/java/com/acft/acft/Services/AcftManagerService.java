@@ -68,7 +68,7 @@ public class AcftManagerService {
         return soldierRepository.findByLastNameAndTestGroupId(lastName, testGroupId);
     }
 
-    public List<Soldier> getSoldiersByTestGroupId(Long testGroupId){
+    public List<Soldier> getSoldiersByTestGroupId(Long testGroupId) throws TestGroupNotFoundException{
         return soldierRepository.findByTestGroupId(testGroupId);
     }
 
@@ -112,6 +112,7 @@ public class AcftManagerService {
             default:
                 break;
         }
+        soldierRepository.save(soldier);
         return scaledScore;
     }
     
