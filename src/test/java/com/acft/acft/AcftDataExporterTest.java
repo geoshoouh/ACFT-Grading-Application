@@ -75,7 +75,7 @@ public class AcftDataExporterTest {
     void createXlsxFileCreatesXlsxFileWithExpectedSheets(){
         Long testGroupId = acftManagerService.populateDatabase();
         String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
-        List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
+        List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         acftDataExporter.createXlsxFile(workbook, testGroupId);
         FileInputStream file = acftDataConversion.getFile(path);
@@ -84,6 +84,7 @@ public class AcftDataExporterTest {
         for (int i = 0; i < workbook.getNumberOfSheets(); i++){
             Assert.isTrue(derivedWorkbook.getSheetAt(i).getSheetName().equals(workbook.getSheetAt(i).getSheetName()), "in createXlsxFileCreatesFileWithXlsxWorkbook: sheet mismatch in derived workbook");
         }
+        new File(path).delete();
     }
 
 }

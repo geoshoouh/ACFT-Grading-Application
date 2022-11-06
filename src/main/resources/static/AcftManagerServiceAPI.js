@@ -6,7 +6,7 @@ export async function createNewTestGroup(host = 'http://localhost:8080'){
     return response.json();
 }
 
-export async function createNewTestGroupWithPasscode(host = 'http://localhost:8080', passcode){
+export async function createNewTestGroup(host = 'http://localhost:8080', passcode){
   let response = await fetch(`${host}/testGroup/new/${passcode}`, {
         method: 'POST'
       }).then((response) => response).catch((error) => console.log(error));
@@ -23,6 +23,7 @@ export async function createNewSoldier(host = 'http://localhost:8080', testGroup
   return response.json();
 }
 
+//This needs to be fixed such that only an array of IDs is returned
 export async function getAllTestGroups(host = 'http://localhost:8080'){
   let response = await fetch(host + '/testGroup/get/all')
     .then((response) => response).catch((error) => console.log(error));
@@ -58,17 +59,20 @@ export async function getSoldierById(host = 'http://localhost:8080', soldierId){
   return response.json();
 }
 
-export async function getTestGroupById(host = 'http://localhost:8080', testGroupId, passcode){
+export async function getTestGroupById(host = 'http://localhost:8080', testGroupId, passcode = ""){
+  const path = (passcode.length === 0) ? `${host}/testGroup/get/${testGroupId}/` : `${host}/testGroup/get/${testGroupId}/${passcode}`
   let response = await fetch(
-    `${host}/testGroup/get/${testGroupId}/${passcode}`
+    path
   ).then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to /testGroup/get/${testGroupId}/${passcode} was ${response.status}`);
   return response.json();
 }
 
-export async function updateSoldierScore(host = 'http://localhost:8080', soldierId, eventId, rawScore){
+
+export async function updateSoldierScore(host = 'http://localhost:8080', soldierId, eventId, rawScore, passcode = ""){
+  const path = (passcode.length === 0) ? `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}` : `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/${passcode}`;
   let response = await fetch(
-    `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}`,
+    path,
     {method: 'POST'})
     .then((response) => response).catch((error) => console.log(error));
     if (!response.ok) throw Error(`Response to /soldier/updateScore/${soldierId}/${eventId-1}/${rawScore} was ${response.status}`);

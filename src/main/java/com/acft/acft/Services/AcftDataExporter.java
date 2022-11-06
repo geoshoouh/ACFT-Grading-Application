@@ -64,7 +64,6 @@ public class AcftDataExporter {
         return path;
     }
 
-
     public static String getCellValueAsString(Cell cell){
         String cellValue = "EMPTY";
         switch (cell.getCellType()){

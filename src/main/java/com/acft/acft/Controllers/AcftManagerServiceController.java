@@ -39,14 +39,25 @@ public class AcftManagerServiceController {
         return acftManagerService.createNewTestGroup(passcode);
     }
 
+    @GetMapping("testGroup/get/{testGroupId}")
+    TestGroup getTestGroup(@PathVariable Long testGroupId){
+        return acftManagerService.getTestGroup(testGroupId);
+    }
+
     @GetMapping("/testGroup/get/{testGroupId}/{passcode}")
     TestGroup getTestGroup(@PathVariable Long testGroupId, @PathVariable String passcode){
         return acftManagerService.getTestGroup(testGroupId, passcode);
     }
 
+
     @PostMapping("/testGroup/post/{testGroup}/{lastName}/{firstName}/{age}/{isMale}")
     Long createNewSoldier(@PathVariable TestGroup testGroup, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
         return acftManagerService.createNewSoldier(testGroup, lastName, firstName, age, isMale);
+    }
+
+    @GetMapping("/soldier/get/{soldierId}/{passcode}")
+    Soldier getSoldierById(@PathVariable Long soldierId, @PathVariable String passcode){
+        return acftManagerService.getSoldierById(soldierId, passcode);
     }
 
     @GetMapping("/soldier/get/{soldierId}")
@@ -56,7 +67,7 @@ public class AcftManagerServiceController {
 
     @GetMapping("/testGroup/getSoldiers/{testGroupId}")
     List<Soldier> getSoldiersByTestGroupId(@PathVariable Long testGroupId){
-        return acftManagerService.getSoldiersByTestGroupId(testGroupId);
+        return acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
     }
 
     @GetMapping("/testGroup/get/byLastNameAndGroup/{lastName}/{testGroupId}")
@@ -69,14 +80,19 @@ public class AcftManagerServiceController {
         return acftManagerService.getAllTestGroups();
     }
 
+    @PostMapping("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}/{passcode}")
+    int updateSoldierScore(@PathVariable Long soldierId, @PathVariable int eventId, @PathVariable int rawScore, @PathVariable String passcode){
+        return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore, passcode);
+    }
+
     @PostMapping("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}")
     int updateSoldierScore(@PathVariable Long soldierId, @PathVariable int eventId, @PathVariable int rawScore){
         return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore);
     }
 
-    @GetMapping("/testGroup/{testGroupId}/getXlsxFile")
-    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId){
-        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId);
+    @GetMapping("/testGroup/getXlsxFile/{testGroupId}/{passcode}")
+    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
         String mimeType = URLConnection.guessContentTypeFromName(file.getName());
         response.setContentType(mimeType);
         response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
@@ -93,6 +109,24 @@ public class AcftManagerServiceController {
         file.delete();
     }
 
+    @GetMapping("/testGroup/getXlsxFile/{testGroupId}")
+    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId){
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, "");
+        String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+        response.setContentType(mimeType);
+        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+        response.setContentLength((int) file.length());
+        InputStream inputStream;
+        try {
+            inputStream = new BufferedInputStream(new FileInputStream(file));
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }   
+        file.delete();
+    }
 
 
 }

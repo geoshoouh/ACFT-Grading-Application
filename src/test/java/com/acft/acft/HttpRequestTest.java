@@ -76,6 +76,7 @@ public class HttpRequestTest {
     //Ensures a test group's passcode cannot be fetched by making a getAllTestGroups request and inspecting the Json
     @Test
     void getTestGroupShouldReturnTestGroup() throws Exception{
+        //testGroup instantiated w/passcode
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroupFromResponse = gson.fromJson(
@@ -88,6 +89,19 @@ public class HttpRequestTest {
             TestGroup.class
             );
         Assert.isTrue(testGroupFromResponse.getId() == testGroupId, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
+
+        //testGroup instantiated w/o passcode
+        Long testGroupIdEmptyPasscode = acftManagerService.createNewTestGroup();
+        TestGroup testGroupFromResponseEmptyPasscode = gson.fromJson(
+            mockMvc.perform(
+                get("/testGroup/get/{testGroupId}", testGroupIdEmptyPasscode)
+                ).andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(), 
+            TestGroup.class
+            );
+        Assert.isTrue(testGroupFromResponseEmptyPasscode.getId() == testGroupIdEmptyPasscode, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
     }
 
      //Ensures a test group's passcode cannot be fetched by making a getAllTestGroups request and inspecting the Json
@@ -132,7 +146,7 @@ public class HttpRequestTest {
     @Test
     void getSoldierByIdShouldReturnSoldier() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         Soldier soldier = gson.fromJson(
             mockMvc.perform(
@@ -149,7 +163,7 @@ public class HttpRequestTest {
     @Test
     void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -174,7 +188,7 @@ public class HttpRequestTest {
     @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -215,7 +229,7 @@ public class HttpRequestTest {
     @Test
     void updateSoldierScoreShouldReturnCorrectConvertedScore() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         int eventId = 0;
         int rawScore = 205;
@@ -234,9 +248,10 @@ public class HttpRequestTest {
 
     @Test
     void exportXlsxFileForTestGroupShouldExportExpectedFile() throws Exception{
+        //No passcode used in populateDatabase utility function
         Long testGroupId = acftManagerService.populateDatabase();
         HttpServletResponse response = mockMvc.perform(
-            get("/testGroup/{testGroupId}/getXlsxFile", testGroupId)
+            get("/testGroup/getXlsxFile/{testGroupId}", testGroupId)
         ).andExpect(status().isOk())
         .andReturn()
         .getResponse();

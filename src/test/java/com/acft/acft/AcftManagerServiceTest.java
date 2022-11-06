@@ -41,16 +41,21 @@ public class AcftManagerServiceTest {
 
     @Test
     void getTestGroupShouldReturnTestGroup(){
+        //case w/passode
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
         Assert.isTrue(testGroup.getId() == testGroupId, "getTestGroup returned the incorrect group");
+        //case w/o passcode
+        Long testGroupIdEmptyPasscode = acftManagerService.createNewTestGroup();
+        TestGroup testGroupEmptyPasscode = acftManagerService.getTestGroup(testGroupIdEmptyPasscode);
+        Assert.isTrue(testGroupEmptyPasscode.getId() == testGroupIdEmptyPasscode, "getTestGroup returned the incorrect group");
     }
 
     @Test
     void createNewSoldierShouldReturnId(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
     }
@@ -58,7 +63,7 @@ public class AcftManagerServiceTest {
     @Test 
     void getSoldierByIdShouldReturnSoldier(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
         Assert.isTrue(soldier.getId() == soldierId, "getSoldierById returned the incorrect Soldier");
@@ -67,7 +72,7 @@ public class AcftManagerServiceTest {
     @Test 
     void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -95,7 +100,7 @@ public class AcftManagerServiceTest {
     @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -104,14 +109,14 @@ public class AcftManagerServiceTest {
         for (int i = 0; i < n; i++){
             acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
         }
-        List<Soldier> soldiersWithCertainGroupId = acftManagerService.getSoldiersByTestGroupId(testGroupId);
+        List<Soldier> soldiersWithCertainGroupId = acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
         Assert.isTrue(soldiersWithCertainGroupId.size() == n, "getSoldiersByTestGroupId returned array of unexpected size");
     }
 
     @Test
     void updateSoldierScoreShouldReturnCorrectScaledScore(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate" , "Joshua", 31, true);
         acftManagerService.updateSoldierScore(soldierId, 1, 110);
         //Expected conversion for 31 year old male scoring 110 cm on the standing power throw is 90 points
@@ -126,8 +131,8 @@ public class AcftManagerServiceTest {
         int reference = acftManagerService.getAllTestGroups().size();
         Long testGroupId1 = acftManagerService.createNewTestGroup();
         Long testGroupId2 = acftManagerService.createNewTestGroup();
-        TestGroup testGroup1 = acftManagerService.getTestGroup(testGroupId1, "");
-        TestGroup testGroup2 = acftManagerService.getTestGroup(testGroupId2, "");
+        TestGroup testGroup1 = acftManagerService.getTestGroup(testGroupId1);
+        TestGroup testGroup2 = acftManagerService.getTestGroup(testGroupId2);
         System.out.println("before changes: " + testGroup1);
         testGroup1.setExpirationDate(Date.from(Instant.now().minus(5, ChronoUnit.DAYS)));
         
@@ -143,5 +148,6 @@ public class AcftManagerServiceTest {
         Long testGroupId = acftManagerService.populateDatabase();
         File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId);
         Assert.isTrue(file.getName().equals("testGroup_" + testGroupId + ".xlsx"), "In getXlsxFileForTestGroupDataGetsExpectedFile: File not found");
+        file.delete();
     }
 }

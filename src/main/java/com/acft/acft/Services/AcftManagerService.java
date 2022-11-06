@@ -53,7 +53,14 @@ public class AcftManagerService {
     public TestGroup getTestGroup(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{
         TestGroup testGroup = testGroupRepository.findById(testGroupId)
             .orElseThrow(() -> new TestGroupNotFoundException(testGroupId));
-        if (testGroup.getPasscode().length() > 0 && !passcode.equals(testGroup.getPasscode())) throw new InvalidPasscodeException(testGroupId);
+        if (!passcode.equals(testGroup.getPasscode())) throw new InvalidPasscodeException(testGroupId);
+        return testGroup;
+    }
+
+    public TestGroup getTestGroup(Long testGroupId) throws TestGroupNotFoundException, InvalidPasscodeException{
+        TestGroup testGroup = testGroupRepository.findById(testGroupId)
+            .orElseThrow(() -> new TestGroupNotFoundException(testGroupId));
+        if (testGroup.getPasscode().length() > 0) throw new InvalidPasscodeException(testGroupId);
         return testGroup;
     }
 
@@ -63,16 +70,31 @@ public class AcftManagerService {
         return soldier.getId();
     }
 
-    public Soldier getSoldierById(Long soldierId) throws SoldierNotFoundException{
-        return soldierRepository.findById(soldierId)
+    public Soldier getSoldierById(Long soldierId, String passcode) throws SoldierNotFoundException, InvalidPasscodeException{
+        Soldier soldier = soldierRepository.findById(soldierId)
             .orElseThrow(() -> new SoldierNotFoundException(soldierId));
+        getTestGroup(soldier.getTestGroupId(), passcode);
+        return soldier;
+    }
+
+    public Soldier getSoldierById(Long soldierId) throws SoldierNotFoundException, InvalidPasscodeException{
+        Soldier soldier =  soldierRepository.findById(soldierId)
+            .orElseThrow(() -> new SoldierNotFoundException(soldierId));
+        getTestGroup(soldier.getTestGroupId());
+        return soldier;
     }
 
     public List<Soldier> getSoldiersByLastNameAndTestGroupId(String lastName, Long testGroupId){
         return soldierRepository.findByLastNameAndTestGroupId(lastName, testGroupId);
     }
 
-    public List<Soldier> getSoldiersByTestGroupId(Long testGroupId) throws TestGroupNotFoundException{
+    public List<Soldier> getSoldiersByTestGroupId(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{
+        getTestGroup(testGroupId, passcode);
+        return soldierRepository.findByTestGroupId(testGroupId);
+    }
+
+    public List<Soldier> getSoldiersByTestGroupId(Long testGroupId) throws TestGroupNotFoundException, InvalidPasscodeException{
+        getTestGroup(testGroupId);
         return soldierRepository.findByTestGroupId(testGroupId);
     }
 
@@ -85,8 +107,10 @@ public class AcftManagerService {
         return allTestGroupIds;
     }
 
-    public int updateSoldierScore(Long soldierId, int eventId, int rawScore){
+    public int updateSoldierScore(Long soldierId, int eventId, int rawScore, String passcode) throws SoldierNotFoundException, InvalidPasscodeException{
         Soldier soldier = getSoldierById(soldierId);
+        //Throws Invalid passode exception
+        getTestGroup(soldier.getTestGroupId(), passcode);
         int scaledScore = acftDataConversion.getScore(eventId, rawScore, soldier.isMale(), soldier.getAge());
         switch (eventId){
             case 0:
@@ -120,6 +144,43 @@ public class AcftManagerService {
         return scaledScore;
     }
     
+    public int updateSoldierScore(Long soldierId, int eventId, int rawScore) throws SoldierNotFoundException, InvalidPasscodeException{
+        Soldier soldier = getSoldierById(soldierId);
+        //Throws Invalid passode exception
+        getTestGroup(soldier.getTestGroupId());
+        int scaledScore = acftDataConversion.getScore(eventId, rawScore, soldier.isMale(), soldier.getAge());
+        switch (eventId){
+            case 0:
+                soldier.setMaxDeadliftRaw(rawScore);
+                soldier.setMaxDeadlift(scaledScore);
+                break;
+            case 1:
+                soldier.setStandingPowerThrowRaw(rawScore);
+                soldier.setStandingPowerThrow(scaledScore);
+                break;
+            case 2:
+                soldier.setHandReleasePushupsRaw(rawScore);
+                soldier.setHandReleasePushups(scaledScore);
+                break;
+            case 3:
+                soldier.setSprintDragCarryRaw(rawScore);
+                soldier.setSprintDragCarry(scaledScore);
+                break;
+            case 4:
+                soldier.setPlankRaw(rawScore);
+                soldier.setPlank(scaledScore);
+                break;
+            case 5:
+                soldier.setTwoMileRunRaw(rawScore);
+                soldier.setTwoMileRun(scaledScore);
+                break;
+            default:
+                break;
+        }
+        soldierRepository.save(soldier);
+        return scaledScore;
+    }
+
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
     public void deleteTestGroupsOnSchedule(){
         Date cutoff = Date.from(Instant.now().minus(2, ChronoUnit.DAYS));
@@ -137,7 +198,8 @@ public class AcftManagerService {
 
     public Long populateDatabase(){
         Long testGroupId = createNewTestGroup();
-        TestGroup testGroup = getTestGroup(testGroupId, "");
+        System.out.println("TGID: " + testGroupId);
+        TestGroup testGroup = getTestGroup(testGroupId);
         int n = 5;
         Long[] soldierIds = new Long[5];
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
@@ -153,7 +215,19 @@ public class AcftManagerService {
         return testGroupId;
     }
 
-    public File getXlsxFileForTestGroupData(Long testGroupId){
+    public File getXlsxFileForTestGroupData(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{
+        //Line below will throw exception if the test group doesn't exist or the user does not have the correct passcode
+        getTestGroup(testGroupId, passcode);
+        List<Soldier> soldiers = getSoldiersByTestGroupId(testGroupId, passcode);
+        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
+        String path = acftDataExporter.createXlsxFile(workbook, testGroupId);
+        File file = new File(path);
+        return file;
+    }
+
+    public File getXlsxFileForTestGroupData(Long testGroupId) throws TestGroupNotFoundException, InvalidPasscodeException{
+        //Line below will throw exception if the test group doesn't exist or the user does not have the correct passcode
+        getTestGroup(testGroupId);
         List<Soldier> soldiers = getSoldiersByTestGroupId(testGroupId);
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         String path = acftDataExporter.createXlsxFile(workbook, testGroupId);
