@@ -2,7 +2,6 @@ package com.acft.acft;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.InputStreamEditor;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,8 +25,7 @@ import com.acft.acft.Services.AcftManagerService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.File;
 import java.lang.reflect.Type;
 
 
@@ -243,6 +241,8 @@ public class HttpRequestTest {
         .andReturn()
         .getResponse();
         Assert.isTrue(response.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"), "In exportXlsxFileForTestGroupShouldExportExpectedFile: unexpected content type in servlet response");
+        String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
+        Assert.isTrue(!new File(path).exists(), "In createXlsxFileCreatesXlsxFileWithExpectedSheets: file was not deleted after being served to client");
     }
-    
+
 }

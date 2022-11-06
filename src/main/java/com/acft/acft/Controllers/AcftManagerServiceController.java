@@ -90,6 +90,7 @@ public class AcftManagerServiceController {
         } catch (IOException e){
             System.out.println(e.getMessage());
         }   
+        file.delete();
     }
 
 
