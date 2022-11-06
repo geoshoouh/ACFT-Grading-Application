@@ -2,6 +2,7 @@ package com.acft.acft;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.InputStreamEditor;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,6 +14,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
 
 import com.acft.acft.Entities.Soldier;
@@ -21,6 +25,9 @@ import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Services.AcftManagerService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 
 
@@ -226,4 +233,16 @@ public class HttpRequestTest {
             );
         Assert.isTrue(requestResult == expectedConversion, "For update score request: expected result was " + expectedConversion + ", actual result was " + requestResult);
     }
+
+    @Test
+    void exportXlsxFileForTestGroupShouldExportExpectedFile() throws Exception{
+        Long testGroupId = acftManagerService.populateDatabase();
+        HttpServletResponse response = mockMvc.perform(
+            get("/testGroup/{testGroupId}/getXlsxFile", testGroupId)
+        ).andExpect(status().isOk())
+        .andReturn()
+        .getResponse();
+        Assert.isTrue(response.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"), "In exportXlsxFileForTestGroupShouldExportExpectedFile: unexpected content type in servlet response");
+    }
+    
 }

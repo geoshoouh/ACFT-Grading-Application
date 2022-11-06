@@ -11,6 +11,7 @@ import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
 import com.acft.acft.Services.AcftManagerService;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -135,5 +136,12 @@ public class AcftManagerServiceTest {
         //System.out.println("from repo: " + acftManagerService.getTestGroup(testGroupId1, ""));
         acftManagerService.deleteTestGroupsOnSchedule();
         Assert.isTrue(acftManagerService.getAllTestGroups().size() == reference + 1, "deleteTestGroupsOnSchedule did not produce expected results. Expected repo size " + 1 + ", size was actually " + acftManagerService.getAllTestGroups().size());
+    }
+
+    @Test
+    void getXlsxFileForTestGroupDataGetsExpectedFile(){
+        Long testGroupId = acftManagerService.populateDatabase();
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId);
+        Assert.isTrue(file.getName().equals("testGroup_" + testGroupId + ".xlsx"), "In getXlsxFileForTestGroupDataGetsExpectedFile: File not found");
     }
 }

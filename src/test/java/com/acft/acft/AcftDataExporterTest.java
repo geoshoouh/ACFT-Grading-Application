@@ -5,7 +5,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,10 +35,10 @@ public class AcftDataExporterTest {
 
     @Test
     void createXlsxWorkbookCreatesWorkbookWithExpectedData(){
-        Long testGroupId = acftDataExporter.populateDatabase();
+        Long testGroupId = acftManagerService.populateDatabase();
         List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
         int n = soldiers.size();
-        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(testGroupId);
+        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         Assert.isTrue(workbook.getNumberOfSheets() == 2, "In createXlsxWorkbookCreatesWorkbookWithExpectedData: workbook had unexpected number of sheets");
         String[] headerNames = {"ID", "Last", "First", "MDL", "SPT", "HRP", "SDC", "PLK", "2MR", "Total"};
         for (int i = 0; i < workbook.getNumberOfSheets(); i++){
@@ -52,7 +51,8 @@ public class AcftDataExporterTest {
             for (int j = 0; j < n; j++){
                 //offset due to header row having index 0
                 Row row = sheet.getRow(j + 1);
-                //offset due to ID's starting from 1
+                //when running all tests at once; there's some leftover persistence from some tests
+                //So, must use id's of soldiers retrieved by the query in the top portion of this function
                 Soldier soldier = acftManagerService.getSoldierById(soldiers.get(j).getId());
                 Assert.isTrue(Long.valueOf((long)row.getCell(0).getNumericCellValue()) == soldier.getId(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: expected cell value " + soldier.getId() + ", was  " + Long.valueOf((long)row.getCell(0).getNumericCellValue()));
                 Assert.isTrue(row.getCell(1).getStringCellValue().equals(soldier.getLastName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
@@ -72,9 +72,10 @@ public class AcftDataExporterTest {
 
     @Test
     void createXlsxFileCreatesXlsxFileWithExpectedSheets(){
-        Long testGroupId = acftDataExporter.populateDatabase();
+        Long testGroupId = acftManagerService.populateDatabase();
         String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
-        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(testGroupId);
+        List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
+        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         acftDataExporter.createXlsxFile(workbook, testGroupId);
         FileInputStream file = acftDataConversion.getFile(path);
         Assert.isTrue(file != null, "in createXlsxFileCreatesFileWithXlsxWorkbook: file was null");

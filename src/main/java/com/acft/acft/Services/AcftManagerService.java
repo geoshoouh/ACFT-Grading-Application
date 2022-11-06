@@ -1,14 +1,14 @@
 package com.acft.acft.Services;
 
 import java.util.Date;
+import java.io.File;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-
-
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,10 @@ public class AcftManagerService {
 
     @Autowired
     private AcftDataConversion acftDataConversion;
+
+    @Autowired
+    private AcftDataExporter acftDataExporter;
+
 
     public Long createNewTestGroup(){
         TestGroup testGroup = new TestGroup();
@@ -131,15 +135,30 @@ public class AcftManagerService {
         });
     }
 
-    //performed as @AfterAll functions for tests
-    public void clearTestGroupRepository(){
-        testGroupRepository.deleteAll();
+    public Long populateDatabase(){
+        Long testGroupId = createNewTestGroup();
+        TestGroup testGroup = getTestGroup(testGroupId, "");
+        int n = 5;
+        Long[] soldierIds = new Long[5];
+        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
+        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
+        int[] ages = {26, 18, 19, 30, 23};
+        boolean[] genders = {true, true, true, true, false};
+        for (int i = 0; i < n; i++){
+            soldierIds[i] = createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
+            for (int j = 0; j < 6; j++){
+                updateSoldierScore(soldierIds[i], j, AcftDataConversion.generateRandomRawScore(j));
+            }
+        }
+        return testGroupId;
     }
 
-    public void clearSoldierRepository(){
-        soldierRepository.deleteAll();
+    public File getXlsxFileForTestGroupData(Long testGroupId){
+        List<Soldier> soldiers = getSoldiersByTestGroupId(testGroupId);
+        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
+        String path = acftDataExporter.createXlsxFile(workbook, testGroupId);
+        File file = new File(path);
+        return file;
     }
 
-    
-    
 }

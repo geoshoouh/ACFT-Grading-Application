@@ -9,22 +9,15 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.acft.acft.Entities.Soldier;
-import com.acft.acft.Entities.TestGroup;
 
 
-@Service
+@Component
 public class AcftDataExporter {
     
-    @Autowired
-    AcftManagerService acftManagerService;
-
-
-    public XSSFWorkbook createXlsxWorkbook(Long testGroupId){
-        List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
+    public XSSFWorkbook createXlsxWorkbook(List<Soldier> soldiers){
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet scaledSheet = workbook.createSheet("Scaled");
         XSSFSheet rawSheet = workbook.createSheet("Raw");
@@ -57,7 +50,7 @@ public class AcftDataExporter {
         return workbook;
     }
 
-    public FileOutputStream createXlsxFile(XSSFWorkbook workbook, Long testGroupId){
+    public String createXlsxFile(XSSFWorkbook workbook, Long testGroupId){
         String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
         FileOutputStream fileOutputStream = null;
         try {
@@ -68,27 +61,9 @@ public class AcftDataExporter {
         } catch (IOException e){
             System.out.println("Exception thrown for write to file at path " + path);
         }
-        return fileOutputStream;
+        return path;
     }
 
-    //Utility function for tests; returns testGroupId for populated group
-    public Long populateDatabase(){
-        Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
-        int n = 5;
-        Long[] soldierIds = new Long[5];
-        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
-        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
-        int[] ages = {26, 18, 19, 30, 23};
-        boolean[] genders = {true, true, true, true, false};
-        for (int i = 0; i < n; i++){
-            soldierIds[i] = acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
-            for (int j = 0; j < 6; j++){
-                acftManagerService.updateSoldierScore(soldierIds[i], j, AcftDataConversion.generateRandomRawScore(j));
-            }
-        }
-        return testGroupId;
-    }
 
     public static String getCellValueAsString(Cell cell){
         String cellValue = "EMPTY";
@@ -116,5 +91,7 @@ public class AcftDataExporter {
         }
         return cellValue;
     }
+
+
 
 }
