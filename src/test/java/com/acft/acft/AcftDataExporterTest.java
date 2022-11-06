@@ -1,20 +1,22 @@
 package com.acft.acft;
 
-import java.io.FileOutputStream;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.acft.acft.Entities.Soldier;
-
+import com.acft.acft.Services.AcftDataConversion;
 import com.acft.acft.Services.AcftDataExporter;
 import com.acft.acft.Services.AcftManagerService;
 import org.springframework.util.Assert;
+
+import java.io.FileInputStream;
 import java.util.List;
 
 @SpringBootTest
@@ -26,16 +28,17 @@ public class AcftDataExporterTest {
     @Autowired
     AcftDataExporter acftDataExporter;
 
-    
+    //Using this or file IO utility methods
+    @Autowired
+    AcftDataConversion acftDataConversion;
 
-    
+
 
     @Test
     void createXlsxWorkbookCreatesWorkbookWithExpectedData(){
         Long testGroupId = acftDataExporter.populateDatabase();
         List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
         int n = soldiers.size();
-
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(testGroupId);
         Assert.isTrue(workbook.getNumberOfSheets() == 2, "In createXlsxWorkbookCreatesWorkbookWithExpectedData: workbook had unexpected number of sheets");
         String[] headerNames = {"ID", "Last", "First", "MDL", "SPT", "HRP", "SDC", "PLK", "2MR", "Total"};
@@ -50,8 +53,8 @@ public class AcftDataExporterTest {
                 //offset due to header row having index 0
                 Row row = sheet.getRow(j + 1);
                 //offset due to ID's starting from 1
-                Soldier soldier = acftManagerService.getSoldierById(1L + j);
-                Assert.isTrue(Long.valueOf((long)row.getCell(0).getNumericCellValue()) == soldier.getId(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
+                Soldier soldier = acftManagerService.getSoldierById(soldiers.get(j).getId());
+                Assert.isTrue(Long.valueOf((long)row.getCell(0).getNumericCellValue()) == soldier.getId(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: expected cell value " + soldier.getId() + ", was  " + Long.valueOf((long)row.getCell(0).getNumericCellValue()));
                 Assert.isTrue(row.getCell(1).getStringCellValue().equals(soldier.getLastName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 Assert.isTrue(row.getCell(2).getStringCellValue().equals(soldier.getFirstName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 for (int k = 3; k < rowEnd; k++){
@@ -61,11 +64,24 @@ public class AcftDataExporterTest {
                     if (i == 0){
                         compareValue = (k == rowEnd - 1) ? Integer.toString(soldier.getTotalScore()) : Integer.toString(soldier.getScoreByEventId(k - 3, false));
                     } else compareValue = soldier.getRawScoreAsString(k - 3);
-                    System.out.println("cell: " + cellValue + " compare: " + compareValue);
                     Assert.isTrue(cellValue.equals(compareValue), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 }
             }
         }
-
     }
+
+    @Test
+    void createXlsxFileCreatesXlsxFileWithExpectedSheets(){
+        Long testGroupId = acftDataExporter.populateDatabase();
+        String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
+        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(testGroupId);
+        acftDataExporter.createXlsxFile(workbook, testGroupId);
+        FileInputStream file = acftDataConversion.getFile(path);
+        Assert.isTrue(file != null, "in createXlsxFileCreatesFileWithXlsxWorkbook: file was null");
+        Workbook derivedWorkbook = acftDataConversion.getWorkbook(file);
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++){
+            Assert.isTrue(derivedWorkbook.getSheetAt(i).getSheetName().equals(workbook.getSheetAt(i).getSheetName()), "in createXlsxFileCreatesFileWithXlsxWorkbook: sheet mismatch in derived workbook");
+        }
+    }
+
 }

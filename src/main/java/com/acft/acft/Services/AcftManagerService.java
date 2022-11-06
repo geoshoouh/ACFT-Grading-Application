@@ -130,5 +130,16 @@ public class AcftManagerService {
             testGroupRepository.delete(testGroup);
         });
     }
+
+    //performed as @AfterAll functions for tests
+    public void clearTestGroupRepository(){
+        testGroupRepository.deleteAll();
+    }
+
+    public void clearSoldierRepository(){
+        soldierRepository.deleteAll();
+    }
+
+    
     
 }

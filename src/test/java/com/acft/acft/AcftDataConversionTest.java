@@ -16,15 +16,17 @@ public class AcftDataConversionTest {
     @Autowired
     AcftDataConversion acftDataConversion;
 
+    String path = "src/main/resources/data/acftScoreTable.xlsx";
+
     @Test
     void getFileNotNull(){
-        FileInputStream fileInputStream = acftDataConversion.getFile();
+        FileInputStream fileInputStream = acftDataConversion.getFile(path);
         Assert.notNull(fileInputStream, "call to file input stream host neutral was null");
     }
 
     @Test
     void getSheetValuesShouldReturnNonEmptyMatrix(){
-        List<List<String>> sheetValues = acftDataConversion.getSheetValues(0);
+        List<List<String>> sheetValues = acftDataConversion.getSheetValues(0, path);
         for (List<String> row : sheetValues){
             for (String item : row){
                 System.out.print(item + " ");
@@ -44,7 +46,7 @@ public class AcftDataConversionTest {
     @Test
     void convertSheetValuesToIntMatrixShouldReturnIntMatrix(){
         int eventId = 5;
-        List<List<String>> sheetValues = acftDataConversion.getSheetValues(eventId);
+        List<List<String>> sheetValues = acftDataConversion.getSheetValues(eventId, path);
         int[][] intMatrix = acftDataConversion.convertSheetValuesToIntMatrix(sheetValues, eventId);
         for (int[] row : intMatrix){
             for (int cell : row){

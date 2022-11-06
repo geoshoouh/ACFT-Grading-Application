@@ -24,9 +24,10 @@ public class AcftDataConversion {
     private int[][][] scoreTable = new int[6][101][20];
 
     public AcftDataConversion(){
+        String path = "src/main/resources/data/acftScoreTable.xlsx";
         try{
             for (int i = 0; i < 6; i++){
-                scoreTable[i] = convertSheetValuesToIntMatrix(getSheetValues(i), i);
+                scoreTable[i] = convertSheetValuesToIntMatrix(getSheetValues(i, path), i);
             }
         } catch (IndexOutOfBoundsException e){
             System.out.println("Index out of bounds for table conversion, all scoreTabe values are now 0");
@@ -34,8 +35,7 @@ public class AcftDataConversion {
     }
     
     
-    public FileInputStream getFile() {
-        String path = "src/main/resources/data/acftScoreTable.xlsx";
+    public FileInputStream getFile(String path) {
         FileInputStream file; 
         try {
             file = new FileInputStream(new File(path));
@@ -57,9 +57,9 @@ public class AcftDataConversion {
         return workbook;
     }
 
-    public List<List<String>> getSheetValues(int sheetIndex){
+    public List<List<String>> getSheetValues(int sheetIndex, String path){
         List<List<String>> sheetValues = new ArrayList<>();
-        Workbook workbook = getWorkbook(getFile());
+        Workbook workbook = getWorkbook(getFile(path));
         Sheet sheet = workbook.getSheetAt(sheetIndex);
         for (Row row : sheet){
             List<String> rowArray = new ArrayList<>();

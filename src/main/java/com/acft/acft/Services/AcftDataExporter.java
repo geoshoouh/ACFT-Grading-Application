@@ -53,28 +53,6 @@ public class AcftDataExporter {
                 rawRow.createCell(j + 3).setCellValue(soldier.getRawScoreAsString(j));
             }
             scaledRow.createCell(9).setCellValue(soldier.getTotalScore());
-            /*
-            scaledRow.createCell(0).setCellValue(soldiers.get(i).getId());
-            scaledRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
-            scaledRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
-            scaledRow.createCell(3).setCellValue(soldiers.get(i).getMaxDeadlift());
-            scaledRow.createCell(4).setCellValue(soldiers.get(i).getStandingPowerThrow());
-            scaledRow.createCell(5).setCellValue(soldiers.get(i).getHandReleasePushups());
-            scaledRow.createCell(6).setCellValue(soldiers.get(i).getSprintDragCarry());
-            scaledRow.createCell(7).setCellValue(soldiers.get(i).getPlank());
-            scaledRow.createCell(8).setCellValue(soldiers.get(i).getTwoMileRun());
-            scaledRow.createCell(9).setCellValue(soldiers.get(i).getTotalScore());
-            Row  rawRow = rawSheet.createRow(i+1);
-            rawRow.createCell(0).setCellValue(soldiers.get(i).getId());
-            rawRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
-            rawRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
-            rawRow.createCell(3).setCellValue(soldiers.get(i).getRawScoreAsString(0));
-            rawRow.createCell(4).setCellValue(soldiers.get(i).getRawScoreAsString(1));
-            rawRow.createCell(5).setCellValue(soldiers.get(i).getRawScoreAsString(2));
-            rawRow.createCell(6).setCellValue(soldiers.get(i).getRawScoreAsString(3));
-            rawRow.createCell(7).setCellValue(soldiers.get(i).getRawScoreAsString(4));
-            rawRow.createCell(8).setCellValue(soldiers.get(i).getRawScoreAsString(5));
-            */
         }
         return workbook;
     }
