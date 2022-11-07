@@ -308,7 +308,6 @@ export async function downloadTestGroupDataController(){
 }
 
 
-
 //*******************************************************************
 
 
@@ -390,9 +389,9 @@ export async function displaySoldierName(){
 }
 
 export async function populateDatabase(){
+    console.log("populate called");
     const host = getHost();
-    await API.populateDatabase(host);
-    getHomePageViewController();
+    
 }
 
 export function storeUserPasscode(){

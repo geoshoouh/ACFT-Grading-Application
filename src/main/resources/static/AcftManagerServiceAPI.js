@@ -1,6 +1,6 @@
 
 export async function createNewTestGroup(passcode = "", host = 'http://localhost:8080', ){
-  const path = (passcode.length > 0) ? `${host}/testGroup/new/${passcode}` : `${host}/testGroup/new`;
+  const path = (passcode !== "") ? `${host}/testGroup/new/${passcode}` : `${host}/testGroup/new`;
   let response = await fetch(path, {
         method: 'POST'
       }).then((response) => response).catch((error) => console.log(error));
@@ -9,7 +9,7 @@ export async function createNewTestGroup(passcode = "", host = 'http://localhost
 }
 
 export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode.length > 0) ? `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}` : `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`;
+  const path = (passcode !== "") ? `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}` : `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`;
   let response = await fetch(
     path,
     {method: 'POST'})
@@ -34,7 +34,7 @@ export async function getHomePageView(host = 'http://localhost:8080'){
 }
 
 export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode.length > 0) ? `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}` : `${host}/testGroup/getSoldiers/${testGroupId}`;
+  const path = (passcode !== 0) ? `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}` : `${host}/testGroup/getSoldiers/${testGroupId}`;
   if (typeof testGroupId != "number"){
     console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof soldierId} passed`);
     return;
@@ -47,7 +47,7 @@ export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host 
 }
 
 export async function getSoldierById(soldierId, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode.length > 0) ? `${host}/soldier/get/${soldierId}/${passcode}` : `${host}/soldier/get/${soldierId}`;
+  const path = (passcode !== "") ? `${host}/soldier/get/${soldierId}/${passcode}` : `${host}/soldier/get/${soldierId}`;
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));
@@ -56,7 +56,7 @@ export async function getSoldierById(soldierId, passcode = "", host = 'http://lo
 }
 
 export async function getTestGroupById(testGroupId, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode.length === 0) ? `${host}/testGroup/get/${testGroupId}/` : `${host}/testGroup/get/${testGroupId}/${passcode}`
+  const path = (passcode === "") ? `${host}/testGroup/get/${testGroupId}/` : `${host}/testGroup/get/${testGroupId}/${passcode}`
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));
@@ -65,7 +65,7 @@ export async function getTestGroupById(testGroupId, passcode = "", host = 'http:
 }
 
 export async function updateSoldierScore(soldierId, eventId, rawScore, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode.length === 0) ? `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}` : `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/${passcode}`;
+  const path = (passcode === "") ? `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}` : `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/${passcode}`;
   let response = await fetch(
     path,
     {method: 'POST'})
@@ -75,18 +75,8 @@ export async function updateSoldierScore(soldierId, eventId, rawScore, passcode 
 }
 
 export async function downloadTestGroupData(testGroupId, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode.length > 0) ? `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}` : `${host}/testGroup/getXlsxFile/${testGroupId}`;
+  const path = (passcode === "") ? `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}` : `${host}/testGroup/getXlsxFile/${testGroupId}`;
   location.replace(path);
-}
-
-export async function populateDatabase(host = 'http://localhost:8080'){
-    const path = host + "/populate";
-    let response = await fetch(
-      path,
-      {method: 'POST'})
-      .then((response) => response).catch((error) => console.log(error));
-      if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
-      return response.json();
 }
 
 

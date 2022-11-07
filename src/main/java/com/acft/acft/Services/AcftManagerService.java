@@ -184,19 +184,5 @@ public class AcftManagerService {
         File file = new File(path);
         return file;
     }
-
-    /* 
-    public File getXlsxFileForTestGroupData(Long testGroupId) throws TestGroupNotFoundException, InvalidPasscodeException{
-        //Line below will throw exception if the test group doesn't exist or the user does not have the correct passcode
-        getTestGroup(testGroupId, "");
-        List<Soldier> soldiers = getSoldiersByTestGroupId(testGroupId);
-        XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
-        String path = acftDataExporter.createXlsxFile(workbook, testGroupId);
-        File file = new File(path);
-        return file;
-    }
-    */
-
-
         
 }
