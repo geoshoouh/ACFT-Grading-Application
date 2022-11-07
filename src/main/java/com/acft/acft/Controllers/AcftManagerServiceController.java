@@ -39,20 +39,20 @@ public class AcftManagerServiceController {
         return acftManagerService.createNewTestGroup(passcode);
     }
 
-    @GetMapping("testGroup/get/{testGroupId}")
-    TestGroup getTestGroup(@PathVariable Long testGroupId){
-        return acftManagerService.getTestGroup(testGroupId);
-    }
-
     @GetMapping("/testGroup/get/{testGroupId}/{passcode}")
     TestGroup getTestGroup(@PathVariable Long testGroupId, @PathVariable String passcode){
         return acftManagerService.getTestGroup(testGroupId, passcode);
     }
 
 
-    @PostMapping("/testGroup/post/{testGroup}/{lastName}/{firstName}/{age}/{isMale}")
-    Long createNewSoldier(@PathVariable TestGroup testGroup, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
-        return acftManagerService.createNewSoldier(testGroup, lastName, firstName, age, isMale);
+    @PostMapping("/testGroup/post/{testGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}")
+    Long createNewSoldier(@PathVariable Long testGroupId, @PathVariable String passcode, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
+        return acftManagerService.createNewSoldier(testGroupId, passcode, lastName, firstName, age, isMale);
+    }
+
+    @PostMapping("/testGroup/post/{testGroupId}/{lastName}/{firstName}/{age}/{isMale}")
+    Long createNewSoldier(@PathVariable Long testGroupId, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
+        return acftManagerService.createNewSoldier(testGroupId, lastName, firstName, age, isMale);
     }
 
     @GetMapping("/soldier/get/{soldierId}/{passcode}")
@@ -65,14 +65,10 @@ public class AcftManagerServiceController {
         return acftManagerService.getSoldierById(soldierId);
     }
 
-    @GetMapping("/testGroup/getSoldiers/{testGroupId}")
-    List<Soldier> getSoldiersByTestGroupId(@PathVariable Long testGroupId){
-        return acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
-    }
 
-    @GetMapping("/testGroup/get/byLastNameAndGroup/{lastName}/{testGroupId}")
-    List<Soldier> getSoldiersByLastNameAndTestGroupId(@PathVariable String lastName, @PathVariable Long testGroupId){
-        return acftManagerService.getSoldiersByLastNameAndTestGroupId(lastName, testGroupId);
+    @GetMapping("/testGroup/getSoldiers/{testGroupId}/{passcode}")
+    List<Soldier> getSoldiersByTestGroupId(@PathVariable Long testGroupId, @PathVariable String passcode){
+        return acftManagerService.getSoldiersByTestGroupId(testGroupId, passcode);
     }
 
     @GetMapping("/testGroup/get/all")
@@ -83,11 +79,6 @@ public class AcftManagerServiceController {
     @PostMapping("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}/{passcode}")
     int updateSoldierScore(@PathVariable Long soldierId, @PathVariable int eventId, @PathVariable int rawScore, @PathVariable String passcode){
         return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore, passcode);
-    }
-
-    @PostMapping("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}")
-    int updateSoldierScore(@PathVariable Long soldierId, @PathVariable int eventId, @PathVariable int rawScore){
-        return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore);
     }
 
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}/{passcode}")
@@ -128,5 +119,9 @@ public class AcftManagerServiceController {
         file.delete();
     }
 
-
+    @PostMapping("/populate")
+    public boolean populateDatabase(){
+        acftManagerService.populateDatabase();
+        return true;
+    }
 }

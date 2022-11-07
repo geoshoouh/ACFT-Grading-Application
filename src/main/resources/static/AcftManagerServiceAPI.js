@@ -1,30 +1,24 @@
-export async function createNewTestGroup(host = 'http://localhost:8080'){
-    let response = await fetch(host + '/testGroup/new', {
-        method: 'POST'
-      }).then((response) => response).catch((error) => console.log(error));
-    if (!response.ok) throw Error(`Response to testGroup/new was ${response.status}`);
-    return response.json();
-}
 
-export async function createNewTestGroup(host = 'http://localhost:8080', passcode){
-  let response = await fetch(`${host}/testGroup/new/${passcode}`, {
+export async function createNewTestGroup(passcode = "", host = 'http://localhost:8080', ){
+  const path = (passcode.length > 0) ? `${host}/testGroup/new/${passcode}` : `${host}/testGroup/new`;
+  let response = await fetch(path, {
         method: 'POST'
       }).then((response) => response).catch((error) => console.log(error));
-  if (!response.ok) throw Error(`Response to testGroup/new/${passcode} was ${response.status}`);
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
 }
 
-export async function createNewSoldier(host = 'http://localhost:8080', testGroupId, lastName, firstName, age, isMale){
+export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale, passcode = "", host = 'http://localhost:8080'){
+  const path = (passcode.length > 0) ? `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}` : `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`;
   let response = await fetch(
-    `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`,
+    path,
     {method: 'POST'})
     .then((response) => response).catch((error) => console.log(error));
-  if (!response.ok) throw Error(`Response to /testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale} was ${response.status}`);
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
 }
 
-//This needs to be fixed such that only an array of IDs is returned
-export async function getAllTestGroups(host = 'http://localhost:8080'){
+export async function getAllTestGroupIds(host = 'http://localhost:8080'){
   let response = await fetch(host + '/testGroup/get/all')
     .then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to /testGroup/get/all was ${response.status}`);
@@ -39,44 +33,60 @@ export async function getHomePageView(host = 'http://localhost:8080'){
   location.replace(host);
 }
 
-export async function getSoldiersByTestGroupId(host = 'http://localhost:8080', testGroupId){
+export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host = 'http://localhost:8080'){
+  const path = (passcode.length > 0) ? `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}` : `${host}/testGroup/getSoldiers/${testGroupId}`;
   if (typeof testGroupId != "number"){
     console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof soldierId} passed`);
     return;
   }
   let response = await fetch(
-    `${host}/testGroup/getSoldiers/${testGroupId}`
+    path
   ).then((response) => response).catch((error) => console.log(error));
-  if (!response.ok) throw Error(`Response to /testGroup/getSoldiers/${testGroupId} was ${response.status}`);
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
 }
 
-export async function getSoldierById(host = 'http://localhost:8080', soldierId){
+export async function getSoldierById(soldierId, passcode = "", host = 'http://localhost:8080'){
+  const path = (passcode.length > 0) ? `${host}/soldier/get/${soldierId}/${passcode}` : `${host}/soldier/get/${soldierId}`;
   let response = await fetch(
-    `${host}/soldier/get/${soldierId}`
+    path
   ).then((response) => response).catch((error) => console.log(error));
-  if (!response.ok) throw Error(`Response to /get/${soldierId} was ${response.status}`);
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
 }
 
-export async function getTestGroupById(host = 'http://localhost:8080', testGroupId, passcode = ""){
+export async function getTestGroupById(testGroupId, passcode = "", host = 'http://localhost:8080'){
   const path = (passcode.length === 0) ? `${host}/testGroup/get/${testGroupId}/` : `${host}/testGroup/get/${testGroupId}/${passcode}`
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));
-  if (!response.ok) throw Error(`Response to /testGroup/get/${testGroupId}/${passcode} was ${response.status}`);
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
 }
 
-
-export async function updateSoldierScore(host = 'http://localhost:8080', soldierId, eventId, rawScore, passcode = ""){
+export async function updateSoldierScore(soldierId, eventId, rawScore, passcode = "", host = 'http://localhost:8080'){
   const path = (passcode.length === 0) ? `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}` : `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/${passcode}`;
   let response = await fetch(
     path,
     {method: 'POST'})
     .then((response) => response).catch((error) => console.log(error));
-    if (!response.ok) throw Error(`Response to /soldier/updateScore/${soldierId}/${eventId-1}/${rawScore} was ${response.status}`);
+    if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
     return response.json();
+}
+
+export async function downloadTestGroupData(testGroupId, passcode = "", host = 'http://localhost:8080'){
+  const path = (passcode.length > 0) ? `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}` : `${host}/testGroup/getXlsxFile/${testGroupId}`;
+  location.replace(path);
+}
+
+export async function populateDatabase(host = 'http://localhost:8080'){
+    const path = host + "/populate";
+    let response = await fetch(
+      path,
+      {method: 'POST'})
+      .then((response) => response).catch((error) => console.log(error));
+      if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
+      return response.json();
 }
 
 

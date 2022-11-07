@@ -48,41 +48,23 @@ public class AcftManagerServiceTest {
         Assert.isTrue(testGroup.getId() == testGroupId, "getTestGroup returned the incorrect group");
         //case w/o passcode
         Long testGroupIdEmptyPasscode = acftManagerService.createNewTestGroup();
-        TestGroup testGroupEmptyPasscode = acftManagerService.getTestGroup(testGroupIdEmptyPasscode);
+        TestGroup testGroupEmptyPasscode = acftManagerService.getTestGroup(testGroupIdEmptyPasscode, "");
         Assert.isTrue(testGroupEmptyPasscode.getId() == testGroupIdEmptyPasscode, "getTestGroup returned the incorrect group");
     }
 
     @Test
     void createNewSoldierShouldReturnId(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
     }
 
     @Test 
     void getSoldierByIdShouldReturnSoldier(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
         Assert.isTrue(soldier.getId() == soldierId, "getSoldierById returned the incorrect Soldier");
-    }
-
-    @Test 
-    void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers(){
-        Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        int n = 5;
-        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
-        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
-        int[] ages = {26, 18, 19, 30, 23};
-        boolean[] genders = {true, true, true, true, false};
-        for (int i = 0; i < n; i++){
-            acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
-        }
-        List<Soldier> queryResult = acftManagerService.getSoldiersByLastNameAndTestGroupId("Smith", testGroupId);
-        Assert.isTrue(queryResult.size() == 2, "error in retrieval of soldiers by lastName and groupId");
     }
 
     //Test like this pass when run along, but fail when all methods in the class are executed
@@ -100,14 +82,13 @@ public class AcftManagerServiceTest {
     @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
         int[] ages = {26, 18, 19, 30, 23};
         boolean[] genders = {true, true, true, true, false};
         for (int i = 0; i < n; i++){
-            acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
+            acftManagerService.createNewSoldier(testGroupId, lastNames[i], firstNames[i], ages[i], genders[i]);
         }
         List<Soldier> soldiersWithCertainGroupId = acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
         Assert.isTrue(soldiersWithCertainGroupId.size() == n, "getSoldiersByTestGroupId returned array of unexpected size");
@@ -116,13 +97,18 @@ public class AcftManagerServiceTest {
     @Test
     void updateSoldierScoreShouldReturnCorrectScaledScore(){
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate" , "Joshua", 31, true);
-        acftManagerService.updateSoldierScore(soldierId, 1, 110);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate" , "Joshua", 31, true);
+        acftManagerService.updateSoldierScore(soldierId, 1, 110, "");
         //Expected conversion for 31 year old male scoring 110 cm on the standing power throw is 90 points
         int expectedScore = 89;
         int convertedScore = acftManagerService.getSoldierById(soldierId).getStandingPowerThrow();
         Assert.isTrue(convertedScore == expectedScore, "expected score was " + expectedScore + " and actual score was " + convertedScore);
+        acftManagerService.updateSoldierScore(soldierId, 2, 20, "gnar");
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        testGroup.setPasscode("password");
+        int expectedScore2 = 75;
+        int convertedScore2 = acftManagerService.updateSoldierScore(soldierId, 3, 120, "");
+        Assert.isTrue(convertedScore2 == expectedScore2, "expected score was " + expectedScore2 + " and actual score was " + convertedScore2);
     }
 
     @Test
@@ -131,8 +117,8 @@ public class AcftManagerServiceTest {
         int reference = acftManagerService.getAllTestGroups().size();
         Long testGroupId1 = acftManagerService.createNewTestGroup();
         Long testGroupId2 = acftManagerService.createNewTestGroup();
-        TestGroup testGroup1 = acftManagerService.getTestGroup(testGroupId1);
-        TestGroup testGroup2 = acftManagerService.getTestGroup(testGroupId2);
+        TestGroup testGroup1 = acftManagerService.getTestGroup(testGroupId1, "");
+        TestGroup testGroup2 = acftManagerService.getTestGroup(testGroupId2, "");
         System.out.println("before changes: " + testGroup1);
         testGroup1.setExpirationDate(Date.from(Instant.now().minus(5, ChronoUnit.DAYS)));
         
@@ -146,8 +132,9 @@ public class AcftManagerServiceTest {
     @Test
     void getXlsxFileForTestGroupDataGetsExpectedFile(){
         Long testGroupId = acftManagerService.populateDatabase();
-        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId);
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, "");
         Assert.isTrue(file.getName().equals("testGroup_" + testGroupId + ".xlsx"), "In getXlsxFileForTestGroupDataGetsExpectedFile: File not found");
         file.delete();
     }
+
 }

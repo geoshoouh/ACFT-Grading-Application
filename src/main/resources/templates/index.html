@@ -10,13 +10,17 @@
             document.getElementById('editSoldierDataViewButton').addEventListener('click', Controller.showEditSoldierDataViewController);
             document.getElementById('populateDatabaseButton').addEventListener('click', Controller.populateDatabase);
             document.getElementById('storePasscodeButton').addEventListener('click', Controller.storeUserPasscode);
-            document.getElementById('showUserPasscodeButton').addEventListener('click', Controller.showUserPasscode)
+            document.getElementById('showUserPasscodeButton').addEventListener('click', Controller.showUserPasscode);
+            document.getElementById('downloadTestGroupDataButton').addEventListener('click', Controller.downloadTestGroupDataController);
         </script>
     </head>
     <body>
         <div>
             <h1>ACFT Manager</h1>
             <button id='editSoldierDataViewButton'>Edit Soldier Data</button>
+        </div>
+        <div>
+            <button id='downloadTestGroupDataButton'>Download Data</button>
         </div>
         <div>
             <button id='createTestGroupButton'>Create Test Group</button>

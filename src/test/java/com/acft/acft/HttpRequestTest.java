@@ -94,7 +94,7 @@ public class HttpRequestTest {
         Long testGroupIdEmptyPasscode = acftManagerService.createNewTestGroup();
         TestGroup testGroupFromResponseEmptyPasscode = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/get/{testGroupId}", testGroupIdEmptyPasscode)
+                get("/testGroup/get/{testGroupId}/randomText", testGroupIdEmptyPasscode)
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -146,8 +146,7 @@ public class HttpRequestTest {
     @Test
     void getSoldierByIdShouldReturnSoldier() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = gson.fromJson(
             mockMvc.perform(
                 get("/soldier/get/{soldierId}", soldierId)
@@ -161,46 +160,20 @@ public class HttpRequestTest {
     }
 
     @Test
-    void getSoldiersByLastNameAndTestGroupIdShouldReturnListOfSoldiers() throws Exception{
-        Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        int n = 5;
-        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
-        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
-        int[] ages = {26, 18, 19, 30, 23};
-        boolean[] genders = {true, true, true, true, false};
-        for (int i = 0; i < n; i++){
-            acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
-        }
-        Type listOfSoldierObjects = new TypeToken<ArrayList<Soldier>>() {}.getType();
-        List<Soldier> queryResult = gson.fromJson(
-            mockMvc.perform(
-                get("/testGroup/get/byLastNameAndGroup/{lastName}/{testGroupId}",
-                lastNames[0], testGroupId)
-            ).andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString()
-            , listOfSoldierObjects);
-        Assert.isTrue(queryResult.size() == 2, "error in retrieval of soldiers by lastName and groupId");
-    }
-
-    @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
         int[] ages = {26, 18, 19, 30, 23};
         boolean[] genders = {true, true, true, true, false};
         for (int i = 0; i < n; i++){
-            acftManagerService.createNewSoldier(testGroup, lastNames[i], firstNames[i], ages[i], genders[i]);
+            acftManagerService.createNewSoldier(testGroupId, lastNames[i], firstNames[i], ages[i], genders[i]);
         }
         Type listOfSoldierObjects = new TypeToken<ArrayList<Soldier>>() {}.getType();
         List<Soldier> queryResult = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/getSoldiers/{testGroupId}",
+                get("/testGroup/getSoldiers/{testGroupId}/randomText",
                 testGroupId)
             ).andExpect(status().isOk())
             .andReturn()
@@ -229,14 +202,13 @@ public class HttpRequestTest {
     @Test
     void updateSoldierScoreShouldReturnCorrectConvertedScore() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId);
-        Long soldierId = acftManagerService.createNewSoldier(testGroup, "Tate", "Joshua", 26, true);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         int eventId = 0;
         int rawScore = 205;
         int expectedConversion = 71;
         int requestResult = Integer.parseInt(
             mockMvc.perform(
-                post("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}",
+                post("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}/randomValue",
                 soldierId, eventId, rawScore)
             ).andExpect(status().isOk())
             .andReturn()
@@ -244,6 +216,29 @@ public class HttpRequestTest {
             .getContentAsString()
             );
         Assert.isTrue(requestResult == expectedConversion, "For update score request: expected result was " + expectedConversion + ", actual result was " + requestResult);
+    }
+
+    @Test
+    void updateSoldierScoreOnProtectedTestGroupShouldReturnCorrectConvertedScore() throws Exception{
+        String passcode = "password";
+        Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, "Tate", "Joshua", 26, true);  
+        int eventId = 5;
+        int rawScore = 1080;
+        int expectedScore = 74;
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
+        System.out.println("passcode from TG: " + testGroup.getPasscode() + " passed code: " + passcode);
+        System.out.println(testGroup.getPasscode().equals(passcode));
+        int requestResult = Integer.parseInt(
+            mockMvc.perform(
+                post("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}/{passcode}",
+                soldierId, eventId, rawScore, passcode)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+            ); 
+            Assert.isTrue(requestResult == expectedScore, "For update score request: expected result was " + expectedScore + ", actual result was " + requestResult);
     }
 
     @Test
