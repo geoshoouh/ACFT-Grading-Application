@@ -309,6 +309,20 @@ export async function downloadTestGroupDataController(){
     }
 }
 
+export async function flushDatabase(){
+    let response;
+    try{
+        response = await API.flushDatabase();
+    } catch (error){
+        console.log(error);
+    }
+    if (response === false){
+        document.getElementById('messageText').textContent = "Unsuccessful database flush";
+    } else {
+        document.getElementById('displayText').textContent = "Database flushed successfully";
+    }
+
+}
 
 //*******************************************************************
 
@@ -392,30 +406,31 @@ export async function displaySoldierName(){
 }
 
 function generateRandomRawScore(eventId){
+    //follows front-end 1-indexing convention
     let floor = 0;
     let ceiling = 0;
         switch (eventId){
-            case 0:
+            case 1:
                 floor = 120;
                 ceiling = 340;
                 break;
-            case 1:
+            case 2:
                 floor = 39;
                 ceiling = 130;
                 break;
-            case 2:
+            case 3:
                 floor = 10;
                 ceiling = 61;
                 break;
-            case 3:
+            case 4:
                 floor = 89;
                 ceiling = 300;
                 break;
-            case 4:
+            case 5:
                 floor = 70;
                 ceiling = 220;
                 break;
-            case 5:
+            case 6:
                 floor = 780;
                 ceiling = 1500;
                 break;
@@ -437,15 +452,18 @@ export async function populateDatabase(){
         soldierIds[i] = await API.createNewSoldier(testGroupId, lastNames[i], firstNames[i], ages[i], genders[i], undefined, host);
         //In front-end, event IDs are 1-indexed
         //Client-side API takes 1-indexed and decrements it before sending request
-        for (let j = 1; j < 6; j++){
+        for (let j = 1; j <= 6; j++){
             await API.updateSoldierScore(soldierIds[i], j, generateRandomRawScore(j), undefined, host);
         }
     }
+    //clear
+    document.getElementById('existingTestGroups').length = 0;
+    //repopulate
     await getAllTestGroupsController();
     return testGroupId;
 }
 
-export function storeUserPasscode(){
+function storeUserPasscode(){
     const messageText = document.getElementById('messageText');
     messageText.textContent = null;
     document.getElementById('displayText').textContent = null;
@@ -458,13 +476,43 @@ export function storeUserPasscode(){
     passcodeInputField.value = null;
 }
 
-export function showUserPasscode(){
+function showUserPasscode(){
     const messageText = document.getElementById('messageText');
     const displayText = document.getElementById('displayText');
     messageText.textContent = null;
     displayText.textContent = null;
     if (sessionStorage.getItem('userPasscode') !== null) displayText.textContent = `User Passcode: ${sessionStorage.getItem('userPasscode')}`;
     else messageText.textContent = "User passcode is empty"
+}
+
+export async function executePasscodeAction(){
+    const selectorValue = document.getElementById('passcodeActionSelector').value;
+    switch(selectorValue){
+        case '0':
+            storeUserPasscode();
+            break;
+        case '1':
+            showUserPasscode();
+            break;
+        case '2':
+            await createNewTestGroupController();
+            break;
+        default: break;
+    }
+}
+
+export async function executeAdminAction(){
+    const selectorValue = document.getElementById('adminActionSelector').value;
+    switch(selectorValue){
+        case '0':
+            await populateDatabase();
+            break;
+        case '1':
+            await flushDatabase();
+            document.getElementById('existingTestGroups').length = 0;
+            break;
+        default: break;
+    }
 }
 
 function download(blob, filename) {

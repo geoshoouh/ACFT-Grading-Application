@@ -83,5 +83,15 @@ export async function downloadTestGroupData(testGroupId, passcode = "", host = '
   return response.blob();
 }
 
+export async function flushDatabase(host = 'http://localhost:8080'){
+  const path = host + "/deleteAll"
+  let response = await fetch(
+    path,
+    {method: 'DELETE'}
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
+  return response.json();
+}
+
 
 

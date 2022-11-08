@@ -13,20 +13,20 @@
     </head>
     <body id='body'>
         <h1>Edit Soldier Data</h1>
-        <button id='returnToIndexButton'>Home</button>
+        <button class='button' id='returnToIndexButton'>Home</button>
         <h2 id='messageText'></h2>
         <div>
-            <div>
+            <div class='section'>
                 <!----Also used to display soldier score after updating-->
                 <h3 id='testGroupText'></h3><br>
                 <h2 id='displaySoldierName'></h2>
             </div>
-            <div>
+            <div class='section'>
                 <label for='soldierIdSelector'>Soldier ID: </label>
                 <select name='Soldiers in Test Group' id='soldierIdSelector'></select>
             </div>
-            <div>
-                <button id='displaySelectedSoldierNameButton'>Display Soldier</button>
+            <div class='section'>
+                <button class='button' id='displaySelectedSoldierNameButton'>Display Soldier</button>
                 <select name='Event Id' id='eventSelector'>
                     <option value='1'>Max Deadlift</option>
                     <option value='2'>Standing Power Throw</option>
@@ -37,10 +37,10 @@
                 </select>
             </div>
             <div id='soldierIdAndEventSelectionDiv'></div>
-            <div>
-                <button id='updateSoldierScoreButton'>Update</button>
+            <div class='section'>
+                <button class='button' id='updateSoldierScoreButton'>Update</button>
             </div>
-            <div>
+            <div class='section'>
                 <h3 class='errorText' id='errorText'></h3>
             </div>
         </div>

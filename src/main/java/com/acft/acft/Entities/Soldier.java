@@ -302,7 +302,7 @@ public class Soldier {
                 result = Integer.toString(maxDeadliftRaw);
                 break;
             case 1:
-                result = Integer.toString(standingPowerThrow / 10) + "." + standingPowerThrow % 10;
+                result = Integer.toString(standingPowerThrowRaw / 10) + "." + standingPowerThrowRaw % 10;
                 break;
             case 2:
                 result = Integer.toString(maxDeadliftRaw);

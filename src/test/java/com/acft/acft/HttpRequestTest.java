@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.Assert;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -253,6 +254,22 @@ public class HttpRequestTest {
         Assert.isTrue(response.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"), "In exportXlsxFileForTestGroupShouldExportExpectedFile: unexpected content type in servlet response");
         String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
         Assert.isTrue(!new File(path).exists(), "In createXlsxFileCreatesXlsxFileWithExpectedSheets: file was not deleted after being served to client");
+    }
+
+    @Test
+    void flushDatabaseDeletesAllEntities() throws Exception{
+        acftManagerService.populateDatabase();
+        Assert.isTrue(acftManagerService.getSoldierRepositorySize() > 0 && acftManagerService.getTestGroupRepositorySize() > 0, "In flushDatabseDeletesAllEntities: database population failed");
+        boolean response = Boolean.parseBoolean(
+            mockMvc.perform(
+                delete("/deleteAll")
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+        );
+        Assert.isTrue(acftManagerService.getSoldierRepositorySize() == 0 && acftManagerService.getTestGroupRepositorySize() == 0, "In flushDatabseDeletesAllEntities: request to flushDatabase() failed");
+        Assert.isTrue(response, "In flushDatabseDeletesAllEntities: unexpected boolean response");
     }
 
 }

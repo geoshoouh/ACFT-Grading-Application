@@ -179,4 +179,18 @@ public class AcftManagerService {
         return file;
     }
         
+    public boolean flushDatabase(){
+        soldierRepository.deleteAll();
+        testGroupRepository.deleteAll();
+        if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
+        return false;
+    }
+
+    public Long getSoldierRepositorySize(){
+        return soldierRepository.count();
+    }
+
+    public Long getTestGroupRepositorySize(){
+        return testGroupRepository.count();
+    }
 }
