@@ -179,6 +179,7 @@ public class AcftManagerService {
         return file;
     }
         
+    @Transactional
     public boolean flushDatabase(){
         soldierRepository.deleteAll();
         testGroupRepository.deleteAll();
