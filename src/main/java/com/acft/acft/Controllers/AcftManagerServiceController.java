@@ -65,7 +65,6 @@ public class AcftManagerServiceController {
         return acftManagerService.getSoldierById(soldierId);
     }
 
-
     @GetMapping("/testGroup/getSoldiers/{testGroupId}/{passcode}")
     List<Soldier> getSoldiersByTestGroupId(@PathVariable Long testGroupId, @PathVariable String passcode){
         return acftManagerService.getSoldiersByTestGroupId(testGroupId, passcode);
@@ -119,9 +118,5 @@ public class AcftManagerServiceController {
         file.delete();
     }
 
-    @PostMapping("/populate")
-    public boolean populateDatabase(){
-        acftManagerService.populateDatabase();
-        return true;
-    }
+    
 }

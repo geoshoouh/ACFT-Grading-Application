@@ -66,10 +66,7 @@ public class AcftManagerService {
     }
 
     public Long createNewSoldier(Long testGroupId, String lastName, String firstName, int age, boolean isMale) throws TestGroupNotFoundException, InvalidPasscodeException{
-        TestGroup testGroup = getTestGroup(testGroupId, "");
-        Soldier soldier = new Soldier(testGroup, lastName, firstName, age, isMale);
-        soldierRepository.save(soldier);
-        return soldier.getId();
+        return createNewSoldier(testGroupId, "", lastName, firstName, age, isMale);
     }
 
     public Soldier getSoldierById(Long soldierId, String passcode) throws SoldierNotFoundException, InvalidPasscodeException{
@@ -81,10 +78,7 @@ public class AcftManagerService {
 
     //This method is to keep older test cased running properly. Many such cases do not implement password protection
     public Soldier getSoldierById(Long soldierId) throws SoldierNotFoundException, InvalidPasscodeException{
-        Soldier soldier =  soldierRepository.findById(soldierId)
-            .orElseThrow(() -> new SoldierNotFoundException(soldierId));
-        getTestGroup(soldier.getTestGroupId(), "");
-        return soldier;
+        return getSoldierById(soldierId, "");
     }
 
     public List<Soldier> getSoldiersByTestGroupId(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{

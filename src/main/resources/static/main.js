@@ -27,6 +27,7 @@ export async function createNewTestGroupController(){
     element.value = response;
     dropDownMenu.appendChild(element);
     passcodeInput.value = null;
+    dropDownMenu.selectedIndex = dropDownMenu.length-1;
 }
 
 export async function createNewSoldierController(){
@@ -115,6 +116,7 @@ export async function getAllTestGroupsController(){
         element.value = id;
         dropDownMenu.appendChild(element);
     });
+    dropDownMenu.selectedIndex = dropDownMenu.length - 1;
 }
 
 export async function updateSoldierScoreController(){
@@ -288,22 +290,22 @@ export async function updateSoldierScoreController(){
 }
 
 export async function downloadTestGroupDataController(){
-    console.log("download function called")
     const host = getHost();
     const existingTestGroups = document.getElementById('existingTestGroups');
     const errorText = document.getElementById('messageText');
-    const userPasscode = sessionStorage.getItem('userPasscode');
+    const userPasscode = (sessionStorage.getItem('userPasscode') === null) ? undefined : sessionStorage.getItem('userPasscode');
     if (existingTestGroups.length === 0){
         errorText.textContent = "No available test groups";
         return;
     }
     const testGroupId = existingTestGroups.value;
     try {
+        //returns blob
         let response = await API.downloadTestGroupData(testGroupId, userPasscode, host);
-        console.log(response);
+        download(response, `test_group_${testGroupId}_data.xlsx`);
     } catch (error) {
         console.log(error);
-        return;
+        displayAccessUnauthorizedMessage()
     }
 }
 
@@ -348,6 +350,7 @@ export async function populateSoldiersByTestGroupIdController(){
         element.value = soldier.id;
         soldierMenu.appendChild(element);
     });
+    getAllTestGroupsController();
 }
 
 export async function showEditSoldierDataViewController(){
@@ -388,10 +391,58 @@ export async function displaySoldierName(){
     output.innerHTML = stringOutput;
 }
 
+function generateRandomRawScore(eventId){
+    let floor = 0;
+    let ceiling = 0;
+        switch (eventId){
+            case 0:
+                floor = 120;
+                ceiling = 340;
+                break;
+            case 1:
+                floor = 39;
+                ceiling = 130;
+                break;
+            case 2:
+                floor = 10;
+                ceiling = 61;
+                break;
+            case 3:
+                floor = 89;
+                ceiling = 300;
+                break;
+            case 4:
+                floor = 70;
+                ceiling = 220;
+                break;
+            case 5:
+                floor = 780;
+                ceiling = 1500;
+                break;
+            default: break;
+        }
+        return Math.floor(Math.random() * (ceiling - floor)) + floor;
+}
+
 export async function populateDatabase(){
-    console.log("populate called");
     const host = getHost();
-    
+    let testGroupId = await API.createNewTestGroup(undefined, host);
+    const n = 5;
+    let soldierIds = new Array(n);
+    const lastNames = ["Smith", "Jones", "Samuels", "Smith", "Conway"];
+    const firstNames = ["Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"];
+    const ages = [26, 18, 19, 30, 23];
+    const genders = [true, true, true, true, false];
+    for (let i = 0; i < n; i++){
+        soldierIds[i] = await API.createNewSoldier(testGroupId, lastNames[i], firstNames[i], ages[i], genders[i], undefined, host);
+        //In front-end, event IDs are 1-indexed
+        //Client-side API takes 1-indexed and decrements it before sending request
+        for (let j = 1; j < 6; j++){
+            await API.updateSoldierScore(soldierIds[i], j, generateRandomRawScore(j), undefined, host);
+        }
+    }
+    await getAllTestGroupsController();
+    return testGroupId;
 }
 
 export function storeUserPasscode(){
@@ -415,6 +466,17 @@ export function showUserPasscode(){
     if (sessionStorage.getItem('userPasscode') !== null) displayText.textContent = `User Passcode: ${sessionStorage.getItem('userPasscode')}`;
     else messageText.textContent = "User passcode is empty"
 }
+
+function download(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download =  filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
 //******************************************************************** 
 
 
@@ -512,8 +574,6 @@ export async function editSoldierDataViewOnLoad(){
 export async function indexOnLoad(){
     await getAllTestGroupsController();
     sessionStorage.setItem('view', '0');
-    document.getElementById('existingTestGroups').value = sessionStorage.getItem('selectedTestGroupId');
-
 }
 
 

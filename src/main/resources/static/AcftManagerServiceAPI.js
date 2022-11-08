@@ -9,7 +9,7 @@ export async function createNewTestGroup(passcode = "", host = 'http://localhost
 }
 
 export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode !== "") ? `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}` : `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`;
+  const path = (passcode.length > 0) ? `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}` : `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`;
   let response = await fetch(
     path,
     {method: 'POST'})
@@ -65,7 +65,7 @@ export async function getTestGroupById(testGroupId, passcode = "", host = 'http:
 }
 
 export async function updateSoldierScore(soldierId, eventId, rawScore, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode === "") ? `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}` : `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/${passcode}`;
+  const path = (passcode === "") ? `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/noPasscode` : `${host}/soldier/updateScore/${soldierId}/${eventId-1}/${rawScore}/${passcode}`;
   let response = await fetch(
     path,
     {method: 'POST'})
@@ -75,8 +75,12 @@ export async function updateSoldierScore(soldierId, eventId, rawScore, passcode 
 }
 
 export async function downloadTestGroupData(testGroupId, passcode = "", host = 'http://localhost:8080'){
-  const path = (passcode === "") ? `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}` : `${host}/testGroup/getXlsxFile/${testGroupId}`;
-  location.replace(path);
+  const path = (passcode === "") ? `${host}/testGroup/getXlsxFile/${testGroupId}` : `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}`;
+  let response = await fetch(
+    path
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
+  return response.blob();
 }
 
 
