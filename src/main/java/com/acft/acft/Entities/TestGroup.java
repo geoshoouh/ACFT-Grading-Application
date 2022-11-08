@@ -35,7 +35,7 @@ public class TestGroup {
     @Column(name = "expiration_date")
     private Date expirationDate;
 
-    @OneToMany(mappedBy = "testGroup")
+    @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL)
     public List<Soldier> soldierPopulation = new ArrayList<>();
 
     public TestGroup(){
