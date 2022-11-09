@@ -305,7 +305,7 @@ public class Soldier {
                 result = Integer.toString(standingPowerThrowRaw / 10) + "." + standingPowerThrowRaw % 10;
                 break;
             case 2:
-                result = Integer.toString(maxDeadliftRaw);
+                result = Integer.toString(handReleasePushupsRaw);
                 break;
             case 3:
                 String minutes = Integer.toString(sprintDragCarryRaw / 60);
