@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
@@ -180,6 +180,7 @@ public class AcftManagerService {
         return file;
     }
         
+    @Transactional
     public boolean flushDatabase(){
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;

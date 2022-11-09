@@ -310,9 +310,10 @@ export async function downloadTestGroupDataController(){
 }
 
 export async function flushDatabase(){
+    const host = getHost();
     let response;
     try{
-        response = await API.flushDatabase();
+        response = await API.flushDatabase(host);
     } catch (error){
         console.log(error);
     }

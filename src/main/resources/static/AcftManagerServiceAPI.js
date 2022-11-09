@@ -84,7 +84,8 @@ export async function downloadTestGroupData(testGroupId, passcode = "", host = '
 }
 
 export async function flushDatabase(host = 'http://localhost:8080'){
-  const path = host + "/deleteAll"
+  const path = host + "/deleteAll";
+  console.log(path);
   let response = await fetch(
     path,
     {method: 'DELETE'}
