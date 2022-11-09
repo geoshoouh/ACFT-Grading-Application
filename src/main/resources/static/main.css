@@ -25,6 +25,11 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
+    transition-duration: 0.4s;
+}
+
+.button:hover {
+    background-color: darkgreen;
 }
 
 .dropdown {
@@ -34,6 +39,7 @@
     border-color: black;
     border-radius: 5px;
 }
+
 
 .field {
     background-color: lightgoldenrodyellow;

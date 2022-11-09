@@ -121,21 +121,24 @@ export async function getAllTestGroupsController(){
 
 export async function updateSoldierScoreController(){
     const host = getHost();
-    const soldierId = parseInt(document.getElementById('soldierIdSelector').value);
-    const messageText = document.getElementById('messageText');
+    const soldierSelector = document.getElementById('soldierIdSelector');
+    const errorText = document.getElementById('errorText');
     const displayText = document.getElementById('displaySoldierName');
-    messageText.textContent = '';
-    if (soldierId.length == 0) messageText.textContent = 'No available soldiers';
+    if (soldierSelector.length == 0){
+        errorText.textContent = 'Cannot update scores with no soldiers in test group';
+        return;
+    }
+    const soldierId = parseInt(soldierSelector.value);
     const eventId = parseInt(document.getElementById('eventSelector').value);
 
     const displayErrorMessage = () => {
         displayText.textContent = '';
-        messageText.textContent = 'Invalid Input'
+        errorText.textContent = 'Invalid Input'
     };
 
     const displayHttpErrorMessage = () => {
         displayText.textContent = '';
-        messageText.textContent = 'Server Error';
+        errorText.textContent = 'Server Error';
     };
 
     const userPasscode = sessionStorage.getItem('userPasscode');
@@ -364,7 +367,6 @@ export async function populateSoldiersByTestGroupIdController(){
         element.value = soldier.id;
         soldierMenu.appendChild(element);
     });
-    getAllTestGroupsController();
 }
 
 export async function showEditSoldierDataViewController(){
@@ -386,24 +388,6 @@ export async function getHomePageViewController(){
     await API.getHomePageView(host);
 }
 
-export async function displaySoldierName(){
-    const host = getHost();
-    const output = document.getElementById('displaySoldierName');
-    const messageText = document.getElementById('messageText');
-    const soldierId = document.getElementById('soldierIdSelector');
-    if (soldierId.length == 0){
-        messageText.innerHTML = 'No available soldiers';
-        return;
-    }
-    let soldier;
-    soldier = await API.getSoldierById(soldierId.value, sessionStorage.getItem('userPasscode'), host);
-    if (soldier.status === 404){
-        messageText.innerHTML = 'No soldiers created for this test group';
-        return;
-    }
-    let stringOutput = `Soldier: ${soldier.lastName}, ${soldier.firstName}`
-    output.innerHTML = stringOutput;
-}
 
 function generateRandomRawScore(eventId){
     //follows front-end 1-indexing convention
