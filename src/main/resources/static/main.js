@@ -537,10 +537,11 @@ export function eventInputController(){
             meterTenths.type = 'number';
             meterTenths.id = 'sptMeterTenthsInput';
             meterTenths.className = 'field';
-            targetElement.append("Meters: ");
             targetElement.appendChild(meters);
-            targetElement.append(" Meter Tenths: ");
+            targetElement.append(' [ meters ]');
+            targetElement.appendChild(document.createElement('br'));
             targetElement.appendChild(meterTenths);
+            targetElement.append(' [ meter tenths ]');
             break;
         case 3:
             const hrpInput = document.createElement('input');
@@ -561,10 +562,11 @@ export function eventInputController(){
             seconds.type = 'number';
             seconds.id = 'secondsInput';
             seconds.className = 'field';
-            targetElement.append("Minutes: ");
             targetElement.appendChild(minutes);
-            targetElement.append(" Seconds: ");
+            targetElement.append(' [ minutes ] ');
+            targetElement.appendChild(document.createElement('br'));
             targetElement.appendChild(seconds);
+            targetElement.append(" [ seconds ] ");
             }
             break;
         case 5:
@@ -577,10 +579,11 @@ export function eventInputController(){
             seconds.type = 'number';
             seconds.id = 'secondsInput';
             seconds.className = 'field';
-            targetElement.append("Minutes: ");
             targetElement.appendChild(minutes);
-            targetElement.append(" Seconds: ");
+            targetElement.append(" [ minutes ]");
+            targetElement.appendChild(document.createElement('br'));
             targetElement.appendChild(seconds);
+            targetElement.append(" [ seconds ]");
             }
             break;
         case 6:
@@ -592,10 +595,11 @@ export function eventInputController(){
             seconds.type = 'number';
             seconds.id = 'secondsInput';
             seconds.className = 'field';
-            targetElement.append("Minutes: ");
             targetElement.appendChild(minutes);
-            targetElement.append(" Seconds: ");
+            targetElement.append(" [ minutes ]");
+            targetElement.appendChild(document.createElement('br'));
             targetElement.appendChild(seconds);
+            targetElement.append(" [ seconds ]");
             break;
         default: break;
     }

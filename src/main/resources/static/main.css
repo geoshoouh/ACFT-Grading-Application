@@ -47,5 +47,7 @@
     border-style: solid;
     border-color: black;
     border-radius: 5px;
+    margin: 5px;
+    padding: 2px;
 }
 
