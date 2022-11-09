@@ -23,7 +23,7 @@ import java.util.List;
 public class TestGroup {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "test_group_id")
     private Long id;
 

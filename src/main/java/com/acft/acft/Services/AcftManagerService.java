@@ -180,9 +180,7 @@ public class AcftManagerService {
         return file;
     }
         
-    @Transactional
     public boolean flushDatabase(){
-        soldierRepository.deleteAll();
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
