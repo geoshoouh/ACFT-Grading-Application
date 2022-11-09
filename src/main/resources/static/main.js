@@ -324,7 +324,6 @@ export async function flushDatabase(){
     }
 
 }
-
 //*******************************************************************
 
 
@@ -361,7 +360,7 @@ export async function populateSoldiersByTestGroupIdController(){
     soldierMenu.length = 0;
     soldierIdArray.forEach((soldier) => {
         let element = document.createElement('option');
-        element.textContent = soldier.id;
+        element.textContent = soldier.id + `: ${soldier.lastName}, ${soldier.firstName}`
         element.value = soldier.id;
         soldierMenu.appendChild(element);
     });
