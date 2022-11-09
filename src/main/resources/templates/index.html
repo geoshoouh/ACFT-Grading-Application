@@ -18,7 +18,7 @@
             <h1>ACFT Manager</h1>
             <div class='section'>
                 <label for='adminActionSelector'>Admin Actions</label>
-                <select id='adminActionSelector'>
+                <select class='dropdown' id='adminActionSelector'>
                     <option value='0'>Populate Database</option>
                     <option value='1'>Flush Database</option>
                 </select>
@@ -32,7 +32,7 @@
         
         <div class='section'>
             <label for='createTestGroupPasscodeField'>Passcode: </label>
-            <input type='text' id='createTestGroupPasscodeField'>
+            <input class='field' type='text' id='createTestGroupPasscodeField'>
             <select class='dropdown' id='passcodeActionSelector'>
                 <option class='option' value='0'>Set for User</option>
                 <option class='option' value='1'>Show for User</option>
@@ -49,14 +49,14 @@
             <label for='ageField'>Age:</label>
             <input class='field' type='number' id='ageField'><br>
             <label for='genderField'>Gender:</label>
-            <select name="Gender" id="genderField">
+            <select class='dropdown' name="Gender" id="genderField">
                 <option value=true>Male</option>
                 <option value=false>Female</option>
             </select><br>
         </div>
         <div class='section'>
             <label for='existingTestGroups'>Test Group:</label>
-            <select name='Existing Test Groups' id='existingTestGroups'></select>
+            <select class='dropdown' name='Existing Test Groups' id='existingTestGroups'></select>
             <button class='button' id='createNewSoldierButton'>Create Soldier</button>
         </div>
         <div class='section'>

@@ -1,5 +1,6 @@
 * {
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #e0e0e0;
 }
 
 .section {
@@ -20,4 +21,25 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
 }
+
+.dropdown {
+    background-color: lightcyan;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 5px;
+}
+
+.field {
+    background-color: lightgoldenrodyellow;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 5px;
+}
+

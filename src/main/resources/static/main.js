@@ -540,6 +540,7 @@ export function eventInputController(){
             const mdlInput = document.createElement('input');
             mdlInput.type = 'number';
             mdlInput.id = 'mdlInputField';
+            mdlInput.class = 'field';
             targetElement.appendChild(mdlInput);
             targetElement.append("  [ lbs ]");
             break;
@@ -547,9 +548,11 @@ export function eventInputController(){
             const meters  = document.createElement('input');
             meters.type = 'number';
             meters.id = 'sptMetersInput';
+            meters.class = 'field';
             const meterTenths = document.createElement('input');
             meterTenths.type = 'number';
             meterTenths.id = 'sptMeterTenthsInput';
+            meterTenths.class = 'field';
             targetElement.append("Meters: ");
             targetElement.appendChild(meters);
             targetElement.append(" Meter Tenths: ");
@@ -559,6 +562,7 @@ export function eventInputController(){
             const hrpInput = document.createElement('input');
             hrpInput.type = 'number';
             hrpInput.id = 'hrpInputField';
+            hrpInput.class = 'field';
             targetElement.appendChild(hrpInput);
             targetElement.append("  [ repetitions ]");
             break;
@@ -568,9 +572,11 @@ export function eventInputController(){
             const minutes = document.createElement('input');
             minutes.type = 'number';
             minutes.id = 'minutesInput'
+            minutes.class = 'field';
             const seconds = document.createElement('input');
             seconds.type = 'number';
             seconds.id = 'secondsInput';
+            seconds.class = 'field';
             targetElement.append("Minutes: ");
             targetElement.appendChild(minutes);
             targetElement.append(" Seconds: ");
@@ -582,9 +588,11 @@ export function eventInputController(){
             const minutes = document.createElement('input');
             minutes.type = 'number';
             minutes.id = 'minutesInput'
+            minutes.class = 'field';
             const seconds = document.createElement('input');
             seconds.type = 'number';
             seconds.id = 'secondsInput';
+            seconds.class = 'field';
             targetElement.append("Minutes: ");
             targetElement.appendChild(minutes);
             targetElement.append(" Seconds: ");
@@ -595,9 +603,11 @@ export function eventInputController(){
             const minutes = document.createElement('input');
             minutes.type = 'number';
             minutes.id = 'minutesInput'
+            minutes.class = 'field';
             const seconds = document.createElement('input');
             seconds.type = 'number';
             seconds.id = 'secondsInput';
+            seconds.class = 'field';
             targetElement.append("Minutes: ");
             targetElement.appendChild(minutes);
             targetElement.append(" Seconds: ");
