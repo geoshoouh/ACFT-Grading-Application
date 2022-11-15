@@ -275,7 +275,7 @@ public class Soldier {
         return twoMileRunRaw;
     }
 
-
+    
     public void setTwoMileRunRaw(int twoMileRunRaw) {
         this.twoMileRunRaw = twoMileRunRaw;
     }
