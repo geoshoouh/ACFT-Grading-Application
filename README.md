@@ -7,6 +7,7 @@
 -Automatic conversion of raw score data to scaled scores [**Implemented**]<br/>
 -Automatic deletion of test groups after 48 hours [**Implemented**]<br/>
 -Export testing group data to .xlsx [**Implemented**]<br/>
+-Mobile-friendly UI [**Implemented**]<br/>
 -Computes and displays completion status of events<br/>
 -Limits on active test groups per IP address<br/>
 -UI Support for data visualization <br/>
