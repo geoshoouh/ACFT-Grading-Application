@@ -144,4 +144,6 @@ public class AcftManagerServiceTest {
         acftManagerService.flushDatabase();
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() == 0 && acftManagerService.getTestGroupRepositorySize() == 0, "In flushDatabseDeletesAllEntities: flushDatabase() failed");
     }
+
+
 }
