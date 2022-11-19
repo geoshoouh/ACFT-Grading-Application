@@ -12,7 +12,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
@@ -37,6 +36,7 @@ public class AcftManagerService {
 
     @Autowired
     private AcftDataExporter acftDataExporter;
+
 
 
     public Long createNewTestGroup(){
@@ -180,7 +180,6 @@ public class AcftManagerService {
         return file;
     }
         
-    @Transactional
     public boolean flushDatabase(){
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
@@ -194,4 +193,16 @@ public class AcftManagerService {
     public Long getTestGroupRepositorySize(){
         return testGroupRepository.count();
     }
+
+    public boolean deleteSoldierFromTestGroup(Long testGroupId, String passcode, Long soldierId) throws SoldierNotFoundException, InvalidPasscodeException {
+        //Check for TestGroup access
+        getTestGroup(testGroupId, passcode);
+        
+        Soldier soldier = soldierRepository.findById(soldierId)
+            .orElseThrow(() -> new SoldierNotFoundException(soldierId));
+        soldierRepository.delete(soldier);
+        return true;
+    }
+
+
 }

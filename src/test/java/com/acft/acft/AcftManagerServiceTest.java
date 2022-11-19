@@ -54,9 +54,12 @@ public class AcftManagerServiceTest {
 
     @Test
     void createNewSoldierShouldReturnId(){
+        String passcode = "";
         Long testGroupId = acftManagerService.createNewTestGroup();
+        int baseline = acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
+        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline + 1, "In createNewTestGroupShouldReturnId: unexpected soldierPopulation value after solider addition");
     }
 
     @Test 
@@ -67,7 +70,7 @@ public class AcftManagerServiceTest {
         Assert.isTrue(soldier.getId() == soldierId, "getSoldierById returned the incorrect Soldier");
     }
 
-    //Test like this pass when run along, but fail when all methods in the class are executed
+    //Tests like this passed when run alone, but failed when all methods in the class are executed
     //Added initial query to establish reference
     //This is perhaps a lazy solution to mitigate a lack of familiarity with how Spring Boot tests execute
     @Test
@@ -145,5 +148,19 @@ public class AcftManagerServiceTest {
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() == 0 && acftManagerService.getTestGroupRepositorySize() == 0, "In flushDatabseDeletesAllEntities: flushDatabase() failed");
     }
 
+
+    @Test
+    void deleteSoldiersByIdCascadesToTestGroupPopulation(){
+        String passcode = "";
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        int baseline = acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size();
+        Long soldierRepositoryBaseline = acftManagerService.getSoldierRepositorySize();
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
+        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline + 1, "In removeSoldierFromTestGroupPopulationCascades(): unexpected TestGroup population size after soldier instantiation");
+        Assert.isTrue(acftManagerService.getSoldierRepositorySize() == soldierRepositoryBaseline + 1, "In deleteSoldiersByIdCascadesToTestGroupPopulation: Unexpected soldierRepository size after soldier creation");
+        acftManagerService.deleteSoldierFromTestGroup(testGroupId, passcode, soldierId);
+        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline, "In removeSoldierFromTestGroupPopulationCascades(): unexpected TestGroup population size " + acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() + " after soldier deletion");
+        Assert.isTrue(acftManagerService.getSoldierRepositorySize() == soldierRepositoryBaseline, "In deleteSoldiersByIdCascadesToTestGroupPopulation(): getSoldierRepositorySize() returned unexpected value: " + acftManagerService.getSoldierRepositorySize());
+    }
 
 }

@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -27,7 +26,6 @@ public class Soldier {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn
     private TestGroup testGroup;
 
     @Column(name = "test_group_id")
@@ -91,10 +89,8 @@ public class Soldier {
         this.isMale = isMale;
     }
 
-    
     protected Soldier(){}
     
-
     public Long getId() {
         return id;
     }

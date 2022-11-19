@@ -1,5 +1,6 @@
 package com.acft.acft.Entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,15 +8,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.CascadeType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -36,8 +36,8 @@ public class TestGroup {
     @Column(name = "expiration_date")
     private Date expirationDate;
 
-    @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL)
-    public List<Soldier> soldierPopulation = new ArrayList<>();
+    @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    public Set<Soldier> soldierPopulation = new HashSet<>();
 
     public TestGroup(){
         this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
@@ -48,13 +48,8 @@ public class TestGroup {
         this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
     }
 
-    public List<Soldier> getSoldierPopulation(){
+    public Set<Soldier> getSoldierPopulation(){
         return soldierPopulation;
-    }
-
-
-    public void addSoldier(Soldier soldier){
-        soldierPopulation.add(soldier);
     }
 
     public Long getId() {
@@ -80,10 +75,6 @@ public class TestGroup {
 
     public void setPasscode(String passcode) {
         this.passcode = passcode;
-    }
-
-    public void setSoldierPopulation(List<Soldier> soldierPopulation) {
-        this.soldierPopulation = soldierPopulation;
     }
 
     public void setExpirationDate(Date expirationDate){
