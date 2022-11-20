@@ -295,7 +295,7 @@ export function displayDeleteSoldierSafeguard(){
         document.getElementById('errorText').textContent = 'No soldiers in test group';
         return;
     }
-    if (document.getElementById('safeguardText') !== null) return;
+    if (document.getElementsByClassName('safeguard').length !== 0) return;
     const anchorPoint = document.getElementById('deleteSoldierButtonDiv');
     const break1 = document.createElement('br');
     const break2 = document.createElement('br');
@@ -342,9 +342,8 @@ async function populateSoldiersByTestGroupIdController(){
         return;
     }
     let soldierIdArray = testGroup.soldierPopulation;
-    if (soldierIdArray.length == 0) return;
     let soldierMenu = document.getElementById('soldierIdSelector');
-    soldierMenu.length = 0;
+    soldierMenu.textContent = "";
     soldierIdArray.forEach((soldier) => {
         let element = document.createElement('option');
         element.textContent = soldier.id + `: ${soldier.lastName}, ${soldier.firstName}`
@@ -355,7 +354,8 @@ async function populateSoldiersByTestGroupIdController(){
 
 async function yesButtonClicked(){
     const testGroupId = sessionStorage.getItem('selectedTestGroupId');
-    const soldierId = document.getElementById('soldierIdSelector').value;
+    const soldierIdSelector = document.getElementById('soldierIdSelector');
+    const soldierId = soldierIdSelector.value;
     const passcode = (sessionStorage.getItem('userPasscode') === null) ? undefined : sessionStorage.getItem('userPasscode');
     const host = getHost();
     try {
