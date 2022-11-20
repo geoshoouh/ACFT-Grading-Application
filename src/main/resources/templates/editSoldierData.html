@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>ACFT Manager</title>
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/EditSoldierViewController.js';
@@ -9,11 +10,20 @@
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
             document.getElementById('eventSelector').addEventListener('change', Controller.eventInputController);
             document.getElementById('updateSoldierScoreButton').addEventListener('click', Controller.updateSoldierScoreController);
+            document.getElementById('deleteSoldierButton').addEventListener('click', Controller.displayDeleteSoldierSafeguard);
+            document.getElementById('aboutViewButton').addEventListener('click', Controller.showAboutViewController);
         </script>
     </head>
     <body id='body'>
-        <h1>Edit Soldier Data</h1>
-        <button class='button' id='returnToIndexButton'>Home</button>
+        <div class='section'>
+            <div>
+                <ul class='navBar'>
+                    <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
+                    <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
+                </ul>
+            </div>
+            <h1>Edit Soldier Data</h1>
+        </div>
         <h2 id='messageText'></h2>
         <div>
             <div class='section'>
@@ -26,6 +36,7 @@
                 <select class='dropdown' name='Soldiers in Test Group' id='soldierIdSelector'></select>
             </div>
             <div class='section'>
+                <label for='eventSelector'>Event: </label>
                 <select class='dropdown' name='Event Id' id='eventSelector'>
                     <option value='1'>Max Deadlift</option>
                     <option value='2'>Standing Power Throw</option>
@@ -38,6 +49,9 @@
             <div id='soldierIdAndEventSelectionDiv'></div>
             <div class='section'>
                 <button class='button' id='updateSoldierScoreButton'>Update</button>
+            </div>
+            <div id='deleteSoldierButtonDiv'>
+                <button class='button deleteSoldierButton' id='deleteSoldierButton'>Delete Soldier</button>
             </div>
             <div class='section'>
                 <h3 class='errorText' id='errorText'></h3>

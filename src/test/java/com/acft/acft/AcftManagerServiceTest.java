@@ -158,7 +158,7 @@ public class AcftManagerServiceTest {
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline + 1, "In removeSoldierFromTestGroupPopulationCascades(): unexpected TestGroup population size after soldier instantiation");
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() == soldierRepositoryBaseline + 1, "In deleteSoldiersByIdCascadesToTestGroupPopulation: Unexpected soldierRepository size after soldier creation");
-        acftManagerService.deleteSoldierFromTestGroup(testGroupId, passcode, soldierId);
+        acftManagerService.deleteSoldierById(testGroupId, passcode, soldierId);
         Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline, "In removeSoldierFromTestGroupPopulationCascades(): unexpected TestGroup population size " + acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() + " after soldier deletion");
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() == soldierRepositoryBaseline, "In deleteSoldiersByIdCascadesToTestGroupPopulation(): getSoldierRepositorySize() returned unexpected value: " + acftManagerService.getSoldierRepositorySize());
     }

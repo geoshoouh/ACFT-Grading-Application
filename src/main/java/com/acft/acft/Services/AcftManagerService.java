@@ -194,7 +194,7 @@ public class AcftManagerService {
         return testGroupRepository.count();
     }
 
-    public boolean deleteSoldierFromTestGroup(Long testGroupId, String passcode, Long soldierId) throws SoldierNotFoundException, InvalidPasscodeException {
+    public boolean deleteSoldierById(Long testGroupId, String passcode, Long soldierId) throws SoldierNotFoundException, InvalidPasscodeException {
         //Check for TestGroup access
         getTestGroup(testGroupId, passcode);
         

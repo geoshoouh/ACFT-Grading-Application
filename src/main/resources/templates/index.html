@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>ACFT Manager</title>
         <link rel="stylesheet" href="main.css">
         <script type='module'>
             import * as Controller from '/IndexViewController.js';
@@ -11,10 +12,17 @@
             document.getElementById('downloadTestGroupDataButton').addEventListener('click', Controller.downloadTestGroupDataController);
             document.getElementById('passcodeActionButton').addEventListener('click', Controller.executePasscodeAction);
             document.getElementById('executeAdminActionButton').addEventListener('click', Controller.executeAdminAction);
+            document.getElementById('aboutViewButton').addEventListener('click', Controller.showAboutViewController);
         </script>
     </head>
     <body>
         <div class='section'>
+            <div>
+                <ul class='navBar'>
+                    <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+                    <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
+                </ul>
+            </div>
             <h1>ACFT Manager</h1>
             <div class='section'>
                 <label for='adminActionSelector'>Admin Actions</label>
@@ -26,7 +34,6 @@
             </div>
         </div>
         <div class='section'>
-            <button class='button' id='editSoldierDataViewButton'>Edit Soldier Data</button>
             <button class='button' id='downloadTestGroupDataButton'>Download Data</button>
         </div>
         

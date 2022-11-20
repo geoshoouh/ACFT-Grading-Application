@@ -82,6 +82,10 @@ export async function downloadTestGroupDataController(){
 
 export async function showEditSoldierDataViewController(){
     const host = getHost();
+    if (document.getElementById('existingTestGroups') === null){
+        API.getEditSoldierDataView(host);
+        return;
+    }
     const selectedTestGroupId = document.getElementById('existingTestGroups').value;
     try {
         await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'), host);
@@ -91,7 +95,12 @@ export async function showEditSoldierDataViewController(){
         return;    
     }
     sessionStorage.setItem('selectedTestGroupId', selectedTestGroupId);
-    await API.getEditSoldierDataView(host);
+    API.getEditSoldierDataView(host);
+}
+
+export function showAboutViewController(){
+    const host = getHost();
+    API.getAboutView(host);
 }
 
 export async function executePasscodeAction(){

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>ACFT Manager</title>
+        <link rel="stylesheet" href="main.css">
+        <script type='module'>
+            import {showEditSoldierDataViewController} from '/IndexViewController.js';
+            import {getHomePageViewController} from '/EditSoldierViewController.js';
+            document.getElementById('editSoldierDataViewButton').addEventListener('click', showEditSoldierDataViewController);
+            document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
+        </script>
+    </head>
+    <body>
+        <div class='section'>
+            <div>
+                <ul class='navBar'>
+                    <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
+                    <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+                </ul>
+            </div>
+            <h1>About ACFT Manager</h1>
+            <div class='section'>
+                <p>
+                    <strong><em>Description:</em></strong> Eliminates the need for paper scorecards
+                    and manual score consolidation for the Army Combat Fitness Test. 
+                    Enables decentralized on-site input of test data, automatic score conversion, 
+                    data exportation, test event progress monitoring, and data visualization
+                </p>
+                <p>
+                    <strong><em>How to Demo:</em></strong>
+                    <ul>
+                        <p><em>Admin Actions: </em>For demo purposes, the application database can be automatically populated or cleared using admin actions. Select the desired admin action from the 'Admin Actions' dropdown menu and click execute.</p>
+                        <em>Create Test Group and Passcode Actions</em>
+                        <ul>
+                            <li>Create a test group instance by selecting 'Create Test Group' from the passcode actions dropdown menu, typing in an optional passcode, and clicking 'Submit'. The assigned test group ID will be displayed.</li>
+                            <li>Using the passcode actions dropdown menu, select 'Set User Passcode' and follow the same steps for test group creation. This will set the passcode that will be used to access test groups</li>
+                            <li>Should you need to check the user passcode you set, select 'Show User Passcode' from the passcode actions dropdown menu and click 'Submit'</li>
+                        </ul>
+                        <em>Create Soldier:</em>
+                        <ul>
+                            <li>Creating a soldier requires the associated test group to be non-passcode protected or for the user to have the correct user passcode</li>
+                            <li>Ensure the desired test group ID is selected in the 'Test Group' dropdown menu.</li>
+                            <li>Fill out all soldier information fields.</li>
+                            <li>Click the 'Add Soldier' button. The soldier's assigned ID will be displayed.</li>
+                        </ul>
+                        <em>Edit Testing Data:</em>
+                        <ul>
+                            <li>Ensure the desired test group ID is selected in the 'Test Group' dropdown menu.</li>
+                            <li>Select 'Edit Data' in the navigation bar.</li>
+                            <li>The soldier that will receive data updates can be changed using the 'Soldier' dropdown menu</li>
+                            <li>Select the test event being updated using the 'Event' dropdown menu.</li>
+                            <li>Enter raw score data and click the 'Update' button. The scaled score will be displayed.</li>
+                        </ul>
+                        <em>Delete Soldier:</em>
+                        <ul>
+                            <li>From the 'Edit Data' page click the 'Delete' button.</li>
+                            <li>After the safeguard message is displayed, click the 'YES' button.</li>
+                        </ul>
+                        <em>Download Data Excel File</em>
+                        <ul>
+                            <li>From the homepage, select the desired test group from the 'Test Group' dropdown menu</li>
+                            <li>Click the 'Download Data' button. The selected test group must be non-passcode protected or you must have the correct user passcode set to execute this action</li>
+                        </ul>
+                        
+                        
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

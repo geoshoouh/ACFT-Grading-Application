@@ -285,9 +285,45 @@ export function eventInputController(){
     }
 }
 
-export async function getHomePageViewController(){
+export function getHomePageViewController(){
     const host = getHost();
-    await API.getHomePageView(host);
+    API.getHomePageView(host);
+}
+
+export function displayDeleteSoldierSafeguard(){
+    if (document.getElementById('soldierIdSelector').length === 0){
+        document.getElementById('errorText').textContent = 'No soldiers in test group';
+        return;
+    }
+    if (document.getElementById('safeguardText') !== null) return;
+    const anchorPoint = document.getElementById('deleteSoldierButtonDiv');
+    const break1 = document.createElement('br');
+    const break2 = document.createElement('br');
+    anchorPoint.appendChild(break1);
+    const textSpan = document.createElement('p');
+    textSpan.textContent = "Are you sure you want to delete the selected soldier?"
+    textSpan.className = "safeguardText";
+    textSpan.id = "safeguardText";
+    anchorPoint.appendChild(textSpan);
+    anchorPoint.appendChild(break2);
+    const noButton = document.createElement('button');
+    const yesButton = document.createElement('button');
+    noButton.className = 'safeguardButton button';
+    noButton.id = 'noButton'
+    yesButton.className = 'safeguardButton button';
+    yesButton.id = 'yesButton'
+    noButton.textContent = "NO";
+    yesButton.textContent = "YES";
+    noButton.addEventListener('click', noButtonClicked);
+    yesButton.addEventListener('click', yesButtonClicked);
+    anchorPoint.appendChild(noButton);
+    anchorPoint.appendChild(yesButton);
+    
+}
+
+export function showAboutViewController(){
+    const host = getHost();
+    API.getAboutView(host);
 }
 
 
@@ -317,4 +353,32 @@ async function populateSoldiersByTestGroupIdController(){
         soldierMenu.appendChild(element);
     });
 }
+
+async function yesButtonClicked(){
+    const testGroupId = sessionStorage.getItem('selectedTestGroupId');
+    const soldierId = document.getElementById('soldierIdSelector').value;
+    const passcode = (sessionStorage.getItem('userPasscode') === null) ? undefined : sessionStorage.getItem('userPasscode');
+    const host = getHost();
+    try {
+        await API.deleteSoldierById(testGroupId, soldierId, passcode, host);
+    } catch (error) {
+        console.log(error);
+    }
+    removeSafeguard();
+    populateSoldiersByTestGroupIdController();
+    document.getElementById('messageText').textContent = `Soldier with ID ${soldierId} deleted`;
+}
+
+function noButtonClicked(){
+    removeSafeguard();
+}
+
+function removeSafeguard(){
+    const anchorPoint = document.getElementById('deleteSoldierButtonDiv');
+    const ids = ["safeguardText", "yesButton", "noButton"];
+    ids.forEach((id) => {
+        anchorPoint.removeChild(document.getElementById(id));
+    });
+}
+
 

@@ -11,11 +11,11 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.List;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Set;
 
 
 @Entity
@@ -37,7 +37,7 @@ public class TestGroup {
     private Date expirationDate;
 
     @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    public Set<Soldier> soldierPopulation = new HashSet<>();
+    public List<Soldier> soldierPopulation = new ArrayList<>();
 
     public TestGroup(){
         this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
@@ -48,7 +48,7 @@ public class TestGroup {
         this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
     }
 
-    public Set<Soldier> getSoldierPopulation(){
+    public List<Soldier> getSoldierPopulation(){
         return soldierPopulation;
     }
 

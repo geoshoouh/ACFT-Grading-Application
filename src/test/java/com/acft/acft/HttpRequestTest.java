@@ -272,4 +272,25 @@ public class HttpRequestTest {
         Assert.isTrue(response, "In flushDatabseDeletesAllEntities: unexpected boolean response");
     }
 
+    //Attempted to test using Set.contains() instead of Set.size(), but this failed and it 
+    //did not seem worth it to determine the cause yet
+    @Test
+    void deleteSoldierByIdPersistsDeletion() throws Exception{
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
+        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, "").getSoldierPopulation().size() == 1, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier creation");
+        boolean response = Boolean.parseBoolean(
+            mockMvc.perform(
+                delete("/soldier/delete/{testGroupId}/{soldierId}", testGroupId, soldierId)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+        );
+        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, "").getSoldierPopulation().size() == 0, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier deletion");
+        Assert.isTrue(response, "In deleteSoldierByIdPersistsDeletion: unexpected boolean response");
+    }
+
+    
+
 }

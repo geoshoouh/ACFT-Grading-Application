@@ -45,7 +45,6 @@ public class AcftManagerServiceController {
         return acftManagerService.getTestGroup(testGroupId, passcode);
     }
 
-
     @PostMapping("/testGroup/post/{testGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}")
     Long createNewSoldier(@PathVariable Long testGroupId, @PathVariable String passcode, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
         return acftManagerService.createNewSoldier(testGroupId, passcode, lastName, firstName, age, isMale);
@@ -83,26 +82,16 @@ public class AcftManagerServiceController {
 
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}/{passcode}")
     public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
-        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
-        String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-        response.setContentType(mimeType);
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-        response.setContentLength((int) file.length());
-        InputStream inputStream;
-        try {
-            inputStream = new BufferedInputStream(new FileInputStream(file));
-            FileCopyUtils.copy(inputStream, response.getOutputStream());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }   
-        file.delete();
+        exportXlsxFileUtility(request, response, testGroupId, passcode);
     }
 
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}")
     public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId){
-        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, "");
+        exportXlsxFileForTestGroup(request, response, testGroupId, "");
+    }
+
+    public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, Long testGroupId, String passcode){
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
         String mimeType = URLConnection.guessContentTypeFromName(file.getName());
         response.setContentType(mimeType);
         response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
@@ -122,5 +111,15 @@ public class AcftManagerServiceController {
     @DeleteMapping("/deleteAll")
     public boolean flushDatabase(){
         return acftManagerService.flushDatabase();
+    }
+
+    @DeleteMapping("/soldier/delete/{testGroupId}/{soldierId}/{passcode}")
+    public boolean deleteSoldierById(@PathVariable Long testGroupId, @PathVariable Long soldierId, @PathVariable String passcode){
+        return acftManagerService.deleteSoldierById(testGroupId, passcode, soldierId);
+    }
+
+    @DeleteMapping("/soldier/delete/{testGroupId}/{soldierId}")
+    public boolean deleteSoldierById(@PathVariable Long testGroupId, @PathVariable Long soldierId){
+        return acftManagerService.deleteSoldierById(testGroupId, "", soldierId);
     }
 }
