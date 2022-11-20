@@ -100,6 +100,7 @@ export async function showEditSoldierDataViewController(){
 
 export function showAboutViewController(){
     const host = getHost();
+    sessionStorage.setItem('selectedTestGroupId', document.getElementById('existingTestGroups').value);
     API.getAboutView(host);
 }
 
