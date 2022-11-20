@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>ACFT Manager</title>
         <link rel="stylesheet" href="main.css">
+        <link rel="icon" type="image/ico" th:href="@{images/acft-manager-logo.png}"/>
         <script type='module'>
             import * as Controller from '/IndexViewController.js';
             window.onload = Controller.indexOnLoad;
@@ -22,6 +23,7 @@
         </ul>
         <div class='component'>
             <div class='section'>
+                <img class='logo' th:src='@{images/acft-manager-logo.png}'/>
                 <h1>ACFT Manager</h1>
                 <div class='section'>
                     <label for='adminActionSelector'>Admin Actions</label>
