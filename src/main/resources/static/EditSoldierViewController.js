@@ -299,19 +299,18 @@ export function displayDeleteSoldierSafeguard(){
     const anchorPoint = document.getElementById('deleteSoldierButtonDiv');
     const break1 = document.createElement('br');
     const break2 = document.createElement('br');
+    break1.className = "safeguard";
+    break2.className = "safeguard";
     anchorPoint.appendChild(break1);
     const textSpan = document.createElement('p');
     textSpan.textContent = "Are you sure you want to delete the selected soldier?"
-    textSpan.className = "safeguardText";
-    textSpan.id = "safeguardText";
+    textSpan.className = "safeguard";
     anchorPoint.appendChild(textSpan);
     anchorPoint.appendChild(break2);
     const noButton = document.createElement('button');
     const yesButton = document.createElement('button');
-    noButton.className = 'safeguardButton button';
-    noButton.id = 'noButton'
-    yesButton.className = 'safeguardButton button';
-    yesButton.id = 'yesButton'
+    noButton.className = 'safeguardButton button safeguard';
+    yesButton.className = 'safeguardButton button safeguard';
     noButton.textContent = "NO";
     yesButton.textContent = "YES";
     noButton.addEventListener('click', noButtonClicked);
@@ -375,10 +374,8 @@ function noButtonClicked(){
 
 function removeSafeguard(){
     const anchorPoint = document.getElementById('deleteSoldierButtonDiv');
-    const ids = ["safeguardText", "yesButton", "noButton"];
-    ids.forEach((id) => {
-        anchorPoint.removeChild(document.getElementById(id));
-    });
+    const anchorChildren = document.getElementsByClassName('safeguard');
+    while (anchorChildren.length > 0) anchorPoint.removeChild(anchorChildren[0]);
 }
 
 

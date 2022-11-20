@@ -16,59 +16,59 @@
         </script>
     </head>
     <body>
-        <div class='section'>
-            <div>
-                <ul class='navBar'>
-                    <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
-                    <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
-                </ul>
-            </div>
-            <h1>ACFT Manager</h1>
+        <ul class='navBar'>
+            <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+            <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
+        </ul>
+        <div class='component'>
             <div class='section'>
-                <label for='adminActionSelector'>Admin Actions</label>
-                <select class='dropdown' id='adminActionSelector'>
-                    <option value='0'>Populate Database</option>
-                    <option value='1'>Flush Database</option>
-                </select>
-                <button class='button' id='executeAdminActionButton'>Execute</button>
+                <h1>ACFT Manager</h1>
+                <div class='section'>
+                    <label for='adminActionSelector'>Admin Actions</label>
+                    <select class='dropdown' id='adminActionSelector'>
+                        <option value='0'>Populate Database</option>
+                        <option value='1'>Flush Database</option>
+                    </select>
+                    <button class='button' id='executeAdminActionButton'>Execute</button>
+                </div>
             </div>
-        </div>
-        <div class='section'>
-            <button class='button' id='downloadTestGroupDataButton'>Download Data</button>
-        </div>
-        
-        <div class='section'>
-            <label for='createTestGroupPasscodeField'>Passcode: </label>
-            <input class='field' type='text' id='createTestGroupPasscodeField'>
-            <select class='dropdown' id='passcodeActionSelector'>
-                <option class='option' value='0'>Set for User</option>
-                <option class='option' value='1'>Show for User</option>
-                <option class='option' value='2'>Create Test Group</option>
-            </select>
-            <button class='button' id='passcodeActionButton'>Submit</button>
-        </div>
-        <div class='section'>
-            <h3>Soldier ID Information:</h3>
-            <label for='lastNameField'>Last Name:</label>
-            <input class='field' type='text' id='lastNameField'><br>
-            <label for='firstNameField'>First Name:</label>
-            <input class='field' type='text' id='firstNameField'><br>
-            <label for='ageField'>Age:</label>
-            <input class='field' type='number' id='ageField'><br>
-            <label for='genderField'>Gender:</label>
-            <select class='dropdown' name="Gender" id="genderField">
-                <option value=true>Male</option>
-                <option value=false>Female</option>
-            </select><br>
-        </div>
-        <div class='section'>
-            <label for='existingTestGroups'>Test Group:</label>
-            <select class='dropdown' name='Existing Test Groups' id='existingTestGroups'></select>
-            <button class='button' id='createNewSoldierButton'>Add Soldier</button>
-        </div>
-        <div class='section'>
-            <h2 id='displayText'></h2>
-            <h3 class='errorText' id='messageText'></h3>
+            <div class='section'>
+                <button class='button' id='downloadTestGroupDataButton'>Download Data</button>
+            </div>
+            
+            <div class='section'>
+                <label for='createTestGroupPasscodeField'>Passcode: </label>
+                <input class='field' type='text' id='createTestGroupPasscodeField'>
+                <select class='dropdown' id='passcodeActionSelector'>
+                    <option class='option' value='0'>Set for User</option>
+                    <option class='option' value='1'>Show for User</option>
+                    <option class='option' value='2'>Create Test Group</option>
+                </select>
+                <button class='button' id='passcodeActionButton'>Submit</button>
+            </div>
+            <div class='section'>
+                <h3>Soldier ID Information:</h3>
+                <label for='lastNameField'>Last Name:</label>
+                <input class='field' type='text' id='lastNameField'><br>
+                <label for='firstNameField'>First Name:</label>
+                <input class='field' type='text' id='firstNameField'><br>
+                <label for='ageField'>Age:</label>
+                <input class='field' type='number' id='ageField'><br>
+                <label for='genderField'>Gender:</label>
+                <select class='dropdown' name="Gender" id="genderField">
+                    <option value=true>Male</option>
+                    <option value=false>Female</option>
+                </select><br>
+            </div>
+            <div class='section'>
+                <label for='existingTestGroups'>Test Group:</label>
+                <select class='dropdown' name='Existing Test Groups' id='existingTestGroups'></select>
+                <button class='button' id='createNewSoldierButton'>Add Soldier</button>
+            </div>
+            <div class='section'>
+                <h2 id='displayText'></h2>
+                <h3 class='errorText' id='messageText'></h3>
+            </div>
         </div>
     </body>
 </html>

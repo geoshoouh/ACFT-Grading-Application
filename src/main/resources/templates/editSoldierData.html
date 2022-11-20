@@ -14,18 +14,14 @@
             document.getElementById('aboutViewButton').addEventListener('click', Controller.showAboutViewController);
         </script>
     </head>
-    <body id='body'>
-        <div class='section'>
-            <div>
-                <ul class='navBar'>
-                    <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
-                    <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
-                </ul>
-            </div>
+    <body>
+        <ul class='navBar'>
+            <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
+            <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
+        </ul>
+        <div class='component section'>
             <h1>Edit Soldier Data</h1>
-        </div>
-        <h2 id='messageText'></h2>
-        <div>
+            <h2 id='messageText'></h2>
             <div class='section'>
                 <!----Also used to display soldier score after updating-->
                 <h3 id='testGroupText'></h3><br>
