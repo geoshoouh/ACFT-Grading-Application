@@ -133,4 +133,9 @@ public class AcftManagerServiceController {
         return acftManagerService.getTestGroupScoreData(testGroupId, raw);
     }
 
+    @PostMapping("/populateDatabase/{size}")
+    public Long populateDatabase(@PathVariable int size){
+        return acftManagerService.populateDatabase(size);
+    }
+
 }

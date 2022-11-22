@@ -316,4 +316,18 @@ public class HttpRequestTest {
                 System.out.println();
             });
     }
+
+    @Test
+    void populateDatePersistsData() throws Exception{
+        int size = 11;
+        Long testGroupId = Long.parseLong(
+            mockMvc.perform(
+                post("/populateDatabase/{size}", size)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString());
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == size, "In populateDatePersistsData: unexpected testGroup population size after populate called");
+    }
+
 }

@@ -107,4 +107,12 @@ export async function deleteSoldierById(testGroupId, soldierId, passcode = "", h
   return response.json();
 }
 
-
+export async function populateDatabase(size, host){
+  const path = host + `/populateDatabase/${size}`;
+  let response = await fetch(
+    path,
+    {method: 'POST'}
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
+  return response.json();
+}
