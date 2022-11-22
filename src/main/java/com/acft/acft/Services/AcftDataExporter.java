@@ -23,12 +23,12 @@ public class AcftDataExporter {
         XSSFSheet rawSheet = workbook.createSheet("Raw");
         Row scaledHeader = scaledSheet.createRow(0);
         Row rawHeader = rawSheet.createRow(0);
-        String[] headerNames = {"ID", "Last", "First", "MDL", "SPT", "HRP", "SDC", "PLK", "2MR", "Total"};
+        String[] headerNames = {"ID", "Last", "First", "Age", "Gender", "MDL", "SPT", "HRP", "SDC", "PLK", "2MR", "Total"};
         for (int i = 0; i < headerNames.length; i++){
             Cell scaledCell = scaledHeader.createCell(i);
             Cell rawCell = rawHeader.createCell(i);
             scaledCell.setCellValue(headerNames[i]);
-            if (i < 9) rawCell.setCellValue(headerNames[i]);
+            if (i < 11) rawCell.setCellValue(headerNames[i]);
         }
         for (int i = 0; i < soldiers.size(); i++){
             //i is incremented to account for the creation of the header row
@@ -38,14 +38,18 @@ public class AcftDataExporter {
             scaledRow.createCell(0).setCellValue(soldiers.get(i).getId());
             scaledRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
             scaledRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
+            scaledRow.createCell(3).setCellValue(soldiers.get(i).getAge());
+            scaledRow.createCell(4).setCellValue((soldiers.get(i).isMale()) ? "M" : "F");
             rawRow.createCell(0).setCellValue(soldiers.get(i).getId());
             rawRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
             rawRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
+            rawRow.createCell(3).setCellValue(soldiers.get(i).getAge());
+            rawRow.createCell(4).setCellValue((soldiers.get(i).isMale()) ? "M" : "F");
             for (int j = 0; j < 6; j++){
-                scaledRow.createCell(j + 3).setCellValue(soldier.getScoreByEventId(j, false));
-                rawRow.createCell(j + 3).setCellValue(soldier.getRawScoreAsString(j));
+                scaledRow.createCell(j + 5).setCellValue(soldier.getScoreByEventId(j, false));
+                rawRow.createCell(j + 5).setCellValue(soldier.getRawScoreAsString(j));
             }
-            scaledRow.createCell(9).setCellValue(soldier.getTotalScore());
+            scaledRow.createCell(11).setCellValue(soldier.getTotalScore());
         }
         return workbook;
     }

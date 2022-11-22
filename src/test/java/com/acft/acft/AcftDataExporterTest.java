@@ -42,7 +42,7 @@ public class AcftDataExporterTest {
         int n = soldiers.size();
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         Assert.isTrue(workbook.getNumberOfSheets() == 2, "In createXlsxWorkbookCreatesWorkbookWithExpectedData: workbook had unexpected number of sheets");
-        String[] headerNames = {"ID", "Last", "First", "MDL", "SPT", "HRP", "SDC", "PLK", "2MR", "Total"};
+        String[] headerNames = {"ID", "Last", "First", "Age", "Gender", "MDL", "SPT", "HRP", "SDC", "PLK", "2MR", "Total"};
         for (int i = 0; i < workbook.getNumberOfSheets(); i++){
             XSSFSheet sheet = workbook.getSheetAt(i);
             int rowEnd = (i == 0) ? headerNames.length : headerNames.length - 1;
@@ -59,13 +59,15 @@ public class AcftDataExporterTest {
                 Assert.isTrue(Long.valueOf((long)row.getCell(0).getNumericCellValue()) == soldier.getId(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: expected cell value " + soldier.getId() + ", was  " + Long.valueOf((long)row.getCell(0).getNumericCellValue()));
                 Assert.isTrue(row.getCell(1).getStringCellValue().equals(soldier.getLastName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 Assert.isTrue(row.getCell(2).getStringCellValue().equals(soldier.getFirstName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
-                for (int k = 3; k < rowEnd; k++){
+                Assert.isTrue(Integer.valueOf((int)row.getCell(3).getNumericCellValue()) == soldier.getAge(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
+                Assert.isTrue(row.getCell(4).getStringCellValue().equals((soldier.isMale()) ? "M" : "F"), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
+                for (int k = 5; k < rowEnd; k++){
                     Cell cell = row.getCell(k);
                     String cellValue = AcftDataExporter.getCellValueAsString(cell);
                     String compareValue;
                     if (i == 0){
-                        compareValue = (k == rowEnd - 1) ? Integer.toString(soldier.getTotalScore()) : Integer.toString(soldier.getScoreByEventId(k - 3, false));
-                    } else compareValue = soldier.getRawScoreAsString(k - 3);
+                        compareValue = (k == rowEnd - 1) ? Integer.toString(soldier.getTotalScore()) : Integer.toString(soldier.getScoreByEventId(k - 5, false));
+                    } else compareValue = soldier.getRawScoreAsString(k - 5);
                     Assert.isTrue(cellValue.equals(compareValue), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 }
             }
