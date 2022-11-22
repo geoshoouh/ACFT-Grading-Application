@@ -38,7 +38,6 @@ public class AcftManagerService {
     private AcftDataExporter acftDataExporter;
 
 
-
     public Long createNewTestGroup(){
         TestGroup testGroup = new TestGroup();
         testGroupRepository.save(testGroup);
@@ -152,19 +151,15 @@ public class AcftManagerService {
         });
     }
 
-    public Long populateDatabase(){
+    public Long populateDatabase(int size){
+        GenerateRandomData generateRandomData = new GenerateRandomData();
+        String passcode = "";
         Long testGroupId = createNewTestGroup();
-        System.out.println("TGID: " + testGroupId);
-        int n = 5;
-        Long[] soldierIds = new Long[5];
-        String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
-        String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
-        int[] ages = {26, 18, 19, 30, 23};
-        boolean[] genders = {true, true, true, true, false};
-        for (int i = 0; i < n; i++){
-            soldierIds[i] = createNewSoldier(testGroupId, lastNames[i], firstNames[i], ages[i], genders[i]);
+        List<List<String>> names = generateRandomData.getNames(size);
+        for (int i = 0; i < size; i++){
+            Long soldierId = createNewSoldier(testGroupId, names.get(i).get(0), names.get(i).get(1), GenerateRandomData.generateRandomAge(), GenerateRandomData.generatorRandomGender());
             for (int j = 0; j < 6; j++){
-                updateSoldierScore(soldierIds[i], j, AcftDataConversion.generateRandomRawScore(j), "");
+                updateSoldierScore(soldierId, j, GenerateRandomData.generateRandomRawScore(j), passcode);
             }
         }
         return testGroupId;
@@ -204,5 +199,21 @@ public class AcftManagerService {
         return true;
     }
 
+    //Gets n * 7 array of scores with first column as soldier ID corresponding to the scores in the row
+    public List<List<Long>> getTestGroupScoreData(Long testGroupId, String passcode, boolean raw) throws InvalidPasscodeException {
+        List<List<Long>> data = new ArrayList<>();
+        getSoldiersByTestGroupId(testGroupId, passcode).forEach((soldier) -> {
+            List<Long> scores = new ArrayList<>();
+            scores.add(soldier.getId());
+            for (int score : soldier.getScoresAsArray(raw)) scores.add(Long.valueOf(score));
+            data.add(scores);
+        });
+        return data;
+    }
 
+    public List<List<Long>> getTestGroupScoreData(Long testGroupId, boolean raw) throws InvalidPasscodeException {
+        return getTestGroupScoreData(testGroupId, "", raw);
+    }
+
+    
 }

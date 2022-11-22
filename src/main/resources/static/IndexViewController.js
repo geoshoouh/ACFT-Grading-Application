@@ -5,8 +5,15 @@ import * as API from './AcftManagerServiceAPI.js';
 
 export async function createNewSoldierController(){
     const host = getHost();
+
     const outputText = document.getElementById('displayText'); //DOM Obj
     const messageText = document.getElementById('messageText');
+
+    const displayErrorMessage = () => {
+        outputText.textContent = null;
+        messageText.textContent = 'Age cannot be negative'
+    };
+
     outputText.textContent = null;
     messageText.textContent = null;
     const testGroup = document.getElementById('existingTestGroups'); //DOM Obj
@@ -20,6 +27,10 @@ export async function createNewSoldierController(){
         outputText.innerHTML = 'One or more required fields are empty';
         return;
     } 
+    if (age.value < 0){
+        displayErrorMessage();
+        return;
+    }
     else if (userPasscode !== null){
         try {
             response = await API.createNewSoldier(testGroup.value, 
@@ -136,7 +147,12 @@ export async function executeAdminAction(){
 
 export async function indexOnLoad(){
     await getAllTestGroupsController();
+    populateDataBaseSizeFieldController();
     sessionStorage.setItem('view', '0');
+}
+
+export function adminActionSelectorOnChange(){
+    populateDataBaseSizeFieldController();
 }
 
 
@@ -147,59 +163,14 @@ function displayAccessUnauthorizedMessage(){
     document.getElementById('messageText').textContent = "Stored passcode invalid for selected test group";
 }
 
-function generateRandomRawScore(eventId){
-    //follows front-end 1-indexing convention
-    let floor = 0;
-    let ceiling = 0;
-        switch (eventId){
-            case 1:
-                floor = 120;
-                ceiling = 340;
-                break;
-            case 2:
-                floor = 39;
-                ceiling = 130;
-                break;
-            case 3:
-                floor = 10;
-                ceiling = 61;
-                break;
-            case 4:
-                floor = 89;
-                ceiling = 300;
-                break;
-            case 5:
-                floor = 70;
-                ceiling = 220;
-                break;
-            case 6:
-                floor = 780;
-                ceiling = 1500;
-                break;
-            default: break;
-        }
-        return Math.floor(Math.random() * (ceiling - floor)) + floor;
-}
-
 async function populateDatabase(){
     const host = getHost();
-    let testGroupId = await API.createNewTestGroup(undefined, host);
-    const n = 5;
-    let soldierIds = new Array(n);
-    const lastNames = ["Smith", "Jones", "Samuels", "Smith", "Conway"];
-    const firstNames = ["Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"];
-    const ages = [26, 18, 19, 30, 23];
-    const genders = [true, true, true, true, false];
-    for (let i = 0; i < n; i++){
-        soldierIds[i] = await API.createNewSoldier(testGroupId, lastNames[i], firstNames[i], ages[i], genders[i], undefined, host);
-        //In front-end, event IDs are 1-indexed
-        //Client-side API takes 1-indexed and decrements it before sending request
-        for (let j = 1; j <= 6; j++){
-            await API.updateSoldierScore(soldierIds[i], j, generateRandomRawScore(j), undefined, host);
-        }
-    }
+    const sizeField = document.getElementById('populateDatabaseSizeField');
+    const size = (sizeField.value === null) ? 5 : sizeField.value;
+    let testGroupId = await API.populateDatabase(size, host);
     //clear
     document.getElementById('existingTestGroups').length = 0;
+    sizeField.value = null;
     //repopulate
     await getAllTestGroupsController();
     return testGroupId;
@@ -300,4 +271,38 @@ async function createNewTestGroupController(){
     dropDownMenu.appendChild(element);
     passcodeInput.value = null;
     dropDownMenu.selectedIndex = dropDownMenu.length-1;
+}
+
+function showPopulateDatabaseSizeField(){
+    const anchorPoint = document.getElementById('adminActionDiv');
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.className = 'field smallNumberField';
+    input.id = 'populateDatabaseSizeField'
+    const label = document.createElement('label');
+    label.for = input.id;
+    label.textContent = 'Population Size: ';
+    label.id = 'populateDatabaseSizeFieldLabel'
+    anchorPoint.appendChild(label);
+    anchorPoint.appendChild(input);
+}
+
+function hidePopulateDatabaseSizeField(){
+    const anchorPoint = document.getElementById('adminActionDiv');
+    const input = document.getElementById('populateDatabaseSizeField');
+    const label = document.getElementById('populateDatabaseSizeFieldLabel');
+    if (input !== null) anchorPoint.removeChild(input);
+    if (label !== null) anchorPoint.removeChild(label);
+}
+
+function populateDataBaseSizeFieldController(){
+    const value = document.getElementById('adminActionSelector').value;
+    switch (value){
+        case '0':
+            showPopulateDatabaseSizeField();
+            break;
+        case '1':
+            hidePopulateDatabaseSizeField();
+        default: break;
+    }
 }

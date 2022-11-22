@@ -54,12 +54,10 @@ public class AcftManagerServiceTest {
 
     @Test
     void createNewSoldierShouldReturnId(){
-        String passcode = "";
         Long testGroupId = acftManagerService.createNewTestGroup();
-        int baseline = acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
-        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline + 1, "In createNewTestGroupShouldReturnId: unexpected soldierPopulation value after solider addition");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == 1, "In createNewTestGroupShouldReturnId: unexpected soldierPopulation value after solider addition");
     }
 
     @Test 
@@ -124,17 +122,15 @@ public class AcftManagerServiceTest {
         TestGroup testGroup2 = acftManagerService.getTestGroup(testGroupId2, "");
         System.out.println("before changes: " + testGroup1);
         testGroup1.setExpirationDate(Date.from(Instant.now().minus(5, ChronoUnit.DAYS)));
-        
         testGroup2.setExpirationDate(Date.from(Instant.now().plus(5, ChronoUnit.DAYS)));
-        //System.out.println("in test: " + testGroup1);
-        //System.out.println("from repo: " + acftManagerService.getTestGroup(testGroupId1, ""));
         acftManagerService.deleteTestGroupsOnSchedule();
         Assert.isTrue(acftManagerService.getAllTestGroups().size() == reference + 1, "deleteTestGroupsOnSchedule did not produce expected results. Expected repo size " + 1 + ", size was actually " + acftManagerService.getAllTestGroups().size());
     }
 
     @Test
     void getXlsxFileForTestGroupDataGetsExpectedFile(){
-        Long testGroupId = acftManagerService.populateDatabase();
+        int size = 5;
+        Long testGroupId = acftManagerService.populateDatabase(size);
         File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, "");
         Assert.isTrue(file.getName().equals("testGroup_" + testGroupId + ".xlsx"), "In getXlsxFileForTestGroupDataGetsExpectedFile: File not found");
         file.delete();
@@ -142,25 +138,38 @@ public class AcftManagerServiceTest {
 
     @Test
     void flushDatabaseDeletesAllEntities(){
-        acftManagerService.populateDatabase();
+        int size = 5;
+        acftManagerService.populateDatabase(size);
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() > 0 && acftManagerService.getTestGroupRepositorySize() > 0, "In flushDatabseDeletesAllEntities: database population failed");
         acftManagerService.flushDatabase();
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() == 0 && acftManagerService.getTestGroupRepositorySize() == 0, "In flushDatabseDeletesAllEntities: flushDatabase() failed");
     }
 
-
     @Test
-    void deleteSoldiersByIdCascadesToTestGroupPopulation(){
+    @Transactional
+    void deleteSoldiersByIdPersistsDeletion(){
         String passcode = "";
         Long testGroupId = acftManagerService.createNewTestGroup();
-        int baseline = acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size();
-        Long soldierRepositoryBaseline = acftManagerService.getSoldierRepositorySize();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
-        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline + 1, "In removeSoldierFromTestGroupPopulationCascades(): unexpected TestGroup population size after soldier instantiation");
-        Assert.isTrue(acftManagerService.getSoldierRepositorySize() == soldierRepositoryBaseline + 1, "In deleteSoldiersByIdCascadesToTestGroupPopulation: Unexpected soldierRepository size after soldier creation");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == 1, "In deleteSoldiersByIdPersistsDeletion: unexpected TestGroup population size after soldier instantiation");
         acftManagerService.deleteSoldierById(testGroupId, passcode, soldierId);
-        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() == baseline, "In removeSoldierFromTestGroupPopulationCascades(): unexpected TestGroup population size " + acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() + " after soldier deletion");
-        Assert.isTrue(acftManagerService.getSoldierRepositorySize() == soldierRepositoryBaseline, "In deleteSoldiersByIdCascadesToTestGroupPopulation(): getSoldierRepositorySize() returned unexpected value: " + acftManagerService.getSoldierRepositorySize());
+        System.out.println("pop size: " + acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size());
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == 0, "In deleteSoldiersByIdPersistsDeletion: unexpected TestGroup population size " + acftManagerService.getTestGroup(testGroupId, passcode).getSoldierPopulation().size() + " after soldier deletion");
+    }
+
+    @Test
+    void getTestGroupDataReturnsExpectedData(){
+        int size = 5;
+        Long testGroupId = acftManagerService.populateDatabase(5);
+        List<List<Long>> testGroupData = acftManagerService.getTestGroupScoreData(testGroupId, false);
+        Assert.isTrue(testGroupData.size() == size && testGroupData.get(0).size() == 7, "In getTestGroupDataReturnsExpectedData: data array had unexpected dimensions");
+        System.out.println("=================== TestGroup Data (Service Test) ===================");
+        testGroupData.forEach((row) -> {
+            row.forEach((element) -> {
+                System.out.print(element + " ");
+            });
+            System.out.println();
+        });
     }
 
 }

@@ -24,7 +24,7 @@ public class TestGroup {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "test_group_id")
+    @Column(name = "id")
     private Long id;
 
     @JsonIgnore

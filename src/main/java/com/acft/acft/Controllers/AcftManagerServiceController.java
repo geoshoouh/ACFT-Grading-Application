@@ -122,4 +122,20 @@ public class AcftManagerServiceController {
     public boolean deleteSoldierById(@PathVariable Long testGroupId, @PathVariable Long soldierId){
         return acftManagerService.deleteSoldierById(testGroupId, "", soldierId);
     }
+
+    @GetMapping("/testGroup/{testGroupId}/get/scoreData/{raw}/{passcode}")
+    public List<List<Long>> getTestGroupScoreData(@PathVariable Long testGroupId, @PathVariable boolean raw, @PathVariable String passcode){
+        return acftManagerService.getTestGroupScoreData(testGroupId, passcode, raw);
+    }
+
+    @GetMapping("/testGroup/{testGroupId}/get/scoreData/{raw}")
+    public List<List<Long>> getTestGroupScoreData(@PathVariable Long testGroupId, @PathVariable boolean raw){
+        return acftManagerService.getTestGroupScoreData(testGroupId, raw);
+    }
+
+    @PostMapping("/populateDatabase/{size}")
+    public Long populateDatabase(@PathVariable int size){
+        return acftManagerService.populateDatabase(size);
+    }
+
 }
