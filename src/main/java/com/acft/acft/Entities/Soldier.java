@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -26,6 +27,7 @@ public class Soldier {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "testgroup_id", referencedColumnName = "id")
     private TestGroup testGroup;
 
     @Column(name = "test_group_id")
@@ -145,17 +147,7 @@ public class Soldier {
     public void setId(Long id) {
         this.id = id;
     }
-
-
-    public void setTestGroup(TestGroup testGroup) {
-        this.testGroup = testGroup;
-    }
-
-
-    public void setTestGroupId(Long testGroupId) {
-        this.testGroupId = testGroupId;
-    }
-
+    
 
     public void setMaxDeadlift(int maxDeadlift) {
         this.maxDeadlift = maxDeadlift;

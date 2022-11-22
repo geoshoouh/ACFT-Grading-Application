@@ -21,20 +21,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class AcftDataConversion {
 
+    private String filepath = "src/main/resources/data/acftScoreTable.xlsx";
+
     private int[][][] scoreTable = new int[6][101][20];
 
     public AcftDataConversion(){
-        String path = "src/main/resources/data/acftScoreTable.xlsx";
         try{
             for (int i = 0; i < 6; i++){
-                scoreTable[i] = convertSheetValuesToIntMatrix(getSheetValues(i, path), i);
+                scoreTable[i] = convertSheetValuesToIntMatrix(getSheetValues(i, this.filepath), i);
             }
         } catch (IndexOutOfBoundsException e){
             System.out.println("Index out of bounds for table conversion, all scoreTabe values are now 0");
         }
     }
-    
-    
+      
     public FileInputStream getFile(String path) {
         FileInputStream file; 
         try {
@@ -214,38 +214,5 @@ public class AcftDataConversion {
         return result;
     }
 
-    //Utility function for tests
-    public static int generateRandomRawScore(int eventId){
-        int floor = 0;
-        int ceiling = 0;
-        switch (eventId){
-            case 0:
-                floor = 120;
-                ceiling = 340;
-                break;
-            case 1:
-                floor = 39;
-                ceiling = 130;
-                break;
-            case 2:
-                floor = 10;
-                ceiling = 61;
-                break;
-            case 3:
-                floor = 89;
-                ceiling = 300;
-                break;
-            case 4:
-                floor = 70;
-                ceiling = 220;
-                break;
-            case 5:
-                floor = 780;
-                ceiling = 1500;
-                break;
-            default: break;
-        }
-        return (int)(Math.random() * (ceiling - floor)) + floor;
-    }
 
 }

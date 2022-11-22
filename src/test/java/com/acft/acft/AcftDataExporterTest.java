@@ -36,7 +36,8 @@ public class AcftDataExporterTest {
 
     @Test
     void createXlsxWorkbookCreatesWorkbookWithExpectedData(){
-        Long testGroupId = acftManagerService.populateDatabase();
+        int size = 5;
+        Long testGroupId = acftManagerService.populateDatabase(size);
         List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
         int n = soldiers.size();
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
@@ -73,7 +74,8 @@ public class AcftDataExporterTest {
 
     @Test
     void createXlsxFileCreatesXlsxFileWithExpectedSheets(){
-        Long testGroupId = acftManagerService.populateDatabase();
+        int size = 5;
+        Long testGroupId = acftManagerService.populateDatabase(size);
         String path = "src/main/resources/data/testGroup_" + testGroupId + ".xlsx";
         List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);

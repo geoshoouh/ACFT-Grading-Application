@@ -244,8 +244,9 @@ public class HttpRequestTest {
 
     @Test
     void exportXlsxFileForTestGroupShouldExportExpectedFile() throws Exception{
+        int size = 5;
         //No passcode used in populateDatabase utility function
-        Long testGroupId = acftManagerService.populateDatabase();
+        Long testGroupId = acftManagerService.populateDatabase(size);
         HttpServletResponse response = mockMvc.perform(
             get("/testGroup/getXlsxFile/{testGroupId}", testGroupId)
         ).andExpect(status().isOk())
@@ -258,7 +259,8 @@ public class HttpRequestTest {
 
     @Test
     void flushDatabaseDeletesAllEntities() throws Exception{
-        acftManagerService.populateDatabase();
+        int size = 5;
+        acftManagerService.populateDatabase(size);
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() > 0 && acftManagerService.getTestGroupRepositorySize() > 0, "In flushDatabseDeletesAllEntities: database population failed");
         boolean response = Boolean.parseBoolean(
             mockMvc.perform(
@@ -278,7 +280,7 @@ public class HttpRequestTest {
     void deleteSoldierByIdPersistsDeletion() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
-        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, "").getSoldierPopulation().size() == 1, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier creation");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == 1, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier creation");
         boolean response = Boolean.parseBoolean(
             mockMvc.perform(
                 delete("/soldier/delete/{testGroupId}/{soldierId}", testGroupId, soldierId)
@@ -287,10 +289,9 @@ public class HttpRequestTest {
             .getResponse()
             .getContentAsString()
         );
-        Assert.isTrue(acftManagerService.getTestGroup(testGroupId, "").getSoldierPopulation().size() == 0, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier deletion");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == 0, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier deletion");
         Assert.isTrue(response, "In deleteSoldierByIdPersistsDeletion: unexpected boolean response");
     }
 
     
-
 }
