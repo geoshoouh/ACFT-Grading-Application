@@ -293,5 +293,27 @@ public class HttpRequestTest {
         Assert.isTrue(response, "In deleteSoldierByIdPersistsDeletion: unexpected boolean response");
     }
 
-    
+    @Test
+    void getTestGroupDataReturnsExpectedData() throws Exception{
+        int size = 5;
+        Long testGroupId = acftManagerService.populateDatabase(size);
+        Type testGroupDataType = new TypeToken<ArrayList<ArrayList<Long>>>() {}.getType();
+        List<List<Long>> testGroupData = gson.fromJson(
+            mockMvc.perform(
+                get("/testGroup/{testGroupId}/get/scoreData/{raw}", testGroupId, true)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+            , testGroupDataType);
+            Assert.isTrue(testGroupData.size() == size && testGroupData.get(0).size() == 7, "In getTestGroupDataReturnsExpectedData: data array had unexpected dimensions");
+
+            System.out.println("=================== TestGroup Data (Http Test) ===================");
+            testGroupData.forEach((row) -> {
+                    row.forEach((element) -> {
+                    System.out.print(element + " ");
+                });
+                System.out.println();
+            });
+    }
 }
