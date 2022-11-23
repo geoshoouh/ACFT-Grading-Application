@@ -1,4 +1,7 @@
 
+
+//===================  CRUD FUNCTIONS  ==========================
+
 export async function createNewTestGroup(passcode = "", host){
   const path = (passcode !== "") ? `${host}/testGroup/new/${passcode}` : `${host}/testGroup/new`;
   let response = await fetch(path, {
@@ -23,18 +26,6 @@ export async function getAllTestGroupIds(host){
     .then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to /testGroup/get/all was ${response.status}`);
   return response.json();
-}
-
-export function getEditSoldierDataView(host){
-  location.replace(host + '/editSoldierData');
-}
-
-export function getHomePageView(host){
-  location.replace(host);
-}
-
-export function getAboutView(host){
-  location.replace(host + '/about');
 }
 
 export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host){
@@ -115,4 +106,22 @@ export async function populateDatabase(size, host){
   ).then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
+}
+
+//===================  NAV FUNCTIONS  ==========================
+
+export function getHomePageView(host){
+  location.replace(host);
+}
+
+export function getAboutView(host){
+  location.replace(host + '/about');
+}
+
+export function getEditSoldierDataView(host){
+  location.replace(host + '/editSoldierData');
+}
+
+export function getVisualizeTestDataView(host){
+  location.replace(host + '/visualizeTestData');
 }

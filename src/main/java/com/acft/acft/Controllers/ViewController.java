@@ -15,4 +15,9 @@ public class ViewController {
     public String serveAboutView(){
         return "about";
     }
+
+    @GetMapping("/visualizeTestData")
+    public String serveVisualizeTestDataView(){
+        return "visualizeTestData";
+    }
 }

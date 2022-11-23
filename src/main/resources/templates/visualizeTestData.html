@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>ACFT Manager</title>
+        <link rel="stylesheet" href="./css/main.css">
+        <link rel="icon" type="image/ico" th:href="@{images/acft-manager-logo.png}"/>
+        <script type='module'>
+            import * as Controller from './js/VisualizeTestDataViewController.js';
+            import { showEditSoldierDataViewController, showAboutViewController } from './js/IndexViewController.js';
+            import { getHomePageViewController } from './js/EditSoldierViewController.js';
+            window.onload = Controller.visualizeTestDataViewOnLoad;
+            document.getElementById('editSoldierDataViewButton').addEventListener('click', showEditSoldierDataViewController);
+            document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
+            document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
+        </script>
+    </head>
+    <body>
+        <ul class='navBar'>
+            <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
+            <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+            <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
+        </ul>
+        <div class='component section'>
+            <img class='logo' th:src='@{images/acft-manager-logo.png}'/>
+            <h1>Visualize Test Data</h1>
+        </div> 
+    </body>
+</html>

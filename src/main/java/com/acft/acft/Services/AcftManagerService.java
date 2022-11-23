@@ -157,7 +157,7 @@ public class AcftManagerService {
         Long testGroupId = createNewTestGroup();
         List<List<String>> names = generateRandomData.getNames(size);
         for (int i = 0; i < size; i++){
-            Long soldierId = createNewSoldier(testGroupId, names.get(i).get(0), names.get(i).get(1), GenerateRandomData.generateRandomAge(), GenerateRandomData.generatorRandomGender());
+            Long soldierId = createNewSoldier(testGroupId, names.get(i).get(0), names.get(i).get(1), GenerateRandomData.generateRandomAge(), GenerateRandomData.generateRandomGender());
             for (int j = 0; j < 6; j++){
                 updateSoldierScore(soldierId, j, GenerateRandomData.generateRandomRawScore(j), passcode);
             }

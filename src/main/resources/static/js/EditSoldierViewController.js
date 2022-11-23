@@ -1,4 +1,5 @@
 import * as API from './AcftManagerServiceAPI.js';
+import { getHost } from './IndexViewController.js';
 
 
 //==============    Exported Functions   ================
@@ -190,7 +191,7 @@ export async function editSoldierDataViewOnLoad(){
     await populateSoldiersByTestGroupIdController();
     eventInputController();
     document.getElementById('testGroupText').textContent = `Editing data in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
-    sessionStorage.setItem('view', '1');
+    sessionStorage.setItem('view', '2');
     if (document.getElementById('soldierIdSelector').length === 0) document.getElementById('testGroupText').textContent = `No soldiers in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
 }
 
@@ -320,17 +321,10 @@ export function displayDeleteSoldierSafeguard(){
     
 }
 
-export function showAboutViewController(){
-    const host = getHost();
-    API.getAboutView(host);
-}
-
 
 //==============    Component Functions   ================
 
-function getHost(){
-    return location.protocol + '//' + location.host;
-}
+
 
 async function populateSoldiersByTestGroupIdController(){
     const host = getHost();

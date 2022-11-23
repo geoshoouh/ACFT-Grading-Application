@@ -3,21 +3,24 @@
     <head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>ACFT Manager</title>
-        <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="./css/main.css">
         <link rel="icon" type="image/ico" th:href="@{images/acft-manager-logo.png}"/>
         <script type='module'>
-            import * as Controller from '/EditSoldierViewController.js';
+            import * as Controller from './js/EditSoldierViewController.js';
+            import { showAboutViewController, showVisualizeTestDataViewController } from './js/IndexViewController.js';
             window.onload = Controller.editSoldierDataViewOnLoad;
             document.getElementById('returnToIndexButton').addEventListener('click', Controller.getHomePageViewController);
             document.getElementById('eventSelector').addEventListener('change', Controller.eventInputController);
             document.getElementById('updateSoldierScoreButton').addEventListener('click', Controller.updateSoldierScoreController);
             document.getElementById('deleteSoldierButton').addEventListener('click', Controller.displayDeleteSoldierSafeguard);
-            document.getElementById('aboutViewButton').addEventListener('click', Controller.showAboutViewController);
+            document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
+            document.getElementById('visualizeTestDataViewButton').addEventListener('click', showVisualizeTestDataViewController);
         </script>
     </head>
     <body>
         <ul class='navBar'>
             <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
+            <li id='visualizeTestDataViewButton' class='navBarItem mainNavBarItem'>Visualize Data</li>
             <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
         </ul>
         <div class='component section'>

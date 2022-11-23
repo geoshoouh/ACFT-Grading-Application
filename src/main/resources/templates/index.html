@@ -3,10 +3,10 @@
     <head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>ACFT Manager</title>
-        <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="./css/main.css">
         <link rel="icon" type="image/ico" th:href="@{images/acft-manager-logo.png}"/>
         <script type='module'>
-            import * as Controller from '/IndexViewController.js';
+            import * as Controller from './js/IndexViewController.js';
             window.onload = Controller.indexOnLoad;
             document.getElementById('createNewSoldierButton').addEventListener('click', Controller.createNewSoldierController);
             document.getElementById('editSoldierDataViewButton').addEventListener('click', Controller.showEditSoldierDataViewController);
@@ -14,12 +14,14 @@
             document.getElementById('passcodeActionButton').addEventListener('click', Controller.executePasscodeAction);
             document.getElementById('executeAdminActionButton').addEventListener('click', Controller.executeAdminAction);
             document.getElementById('aboutViewButton').addEventListener('click', Controller.showAboutViewController);
-            document.getElementById('adminActionSelector').addEventListener('change', Controller.adminActionSelectorOnChange)
+            document.getElementById('adminActionSelector').addEventListener('change', Controller.adminActionSelectorOnChange);
+            document.getElementById('visualizeTestDataViewButton').addEventListener('click', Controller.showVisualizeTestDataViewController);
         </script>
     </head>
     <body>
         <ul class='navBar'>
             <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+            <li id='visualizeTestDataViewButton' class='navBarItem mainNavBarItem'>Visualize Data</li>
             <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
         </ul>
         <div class='component'>
