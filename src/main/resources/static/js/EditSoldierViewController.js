@@ -1,4 +1,5 @@
 import * as API from './AcftManagerServiceAPI.js';
+import { getHost } from './IndexViewController.js';
 
 
 //==============    Exported Functions   ================
@@ -320,17 +321,10 @@ export function displayDeleteSoldierSafeguard(){
     
 }
 
-export function showAboutViewController(){
-    const host = getHost();
-    API.getAboutView(host);
-}
-
 
 //==============    Component Functions   ================
 
-function getHost(){
-    return location.protocol + '//' + location.host;
-}
+
 
 async function populateSoldiersByTestGroupIdController(){
     const host = getHost();
@@ -341,10 +335,10 @@ async function populateSoldiersByTestGroupIdController(){
         console.log(error);
         return;
     }
-    let soldierIdArray = testGroup.soldierPopulation;
+    let soldierArray = testGroup.soldierPopulation;
     let soldierMenu = document.getElementById('soldierIdSelector');
     soldierMenu.textContent = "";
-    soldierIdArray.forEach((soldier) => {
+    soldierArray.forEach((soldier) => {
         let element = document.createElement('option');
         element.textContent = soldier.id + `: ${soldier.lastName}, ${soldier.firstName}`
         element.value = soldier.id;

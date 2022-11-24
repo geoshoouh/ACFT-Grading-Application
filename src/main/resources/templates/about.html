@@ -3,19 +3,23 @@
     <head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
         <title>ACFT Manager</title>
-        <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="./css/main.css">
         <link rel="icon" type="image/ico" th:href="@{images/acft-manager-logo.png}"/>
         <script type='module'>
-            import {showEditSoldierDataViewController} from '/IndexViewController.js';
-            import {getHomePageViewController} from '/EditSoldierViewController.js';
+            import * as Controller from './js/AboutViewController.js';
+            import {showEditSoldierDataViewController, showVisualizeTestDataViewController} from './js/IndexViewController.js';
+            import {getHomePageViewController} from './js/EditSoldierViewController.js';
+            window.onload = Controller.aboutViewOnLoad;
             document.getElementById('editSoldierDataViewButton').addEventListener('click', showEditSoldierDataViewController);
             document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
+            document.getElementById('visualizeTestDataViewButton').addEventListener('click', showVisualizeTestDataViewController);
         </script>
     </head>
     <body>
         <ul class='navBar'>
             <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
             <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+            <li id='visualizeTestDataViewButton' class='navBarItem mainNavBarItem'>Visualize Data</li>
         </ul>
         <div class='component section'>
             <img class='logo' th:src='@{images/acft-manager-logo.png}'/>
@@ -24,8 +28,7 @@
                 <p>
                     <strong><em>Description:</em></strong> Eliminates the need for paper scorecards
                     and manual score consolidation for the Army Combat Fitness Test. 
-                    Enables decentralized on-site input of test data, automatic score conversion, 
-                    and data exportation.
+                    Enables decentralized on-site input of test data, automatic score conversion, data exportation, and data visualization.
                 </p>
                 <p>
                     <strong><em>How to Demo:</em></strong>
@@ -65,6 +68,13 @@
                         <ul>
                             <li>From the homepage, select the desired test group from the 'Test Group' dropdown menu</li>
                             <li>Click the 'Download Data' button. The selected test group must be non-passcode protected or you must have the correct user passcode set to execute this action</li>
+                        </ul>
+                        <em>Visualize Data</em>
+                        <ul>
+                            <li>A Total-Score histogram for the selected test group will be displayed when 'Visualize Data' is clicked</li>
+                            <li>To see an individual soldier's performance use the dropdown menu to select 'Soldier Data'</li>
+                            <li>A dropdown menu will appear from which you can select any soldier from the test group</li>
+                            <li>Click the 'Display' button to show a bar graph of that soldier's score by event</li>
                         </ul>
                         
                         

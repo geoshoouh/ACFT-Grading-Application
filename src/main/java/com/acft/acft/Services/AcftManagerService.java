@@ -86,10 +86,12 @@ public class AcftManagerService {
         return soldierRepository.findByTestGroupId(testGroupId);
     }
 
+    //Exists as a testing convenience
     public List<Soldier> getSoldiersByTestGroupId(Long testGroupId) throws TestGroupNotFoundException, InvalidPasscodeException{
         getTestGroup(testGroupId, "");
         return soldierRepository.findByTestGroupId(testGroupId);
     }
+    
 
     public List<Long> getAllTestGroups(){
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();
@@ -157,7 +159,7 @@ public class AcftManagerService {
         Long testGroupId = createNewTestGroup();
         List<List<String>> names = generateRandomData.getNames(size);
         for (int i = 0; i < size; i++){
-            Long soldierId = createNewSoldier(testGroupId, names.get(i).get(0), names.get(i).get(1), GenerateRandomData.generateRandomAge(), GenerateRandomData.generatorRandomGender());
+            Long soldierId = createNewSoldier(testGroupId, names.get(i).get(0), names.get(i).get(1), GenerateRandomData.generateRandomAge(), GenerateRandomData.generateRandomGender());
             for (int j = 0; j < 6; j++){
                 updateSoldierScore(soldierId, j, GenerateRandomData.generateRandomRawScore(j), passcode);
             }
@@ -199,13 +201,14 @@ public class AcftManagerService {
         return true;
     }
 
-    //Gets n * 7 array of scores with first column as soldier ID corresponding to the scores in the row
+    //Gets n * 8 array of scores with first column as soldier ID corresponding to the scores in the row
     public List<List<Long>> getTestGroupScoreData(Long testGroupId, String passcode, boolean raw) throws InvalidPasscodeException {
         List<List<Long>> data = new ArrayList<>();
         getSoldiersByTestGroupId(testGroupId, passcode).forEach((soldier) -> {
             List<Long> scores = new ArrayList<>();
             scores.add(soldier.getId());
             for (int score : soldier.getScoresAsArray(raw)) scores.add(Long.valueOf(score));
+            scores.add(Long.valueOf(soldier.getTotalScore()));
             data.add(scores);
         });
         return data;

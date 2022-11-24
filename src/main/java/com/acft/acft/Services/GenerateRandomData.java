@@ -112,7 +112,7 @@ public class GenerateRandomData {
         return (int)Math.floor(Math.random() * (ceiling - floor)) + floor;
     }
 
-    public static boolean generatorRandomGender(){
+    public static boolean generateRandomGender(){
         return (Math.floor(Math.random() * 2) == 1) ? true : false;
     }
 

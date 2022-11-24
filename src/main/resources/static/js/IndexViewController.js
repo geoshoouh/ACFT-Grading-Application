@@ -109,9 +109,27 @@ export async function showEditSoldierDataViewController(){
     API.getEditSoldierDataView(host);
 }
 
+export async function showVisualizeTestDataViewController(){
+    const host = getHost();
+    if (sessionStorage.getItem('view') == '0') {
+        const selectedTestGroupId = document.getElementById('existingTestGroups').value;
+        try {
+            await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'), host);
+        } catch (error) {
+            console.log(error);
+            document.getElementById('messageText').textContent = 'No available test groups or access to selected test group not authorized';
+            return;    
+        }
+        sessionStorage.setItem('selectedTestGroupId', selectedTestGroupId);
+    }
+    API.getVisualizeTestDataView(host);
+}
+
 export function showAboutViewController(){
     const host = getHost();
-    sessionStorage.setItem('selectedTestGroupId', document.getElementById('existingTestGroups').value);
+    if (sessionStorage.getItem('view') == '1') {
+        sessionStorage.setItem('selectedTestGroupId', document.getElementById('existingTestGroups').value);
+    }
     API.getAboutView(host);
 }
 
@@ -155,7 +173,9 @@ export function adminActionSelectorOnChange(){
     populateDataBaseSizeFieldController();
 }
 
-
+export function getHost(){
+    return location.protocol + '//' + location.host;
+}
 
 //==============    Component Functions   ================
 
@@ -166,7 +186,7 @@ function displayAccessUnauthorizedMessage(){
 async function populateDatabase(){
     const host = getHost();
     const sizeField = document.getElementById('populateDatabaseSizeField');
-    const size = (sizeField.value === null) ? 5 : sizeField.value;
+    const size = (sizeField.value.length === 0) ? 5 : sizeField.value;
     let testGroupId = await API.populateDatabase(size, host);
     //clear
     document.getElementById('existingTestGroups').length = 0;
@@ -176,9 +196,6 @@ async function populateDatabase(){
     return testGroupId;
 }
 
-function getHost(){
-    return location.protocol + '//' + location.host;
-}
 
 function download(blob, filename) {
     const url = window.URL.createObjectURL(blob);

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>ACFT Manager</title>
+        <link rel="stylesheet" href="./css/main.css">
+        <link rel="icon" type="image/ico" th:href="@{images/acft-manager-logo.png}"/>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type='module'>
+            import * as Controller from './js/VisualizeTestDataViewController.js';
+            import { showEditSoldierDataViewController, showAboutViewController } from './js/IndexViewController.js';
+            import { getHomePageViewController } from './js/EditSoldierViewController.js';
+            import { getTestGroupScoreData, getSoldiersByTestGroupId, getSoldierById } from './js/AcftManagerServiceAPI.js';
+            window.onload = Controller.visualizeTestDataViewOnLoad;
+            document.getElementById('editSoldierDataViewButton').addEventListener('click', showEditSoldierDataViewController);
+            document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
+            document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
+            document.getElementById('dataTypeSelector').addEventListener('change', Controller.dataTypeSelectionDidChange);
+            document.getElementById('displayDataButton').addEventListener('click', drawChart);
+
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+            
+            async function drawTestGroupChart(){
+                const host = location.protocol + '//' + location.host;
+                const userPasscode = sessionStorage.getItem('userPasscode');
+                const testGroupId = sessionStorage.getItem('selectedTestGroupId');
+                let testGroupData = [];
+                try {
+                    testGroupData = await getTestGroupScoreData(testGroupId, false, userPasscode, host);
+                } catch (error) {
+                    console.log(error);
+                    return;
+                }
+                
+                var chartData = [];
+                chartData.push(['Soldier ID', 'Score']);
+                
+                testGroupData.forEach(element => {
+                    const row = [];
+                    row.push(`${element[0]}`);
+                    row.push(element[7]);
+                    chartData.push(row);
+                });
+                var chartData = google.visualization.arrayToDataTable(chartData);
+
+                let options = {
+                    title : 'ACFT Score Distribution',
+                    legend: { position: 'none' }
+                };
+
+                let chart = new google.visualization.Histogram(document.getElementById('chartAnchor'));
+                chart.draw(chartData, options);
+            }
+
+            async function drawSoldierChart(){
+                const host = location.protocol + '//' + location.host;
+                const userPasscode = sessionStorage.getItem('userPasscode');
+                const soldierId = document.getElementById('soldierIdSelector').value;
+                var chartData = [];
+                chartData.push(['Event', 'Score']);
+                const events = ['MDL', 'SPT', 'HRP', 'SDC', 'PLK', '2MR'];
+                let soldier = null;
+                try {
+                    soldier = await getSoldierById(soldierId, userPasscode, host);
+                } catch (error) {
+                    console.log(error);
+                    return;
+                }
+                chartData.push([events[0], soldier.maxDeadlift]);
+                chartData.push([events[1], soldier.standingPowerThrow]);
+                chartData.push([events[2], soldier.handReleasePushups]);
+                chartData.push([events[3], soldier.sprintDragCarry]);
+                chartData.push([events[4], soldier.plank]);
+                chartData.push([events[5], soldier.twoMileRun]);    
+
+                var chartData = google.visualization.arrayToDataTable(chartData);
+
+                let options = {
+                    title : 'Soldier Scores',
+                    legend: { position: 'none' }
+                };
+
+                let chart = new google.visualization.BarChart(document.getElementById('chartAnchor'));
+                chart.draw(chartData, options);
+
+            }
+
+            async function drawChart(){
+                const dataType = document.getElementById('dataTypeSelector').value;
+                switch (dataType){
+                    case '1': 
+                        await drawTestGroupChart();
+                        break;
+                    case '2':
+                        await drawSoldierChart();
+                        break;
+                    default: break;
+                }
+            }
+            
+
+        </script>
+    </head>
+    <body>
+        <ul class='navBar'>
+            <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
+            <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
+            <li id='aboutViewButton' class='navBarItem navBarAbout'>About</li>
+        </ul>
+        <div class='component'>
+            <div class='section'>
+                <img class='logo' th:src='@{images/acft-manager-logo.png}'/>
+                <h1>Visualize Test Data</h1>
+                <h2 id='testGroupBanner'></h2>
+            </div> 
+            <div class='section' id='dataTypeSelectionDiv'>
+                <select class='dropdown' id='dataTypeSelector'>
+                    <option value='1'>Test Group Data</option>
+                    <option value='2'>Soldier Data</option>
+                </select>
+            </div>
+            <div class='section'>
+                <button class='button' id='displayDataButton'>Display</button>
+            </div>
+            <div class='section dataDisplayDiv' id='chartAnchor'>
+                
+            </div>
+            <div class='section'>
+                <h3 class='errorText' id='errorText'></h3>
+            </div>
+        </div>
+    </body>
+</html>

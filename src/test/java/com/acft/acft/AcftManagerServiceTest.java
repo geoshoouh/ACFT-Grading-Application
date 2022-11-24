@@ -162,7 +162,7 @@ public class AcftManagerServiceTest {
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(5);
         List<List<Long>> testGroupData = acftManagerService.getTestGroupScoreData(testGroupId, false);
-        Assert.isTrue(testGroupData.size() == size && testGroupData.get(0).size() == 7, "In getTestGroupDataReturnsExpectedData: data array had unexpected dimensions");
+        Assert.isTrue(testGroupData.size() == size && testGroupData.get(0).size() == 8, "In getTestGroupDataReturnsExpectedData: data array had unexpected dimensions");
         System.out.println("=================== TestGroup Data (Service Test) ===================");
         testGroupData.forEach((row) -> {
             row.forEach((element) -> {
