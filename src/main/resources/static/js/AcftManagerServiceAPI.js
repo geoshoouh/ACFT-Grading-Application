@@ -29,7 +29,7 @@ export async function getAllTestGroupIds(host){
 }
 
 export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host){
-  const path = (passcode.length !== 0) ? `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}` : `${host}/testGroup/getSoldiers/${testGroupId}/null`;
+  const path = (passcode === null) ? `${host}/testGroup/getSoldiers/${testGroupId}/null` : `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}`;
   if (testGroupId === null || testGroupId === undefined){
     console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof testGroupId} passed`);
     return;
