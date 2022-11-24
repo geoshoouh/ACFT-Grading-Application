@@ -165,6 +165,10 @@ export async function executeAdminAction(){
 
 export async function indexOnLoad(){
     await getAllTestGroupsController();
+    const selectedTestGroupId = sessionStorage.getItem('selectedTestGroupId');
+    if (selectedTestGroupId !== null){
+        document.getElementById('existingTestGroups').value = selectedTestGroupId;
+    }
     populateDataBaseSizeFieldController();
     sessionStorage.setItem('view', '0');
 }
