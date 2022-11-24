@@ -1,6 +1,7 @@
 import * as API from './AcftManagerServiceAPI.js';
 import { getHost } from './IndexViewController.js';
 
+
 //==============    Exported Functions   ================
 
 export async function visualizeTestDataViewOnLoad(){
@@ -14,6 +15,8 @@ export async function dataTypeSelectionDidChange(){
 }
 
 
+
+
 //==============    Component Functions   ================
 
 async function dataTypeSelectionInterfaceController(){
@@ -22,6 +25,9 @@ async function dataTypeSelectionInterfaceController(){
     const dataTypeSelection = document.getElementById('dataTypeSelector').value;
     switch (dataTypeSelection){
         case '1':
+            if (document.getElementById('soldierIdSelector') !== null) anchorPoint.removeChild(document.getElementById('soldierIdSelector'));
+            break;
+        case '2':
             const testGroupId = sessionStorage.getItem('selectedTestGroupId');
             const userPasscode = sessionStorage.getItem('userPasscode');
             //The scenario below triggers in the event that the location is pulled up before index is accessed in session
@@ -47,10 +53,6 @@ async function dataTypeSelectionInterfaceController(){
                 soldierIdSelector.appendChild(element);
             });
             anchorPoint.appendChild(soldierIdSelector);
-            break;
-        case '2':
-            //Assuming there's no way case '2' can be selected without 'soldierIdSelector' existing
-            anchorPoint.removeChild(document.getElementById('soldierIdSelector'));
             break;
         default: break;
     }

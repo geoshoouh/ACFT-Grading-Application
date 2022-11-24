@@ -201,13 +201,14 @@ public class AcftManagerService {
         return true;
     }
 
-    //Gets n * 7 array of scores with first column as soldier ID corresponding to the scores in the row
+    //Gets n * 8 array of scores with first column as soldier ID corresponding to the scores in the row
     public List<List<Long>> getTestGroupScoreData(Long testGroupId, String passcode, boolean raw) throws InvalidPasscodeException {
         List<List<Long>> data = new ArrayList<>();
         getSoldiersByTestGroupId(testGroupId, passcode).forEach((soldier) -> {
             List<Long> scores = new ArrayList<>();
             scores.add(soldier.getId());
             for (int score : soldier.getScoresAsArray(raw)) scores.add(Long.valueOf(score));
+            scores.add(Long.valueOf(soldier.getTotalScore()));
             data.add(scores);
         });
         return data;

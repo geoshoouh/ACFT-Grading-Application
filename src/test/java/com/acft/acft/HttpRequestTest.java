@@ -306,7 +306,7 @@ public class HttpRequestTest {
             .getResponse()
             .getContentAsString()
             , testGroupDataType);
-            Assert.isTrue(testGroupData.size() == size && testGroupData.get(0).size() == 7, "In getTestGroupDataReturnsExpectedData: data array had unexpected dimensions");
+            Assert.isTrue(testGroupData.size() == size && testGroupData.get(0).size() == 8, "In getTestGroupDataReturnsExpectedData: data array had unexpected dimensions");
 
             System.out.println("=================== TestGroup Data (Http Test) ===================");
             testGroupData.forEach((row) -> {
