@@ -29,9 +29,9 @@ export async function getAllTestGroupIds(host){
 }
 
 export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host){
-  const path = (passcode !== 0) ? `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}` : `${host}/testGroup/getSoldiers/${testGroupId}`;
-  if (typeof testGroupId != "number"){
-    console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof soldierId} passed`);
+  const path = (passcode.length !== 0) ? `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}` : `${host}/testGroup/getSoldiers/${testGroupId}/null`;
+  if (testGroupId === null || testGroupId === undefined){
+    console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof testGroupId} passed`);
     return;
   }
   let response = await fetch(
@@ -106,6 +106,10 @@ export async function populateDatabase(size, host){
   ).then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
   return response.json();
+}
+
+export async function getTestGroupData(host){
+
 }
 
 //===================  NAV FUNCTIONS  ==========================

@@ -13,6 +13,7 @@
             document.getElementById('editSoldierDataViewButton').addEventListener('click', showEditSoldierDataViewController);
             document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
             document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
+            document.getElementById('dataTypeSelectionDiv').addEventListener('change', Controller.dataTypeSelectionDidChange);
         </script>
     </head>
     <body>
@@ -24,6 +25,16 @@
         <div class='component section'>
             <img class='logo' th:src='@{images/acft-manager-logo.png}'/>
             <h1>Visualize Test Data</h1>
+            <h2 id='testGroupBanner'></h2>
         </div> 
+        <div class='section' id='dataTypeSelectionDiv'>
+            <select class='dropdown' id='dataTypeSelector'>
+                <option value='1'>Soldier Data</option>
+                <option value='2'>Test Group Data</option>
+            </select>
+        </div>
+        <div class='section'>
+            <h3 class='errorText' id='errorText'></h3>
+        </div>
     </body>
 </html>

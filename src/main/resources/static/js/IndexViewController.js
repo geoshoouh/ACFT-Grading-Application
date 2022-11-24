@@ -111,13 +111,7 @@ export async function showEditSoldierDataViewController(){
 
 export async function showVisualizeTestDataViewController(){
     const host = getHost();
-    /*
-    if (document.getElementById('existingTestGroups') === null){
-        API.getEditSoldierDataView(host);
-        return;
-    }
-    */
-    if (sessionStorage.getItem('view') == '1') {
+    if (sessionStorage.getItem('view') == '0') {
         const selectedTestGroupId = document.getElementById('existingTestGroups').value;
         try {
             await API.getTestGroupById(selectedTestGroupId, sessionStorage.getItem('userPasscode'), host);

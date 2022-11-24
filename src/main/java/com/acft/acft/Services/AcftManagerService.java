@@ -86,10 +86,12 @@ public class AcftManagerService {
         return soldierRepository.findByTestGroupId(testGroupId);
     }
 
+    //Exists as a testing convenience
     public List<Soldier> getSoldiersByTestGroupId(Long testGroupId) throws TestGroupNotFoundException, InvalidPasscodeException{
         getTestGroup(testGroupId, "");
         return soldierRepository.findByTestGroupId(testGroupId);
     }
+    
 
     public List<Long> getAllTestGroups(){
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();

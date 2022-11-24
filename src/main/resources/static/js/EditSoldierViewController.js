@@ -191,7 +191,7 @@ export async function editSoldierDataViewOnLoad(){
     await populateSoldiersByTestGroupIdController();
     eventInputController();
     document.getElementById('testGroupText').textContent = `Editing data in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
-    sessionStorage.setItem('view', '2');
+    sessionStorage.setItem('view', '1');
     if (document.getElementById('soldierIdSelector').length === 0) document.getElementById('testGroupText').textContent = `No soldiers in test group ${sessionStorage.getItem('selectedTestGroupId')}`;
 }
 
@@ -335,10 +335,10 @@ async function populateSoldiersByTestGroupIdController(){
         console.log(error);
         return;
     }
-    let soldierIdArray = testGroup.soldierPopulation;
+    let soldierArray = testGroup.soldierPopulation;
     let soldierMenu = document.getElementById('soldierIdSelector');
     soldierMenu.textContent = "";
-    soldierIdArray.forEach((soldier) => {
+    soldierArray.forEach((soldier) => {
         let element = document.createElement('option');
         element.textContent = soldier.id + `: ${soldier.lastName}, ${soldier.firstName}`
         element.value = soldier.id;
