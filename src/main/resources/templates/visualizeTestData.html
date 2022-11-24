@@ -16,7 +16,6 @@
             document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
             document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
             document.getElementById('dataTypeSelector').addEventListener('change', Controller.dataTypeSelectionDidChange);
-            
             document.getElementById('displayDataButton').addEventListener('click', drawChart);
 
             google.charts.load('current', {'packages':['corechart']});
@@ -24,7 +23,6 @@
             
             async function drawTestGroupChart(){
                 const host = location.protocol + '//' + location.host;
-                const dataType = document.getElementById('dataTypeSelector').value;
                 const userPasscode = sessionStorage.getItem('userPasscode');
                 const testGroupId = sessionStorage.getItem('selectedTestGroupId');
                 let testGroupData = [];
@@ -53,12 +51,52 @@
 
                 let chart = new google.visualization.Histogram(document.getElementById('chartAnchor'));
                 chart.draw(chartData, options);
-                
-                
+            }
+
+            async function drawSoldierChart(){
+                const host = location.protocol + '//' + location.host;
+                const userPasscode = sessionStorage.getItem('userPasscode');
+                const soldierId = document.getElementById('soldierIdSelector').value;
+                var chartData = [];
+                chartData.push(['Event', 'Score']);
+                const events = ['MDL', 'SPT', 'HRP', 'SDC', 'PLK', '2MR'];
+                let soldier = null;
+                try {
+                    soldier = await getSoldierById(soldierId, userPasscode, host);
+                } catch (error) {
+                    console.log(error);
+                    return;
+                }
+                chartData.push([events[0], soldier.maxDeadlift]);
+                chartData.push([events[1], soldier.standingPowerThrow]);
+                chartData.push([events[2], soldier.handReleasePushups]);
+                chartData.push([events[3], soldier.sprintDragCarry]);
+                chartData.push([events[4], soldier.plank]);
+                chartData.push([events[5], soldier.twoMileRun]);    
+
+                var chartData = google.visualization.arrayToDataTable(chartData);
+
+                let options = {
+                    title : 'Soldier Scores',
+                    legend: { position: 'none' }
+                };
+
+                let chart = new google.visualization.BarChart(document.getElementById('chartAnchor'));
+                chart.draw(chartData, options);
+
             }
 
             async function drawChart(){
-                await drawTestGroupChart();
+                const dataType = document.getElementById('dataTypeSelector').value;
+                switch (dataType){
+                    case '1': 
+                        await drawTestGroupChart();
+                        break;
+                    case '2':
+                        await drawSoldierChart();
+                        break;
+                    default: break;
+                }
             }
             
 
