@@ -127,7 +127,7 @@ export async function showVisualizeTestDataViewController(){
 
 export function showAboutViewController(){
     const host = getHost();
-    if (sessionStorage.getItem('view') == '1') {
+    if (sessionStorage.getItem('view') == '0') {
         sessionStorage.setItem('selectedTestGroupId', document.getElementById('existingTestGroups').value);
     }
     API.getAboutView(host);
