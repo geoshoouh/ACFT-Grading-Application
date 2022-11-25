@@ -82,6 +82,9 @@ public class Soldier {
     @Column(name = "two_mile_run_raw")
     private int twoMileRunRaw = 0;
 
+    @Column(name = "total_score")
+    private int totalScore = 0;
+
     public Soldier(TestGroup testGroup, String lastName, String firstName, int age, boolean isMale) {
         this.testGroup = testGroup;
         this.testGroupId = testGroup.getId();
@@ -151,31 +154,37 @@ public class Soldier {
 
     public void setMaxDeadlift(int maxDeadlift) {
         this.maxDeadlift = maxDeadlift;
+        this.totalScore += maxDeadlift;
     }
 
 
     public void setStandingPowerThrow(int standingPowerThrow) {
         this.standingPowerThrow = standingPowerThrow;
+        this.totalScore += standingPowerThrow;
     }
 
 
     public void setHandReleasePushups(int handReleasePushups) {
         this.handReleasePushups = handReleasePushups;
+        this.totalScore += handReleasePushups;
     }
 
 
     public void setSprintDragCarry(int sprintDragCarry) {
         this.sprintDragCarry = sprintDragCarry;
+        this.totalScore += sprintDragCarry;
     }
 
 
     public void setPlank(int plank) {
         this.plank = plank;
+        this.totalScore += plank;
     }
 
 
     public void setTwoMileRun(int twoMileRun) {
         this.twoMileRun = twoMileRun;
+        this.totalScore += twoMileRun;
     }
 
 

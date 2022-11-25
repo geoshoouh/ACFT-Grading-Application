@@ -22,6 +22,7 @@ export async function dataTypeSelectionDidChange(){
 async function dataTypeSelectionInterfaceController(){
     const host = getHost();
     const anchorPoint = document.getElementById('dataTypeSelectionDiv');
+    const anchorPoint2 = document.getElementById('displayButtonAnchor');
     const dataTypeSelection = document.getElementById('dataTypeSelector').value;
     switch (dataTypeSelection){
         case '1':
@@ -53,6 +54,7 @@ async function dataTypeSelectionInterfaceController(){
                 soldierIdSelector.appendChild(element);
             });
             anchorPoint.appendChild(soldierIdSelector);
+
             break;
         default: break;
     }

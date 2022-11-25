@@ -15,13 +15,14 @@
             document.getElementById('editSoldierDataViewButton').addEventListener('click', showEditSoldierDataViewController);
             document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
             document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
-            document.getElementById('dataTypeSelector').addEventListener('change', Controller.dataTypeSelectionDidChange);
-            document.getElementById('displayDataButton').addEventListener('click', drawChart);
+            document.getElementById('dataTypeSelector').addEventListener('change', drawChart);
+            //document.getElementById('displayDataButton').addEventListener('click', drawChart);
 
             google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(drawChart);
             
             async function drawTestGroupChart(){
+
                 const host = location.protocol + '//' + location.host;
                 const userPasscode = sessionStorage.getItem('userPasscode');
                 const testGroupId = sessionStorage.getItem('selectedTestGroupId');
@@ -35,12 +36,13 @@
                 
                 var chartData = [];
                 chartData.push(['Soldier ID', 'Score']);
-                
+                let averageScore = 0;
                 testGroupData.forEach(element => {
                     const row = [];
                     row.push(`${element[0]}`);
                     row.push(element[7]);
                     chartData.push(row);
+                    averageScore += element[7];
                 });
                 var chartData = google.visualization.arrayToDataTable(chartData);
 
@@ -51,6 +53,9 @@
 
                 let chart = new google.visualization.Histogram(document.getElementById('chartAnchor'));
                 chart.draw(chartData, options);
+
+                averageScore = Math.floor(averageScore / testGroupData.length);
+                document.getElementById('displayText').textContent = `Average Score: ${averageScore}`;
             }
 
             async function drawSoldierChart(){
@@ -83,17 +88,26 @@
 
                 let chart = new google.visualization.BarChart(document.getElementById('chartAnchor'));
                 chart.draw(chartData, options);
+                document.getElementById('displayText').textContent = `Total Score: ${soldier.totalScore}`;
+
+            }
+
+            async function drawSoldierChartController(){
+                const soldierIdSelector = document.getElementById('soldierIdSelector');
+                if (soldierIdSelector !== null) soldierIdSelector.addEventListener('change', drawSoldierChart);
+                await drawSoldierChart();
 
             }
 
             async function drawChart(){
+                await Controller.dataTypeSelectionDidChange();
                 const dataType = document.getElementById('dataTypeSelector').value;
                 switch (dataType){
                     case '1': 
                         await drawTestGroupChart();
                         break;
                     case '2':
-                        await drawSoldierChart();
+                        await drawSoldierChartController();
                         break;
                     default: break;
                 }
@@ -120,11 +134,9 @@
                     <option value='2'>Soldier Data</option>
                 </select>
             </div>
+            <div class='section dataDisplayDiv' id='chartAnchor'></div>
             <div class='section'>
-                <button class='button' id='displayDataButton'>Display</button>
-            </div>
-            <div class='section dataDisplayDiv' id='chartAnchor'>
-                
+                <h3 id='displayText'></h3>
             </div>
             <div class='section'>
                 <h3 class='errorText' id='errorText'></h3>
