@@ -52,7 +52,7 @@ export async function updateSoldierScoreController(){
                 return;
             }
             mdlScoreField.value = null;
-            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${mdlScore}`;
+            displayText.innerHTML = `Raw: ${mdlScore}<br>Scaled: ${response}`;
             break;
         case 2:
             {
@@ -78,7 +78,7 @@ export async function updateSoldierScoreController(){
             }
             sptMetersInput.value = null;
             sptMeterTenthsInput.value = null;
-            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${sptMeters}.${sptMeterTenths}`;}
+            displayText.innerHTML = `Raw: ${sptMeters}.${sptMeterTenths}<br>Scaled: ${response}`;}
             break;
         case 3:
             const hrpInput = document.getElementById('hrpInputField');
@@ -99,7 +99,7 @@ export async function updateSoldierScoreController(){
                 return;
             }
             hrpInput.value = null;
-            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${hrpReps}`;
+            displayText.innerHTML = `Raw: ${hrpReps}<br>Scaled: ${response}`;;
             break;
         case 4:
             const minutesInput = document.getElementById('minutesInput');
@@ -125,7 +125,7 @@ export async function updateSoldierScoreController(){
             minutesInput.value = null;
             secondsInput.value = null;
             const secondsString = (seconds < 10) ? '0' + seconds : seconds;
-            displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
+            displayText.innerHTML = `Raw: ${minutes}:${secondsString}<br>Scaled: ${response}`;
             break;
         case 5:
             {
@@ -152,7 +152,7 @@ export async function updateSoldierScoreController(){
                 minutesInput.value = null;
                 secondsInput.value = null;
                 const secondsString = (seconds < 10) ? '0' + seconds : seconds;
-                displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
+                displayText.innerHTML = `Raw: ${minutes}:${secondsString}<br>Scaled: ${response}`;
             break;
             }
         case 6:
@@ -180,7 +180,7 @@ export async function updateSoldierScoreController(){
                 minutesInput.value = null;
                 secondsInput.value = null;
                 const secondsString = (seconds < 10) ? '0' + seconds : seconds;
-                displayText.textContent = `Soldier with ID ${soldierId} received ${response} points for raw score of ${minutes}:${secondsString}`;
+                displayText.innerHTML = `Raw: ${minutes}:${secondsString}<br>Scaled: ${response}`;
             break;
             }
         default: break;
