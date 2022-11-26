@@ -16,7 +16,6 @@
             document.getElementById('returnToIndexButton').addEventListener('click', getHomePageViewController);
             document.getElementById('aboutViewButton').addEventListener('click', showAboutViewController);
             document.getElementById('dataTypeSelector').addEventListener('change', drawChart);
-            //document.getElementById('displayDataButton').addEventListener('click', drawChart);
 
             google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(drawChart);
@@ -83,7 +82,7 @@
 
                 let options = {
                     title : 'Soldier Scores',
-                    legend: { position: 'none' }
+                    legend: { position: 'none' },
                 };
 
                 let chart = new google.visualization.BarChart(document.getElementById('chartAnchor'));
@@ -92,11 +91,11 @@
 
             }
 
+            //Wrapper used to add listener to soldierIdSelector and execute drawSoldierChart()
             async function drawSoldierChartController(){
                 const soldierIdSelector = document.getElementById('soldierIdSelector');
                 if (soldierIdSelector !== null) soldierIdSelector.addEventListener('change', drawSoldierChart);
                 await drawSoldierChart();
-
             }
 
             async function drawChart(){
@@ -113,7 +112,6 @@
                 }
             }
             
-
         </script>
     </head>
     <body>

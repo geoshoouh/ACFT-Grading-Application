@@ -200,7 +200,6 @@ async function populateDatabase(){
     return testGroupId;
 }
 
-
 function download(blob, filename) {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
