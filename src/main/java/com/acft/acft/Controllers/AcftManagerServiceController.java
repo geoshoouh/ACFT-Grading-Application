@@ -82,7 +82,8 @@ public class AcftManagerServiceController {
 
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}/{passcode}")
     public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
-        exportXlsxFileUtility(request, response, testGroupId, passcode);
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
+        exportXlsxFileUtility(request, response, file);
     }
 
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}")
@@ -90,8 +91,13 @@ public class AcftManagerServiceController {
         exportXlsxFileForTestGroup(request, response, testGroupId, "");
     }
 
-    public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, Long testGroupId, String passcode){
-        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
+    @GetMapping("/getBulkUploadTemplate")
+    public void getBulkUploadTemplate(HttpServletRequest request, HttpServletResponse response){
+        File file = acftManagerService.getBulkUploadTemplate();
+        exportXlsxFileUtility(request, response, file);
+    }
+
+    public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, File file){
         String mimeType = URLConnection.guessContentTypeFromName(file.getName());
         response.setContentType(mimeType);
         response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));

@@ -170,6 +170,7 @@ export async function indexOnLoad(){
         document.getElementById('existingTestGroups').value = selectedTestGroupId;
     }
     populateDataBaseSizeFieldController();
+    showAddIndividualSoldierInterface();
     sessionStorage.setItem('view', '0');
 }
 
@@ -179,6 +180,19 @@ export function adminActionSelectorOnChange(){
 
 export function getHost(){
     return location.protocol + '//' + location.host;
+}
+
+export function addSoldierInterfaceController(){
+    const methodSelectorValue = document.getElementById('addSoldierMethodSelector').value;
+    switch (methodSelectorValue){
+        case '1':
+            showAddIndividualSoldierInterface();
+            break;
+        case '2':
+            showBulkUploadInterface();
+            break;
+        default: break;
+    }
 }
 
 //==============    Component Functions   ================
@@ -325,4 +339,61 @@ function populateDataBaseSizeFieldController(){
             hidePopulateDatabaseSizeField();
         default: break;
     }
+}
+
+
+function showAddIndividualSoldierInterface(){
+    const anchorPoint = document.getElementById('addSoldierDiv');
+    while (anchorPoint.childElementCount > 0) anchorPoint.removeChild(anchorPoint.lastChild);
+    const createNewSoldierButton = document.getElementById('createNewSoldierButton');
+    createNewSoldierButton.textContent = 'Add Soldier';
+    createNewSoldierButton.addEventListener('click', createNewSoldierController);
+    let genderOptionState = true;
+    const elementTypeArray = ['label', 'input', 'label', 'input', 'label', 'input', 'label', 'select', 'option', 'option'];
+    const forAttributeArray = ['lastNameField', null, 'firstNameField', null, 'ageField', null, 'genderField', null, null, null];
+    const classAttributeArray = [null, 'field', null, 'field', null, 'field', null, 'dropdown', null, null];
+    const textContentArray = ['Last Name:', null, 'First Name:', null, 'Age:', null, 'Gender: ', null, 'Male', 'Female'];
+    const idArray = [null, 'lastNameField', null, 'firstNameField', null, 'ageField', null, 'genderField', null, null];
+    const valueTypeArray = [null, 'text', null, 'text', null, 'number', null, null, null, null];
+    for (let i = 0; i < 10; i++){
+        const element = document.createElement(elementTypeArray[i]);
+        if (forAttributeArray[i] !== null) element.htmlFor = forAttributeArray[i];
+        if (classAttributeArray[i] !== null) element.className = classAttributeArray[i];
+        if (textContentArray[i] !== null) element.textContent = textContentArray[i];
+        if (idArray[i] !== null) element.id = idArray[i];
+        if (valueTypeArray[i] !== null) element.setAttribute('type', valueTypeArray[i]);
+        if (element.tagName === 'OPTION'){
+            element.value = genderOptionState;
+            genderOptionState = !genderOptionState;
+            document.getElementById(idArray[7]).appendChild(element);
+        } else {
+            anchorPoint.appendChild(element);
+            if (element.tagName !== 'LABEL'){
+                anchorPoint.appendChild(document.createElement('br'));
+            }
+        }
+    }
+}
+
+function showBulkUploadInterface(){
+    const bulkUploadButton = document.getElementById('createNewSoldierButton');
+    bulkUploadButton.textContent = 'Upload Soldiers';
+    bulkUploadButton.addEventListener('click', bulkUploadController);
+    const anchorPoint = document.getElementById('addSoldierDiv');
+    while (anchorPoint.childElementCount > 0) anchorPoint.removeChild(anchorPoint.lastChild);
+    const templateDownloadButton = document.createElement('button');
+    templateDownloadButton.id = 'templateDownloadButton';
+    templateDownloadButton.className = 'button';
+    templateDownloadButton.textContent = 'Download Template';
+    templateDownloadButton.addEventListener('click', bulkUploadController);
+    anchorPoint.appendChild(templateDownloadButton);
+    const uploadElement = document.createElement('input');
+    uploadElement.id = 'uploadElement';
+    uploadElement.className = 'field';
+    uploadElement.setAttribute('type', 'file');
+    anchorPoint.appendChild(uploadElement);
+}
+
+async function bulkUploadController(){
+    console.log('bulkUploadController called');
 }

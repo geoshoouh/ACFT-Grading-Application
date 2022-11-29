@@ -2,6 +2,9 @@ package com.acft.acft.Services;
 
 import java.util.Date;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -174,6 +177,30 @@ public class AcftManagerService {
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         String path = acftDataExporter.createXlsxFile(workbook, testGroupId);
         File file = new File(path);
+        //Used to catch FileNotFoundException because File does not throw it
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.close();
+        } catch (FileNotFoundException fileNotFoundException){
+            file = null;
+        } catch (IOException ioException){
+            file = null;
+        }
+        return file;
+    }
+
+    public File getBulkUploadTemplate() {
+        String path = "src/main/resources/data/bulkUploadTemplate.xlsx";
+        File file = new File(path);
+        //Used to catch FileNotFoundException because File does not throw it
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.close();
+        } catch (FileNotFoundException fileNotFoundException){
+            file = null;
+        } catch (IOException ioException){
+            file = null;
+        }
         return file;
     }
         

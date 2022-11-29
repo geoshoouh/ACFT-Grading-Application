@@ -258,6 +258,16 @@ public class HttpRequestTest {
     }
 
     @Test
+    void getBulkUploadTemplateReturnsFile() throws Exception{
+        HttpServletResponse response = mockMvc.perform(
+            get("/getBulkUploadTemplate")
+        ).andExpect(status().isOk())
+        .andReturn()
+        .getResponse();
+        Assert.isTrue(response.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"), "In getBulkUploadTemplateReturnsFile: unexpected content type in servlet response");
+    }
+
+    @Test
     void flushDatabaseDeletesAllEntities() throws Exception{
         int size = 5;
         acftManagerService.populateDatabase(size);

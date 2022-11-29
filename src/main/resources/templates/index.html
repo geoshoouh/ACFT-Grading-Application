@@ -16,6 +16,7 @@
             document.getElementById('aboutViewButton').addEventListener('click', Controller.showAboutViewController);
             document.getElementById('adminActionSelector').addEventListener('change', Controller.adminActionSelectorOnChange);
             document.getElementById('visualizeTestDataViewButton').addEventListener('click', Controller.showVisualizeTestDataViewController);
+            document.getElementById('addSoldierMethodSelector').addEventListener('change', Controller.addSoldierInterfaceController);
         </script>
     </head>
     <body>
@@ -52,6 +53,15 @@
                 <button class='button' id='passcodeActionButton'>Submit</button>
             </div>
             <div class='section'>
+                <h3>Add Soldiers</h3>
+                <label for='addSoldierMethodSelector'>Method: </label>
+                <select class='dropdown' id='addSoldierMethodSelector'>
+                    <option value='1'>Individual</option>
+                    <option value='2'>Bulk</option>
+                </select>
+            </div>
+            <div class='section' id='addSoldierDiv'>
+            <!--
                 <h3>Soldier ID Information:</h3>
                 <label for='lastNameField'>Last Name:</label>
                 <input class='field' type='text' id='lastNameField'><br>
@@ -64,6 +74,7 @@
                     <option value=true>Male</option>
                     <option value=false>Female</option>
                 </select><br>
+            -->
             </div>
             <div class='section'>
                 <label for='existingTestGroups'>Test Group:</label>

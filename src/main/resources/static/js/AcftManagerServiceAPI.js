@@ -117,6 +117,15 @@ export async function getTestGroupScoreData(testGroupId, raw, passcode, host){
   return response.json();
 }
 
+export async function getBulkUploadTemplate(host){
+  const path = host + "/getBulkUploadTemplate";
+  let response = await fetch(
+    path
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
+  return response.json();
+}
+
 //===================  NAV FUNCTIONS  ==========================
 
 export function getHomePageView(host){

@@ -172,4 +172,11 @@ public class AcftManagerServiceTest {
         });
     }
 
+    @Test
+    void getBulkUploadTemplateReturnsFile(){
+        File file = acftManagerService.getBulkUploadTemplate();
+        Assert.notNull(file, "In getBulkUploadTemplateReturnsFile: File not found");
+    }
+
+
 }
