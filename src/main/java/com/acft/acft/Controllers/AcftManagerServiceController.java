@@ -83,7 +83,7 @@ public class AcftManagerServiceController {
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}/{passcode}")
     public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
         File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
-        exportXlsxFileUtility(request, response, file);
+        exportXlsxFileUtility(request, response, file, true);
     }
 
     @GetMapping("/testGroup/getXlsxFile/{testGroupId}")
@@ -94,10 +94,10 @@ public class AcftManagerServiceController {
     @GetMapping("/getBulkUploadTemplate")
     public void getBulkUploadTemplate(HttpServletRequest request, HttpServletResponse response){
         File file = acftManagerService.getBulkUploadTemplate();
-        exportXlsxFileUtility(request, response, file);
+        exportXlsxFileUtility(request, response, file, false);
     }
 
-    public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, File file){
+    public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, File file, boolean delete){
         String mimeType = URLConnection.guessContentTypeFromName(file.getName());
         response.setContentType(mimeType);
         response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
@@ -111,7 +111,7 @@ public class AcftManagerServiceController {
         } catch (IOException e){
             System.out.println(e.getMessage());
         }   
-        file.delete();
+        if (delete) file.delete();
     }
 
     @DeleteMapping("/deleteAll")

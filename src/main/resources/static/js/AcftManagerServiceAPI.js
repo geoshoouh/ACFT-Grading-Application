@@ -108,22 +108,24 @@ export async function populateDatabase(size, host){
   return response.json();
 }
 
+//Returns blob
 export async function getTestGroupScoreData(testGroupId, raw, passcode, host){
   const path = (passcode === null) ? host + `/testGroup/${testGroupId}/get/scoreData/${raw}/default` : host + `/testGroup/${testGroupId}/get/scoreData/${raw}/${passcode}`;
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
-  return response.json();
+  return response.blob();
 }
 
+//Returns blob
 export async function getBulkUploadTemplate(host){
   const path = host + "/getBulkUploadTemplate";
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
-  return response.json();
+  return response.blob();
 }
 
 //===================  NAV FUNCTIONS  ==========================

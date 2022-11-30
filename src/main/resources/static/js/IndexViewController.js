@@ -378,6 +378,7 @@ function showAddIndividualSoldierInterface(){
 function showBulkUploadInterface(){
     const bulkUploadButton = document.getElementById('createNewSoldierButton');
     bulkUploadButton.textContent = 'Upload Soldiers';
+    bulkUploadButton.removeEventListener('click', createNewSoldierController);
     bulkUploadButton.addEventListener('click', bulkUploadController);
     const anchorPoint = document.getElementById('addSoldierDiv');
     while (anchorPoint.childElementCount > 0) anchorPoint.removeChild(anchorPoint.lastChild);
@@ -385,7 +386,7 @@ function showBulkUploadInterface(){
     templateDownloadButton.id = 'templateDownloadButton';
     templateDownloadButton.className = 'button';
     templateDownloadButton.textContent = 'Download Template';
-    templateDownloadButton.addEventListener('click', bulkUploadController);
+    templateDownloadButton.addEventListener('click', downloadTemplateController);
     anchorPoint.appendChild(templateDownloadButton);
     const uploadElement = document.createElement('input');
     uploadElement.id = 'uploadElement';
@@ -396,4 +397,15 @@ function showBulkUploadInterface(){
 
 async function bulkUploadController(){
     console.log('bulkUploadController called');
+}
+
+async function downloadTemplateController(){
+    const host = getHost();
+    try {
+        let response = await API.getBulkUploadTemplate(host);
+        download(response, 'bulkUploadTemplate.xlsx');
+    } catch (error) {
+        console.log(error);
+    }
+    
 }
