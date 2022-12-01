@@ -340,4 +340,5 @@ public class HttpRequestTest {
         Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == size, "In populateDatePersistsData: unexpected testGroup population size after populate called");
     }
 
+
 }
