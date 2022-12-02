@@ -203,7 +203,32 @@ public class AcftManagerService {
         }
         return file;
     }
-        
+   
+    public boolean instantiateBulkUploadData(File file, Long testGroupId, String passcode) {
+        List<List<String>> data;
+        try {
+            data = BulkSoldierUpload.stripBulkSoldierData(file);
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+        try {
+            data.forEach((row) -> {
+                createNewSoldier(
+                    testGroupId, 
+                    passcode, 
+                    row.get(0), 
+                    row.get(1), 
+                    Integer.parseInt(row.get(2)), 
+                    Boolean.parseBoolean(row.get(3)));
+            });
+        } catch (InvalidPasscodeException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
     public boolean flushDatabase(){
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;

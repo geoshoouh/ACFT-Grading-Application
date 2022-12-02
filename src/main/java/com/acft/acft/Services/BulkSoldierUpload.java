@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 @Component
 public class BulkSoldierUpload {
     
-    public static List<List<String>> stripBulkSoldierData(File file) throws IOException{
+    public static List<List<String>> stripBulkSoldierData(File file) throws IOException {
         List<List<String>> values = new ArrayList<>();
         Workbook workbook = AcftDataConversion.getWorkbook(new FileInputStream(file));
         Sheet sheet = workbook.getSheetAt(0);
@@ -27,9 +27,10 @@ public class BulkSoldierUpload {
             }
             values.add(rowArray);
         }
+        values.remove(0);
+        values.remove(1);
         return values;
     }
-
     
     public static String getCellValueAsString(Cell cell){
         String cellValue = "EMPTY";
