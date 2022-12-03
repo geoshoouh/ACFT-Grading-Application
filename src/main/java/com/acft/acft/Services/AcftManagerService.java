@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
+import com.acft.acft.Exceptions.InvalidBulkUploadException;
 import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Exceptions.SoldierNotFoundException;
 import com.acft.acft.Exceptions.TestGroupNotFoundException;
@@ -204,7 +205,7 @@ public class AcftManagerService {
         return file;
     }
    
-    public boolean instantiateBulkUploadData(File file, Long testGroupId, String passcode) {
+    public boolean instantiateBulkUploadData(File file, Long testGroupId, String passcode) throws InvalidBulkUploadException, InvalidPasscodeException, TestGroupNotFoundException{
         List<List<String>> data;
         try {
             data = BulkSoldierUpload.stripBulkSoldierData(file);
@@ -212,20 +213,20 @@ public class AcftManagerService {
             System.out.println(e.getMessage());
             return false;
         }
-        try {
-            data.forEach((row) -> {
-                createNewSoldier(
-                    testGroupId, 
-                    passcode, 
-                    row.get(0), 
-                    row.get(1), 
-                    Integer.parseInt(row.get(2)), 
-                    Boolean.parseBoolean(row.get(3)));
-            });
-        } catch (InvalidPasscodeException e){
-            System.out.println(e.getMessage());
-            return false;
-        }
+
+        //IO Operation is good; make sure stripped data is valid
+        BulkSoldierUpload.validateBulkUploadData(data);
+
+        //Valid; instantiate
+        data.forEach((row) -> {
+            createNewSoldier(
+                testGroupId, 
+                passcode, 
+                row.get(0), 
+                row.get(1), 
+                Integer.parseInt(row.get(2)), 
+                Boolean.parseBoolean(row.get(3)));
+        });
         return true;
     }
 
@@ -253,7 +254,7 @@ public class AcftManagerService {
         return true;
     }
 
-    //Gets n * 8 array of scores with first column as soldier ID corresponding to the scores in the row
+    //Gets n x 8 array of scores with first column as soldier ID corresponding to the scores in the row
     public List<List<Long>> getTestGroupScoreData(Long testGroupId, String passcode, boolean raw) throws InvalidPasscodeException {
         List<List<Long>> data = new ArrayList<>();
         getSoldiersByTestGroupId(testGroupId, passcode).forEach((soldier) -> {

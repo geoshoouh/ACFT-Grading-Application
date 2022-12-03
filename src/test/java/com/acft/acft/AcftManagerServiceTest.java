@@ -178,5 +178,9 @@ public class AcftManagerServiceTest {
         Assert.notNull(file, "In getBulkUploadTemplateReturnsFile: File not found");
     }
 
+    @Test
+    void instantiateBulkUploadDataInstantiatesSoldiers(){
+        
+    }
 
 }

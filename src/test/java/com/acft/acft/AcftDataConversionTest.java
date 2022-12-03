@@ -20,6 +20,7 @@ public class AcftDataConversionTest {
 
     @Test
     void getFileNotNull(){
+
         InputStream fileInputStream = acftDataConversion.getFile(path);
         Assert.notNull(fileInputStream, "call to file input stream host neutral was null");
     }

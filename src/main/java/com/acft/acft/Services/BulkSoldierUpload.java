@@ -2,6 +2,8 @@ package com.acft.acft.Services;
 
 import org.springframework.stereotype.Component;
 
+import com.acft.acft.Exceptions.InvalidBulkUploadException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 @Component
 public class BulkSoldierUpload {
     
+    //Still need to implement rejection of improperly formatted input files
     public static List<List<String>> stripBulkSoldierData(File file) throws IOException {
         List<List<String>> values = new ArrayList<>();
         Workbook workbook = AcftDataConversion.getWorkbook(new FileInputStream(file));
@@ -27,8 +30,10 @@ public class BulkSoldierUpload {
             }
             values.add(rowArray);
         }
+        if (values.size() == 0) return values;
+        //pop headers and example row off data matrix
         values.remove(0);
-        values.remove(1);
+        values.remove(0);
         return values;
     }
     
@@ -50,6 +55,36 @@ public class BulkSoldierUpload {
             case _NONE: break;
         }
         return cellValue;
+    }
+
+    public static boolean validateBulkUploadData(List<List<String>> bulkSoldierData) throws InvalidBulkUploadException{
+        if (bulkSoldierData.size() < 1 || bulkSoldierData.get(0).size() < 4) throw new InvalidBulkUploadException();
+        for (List<String> row : bulkSoldierData){
+            for (int i = 0; i < 4; i++){
+                switch (i) {
+                    case 0:
+                        if (row.get(i).length() == 0) throw new InvalidBulkUploadException();
+                        break;
+                    case 1:
+                        if (row.get(i).length() == 0) throw new InvalidBulkUploadException();
+                        break;
+                    case 2:
+                        try {
+                            Integer.parseInt(row.get(i));
+                        } catch (NumberFormatException e){
+                            System.out.println(e.getMessage());
+                            throw new InvalidBulkUploadException();
+                        }
+                        break;
+                    case 3:
+                        if (!row.get(i).equals("M") && !row.get(i).equals("F") && !row.get(i).equals("m") && !row.get(i).equals("f")) throw new InvalidBulkUploadException();
+                        break;
+                    default: break;
+                }
+            }
+            
+        }
+        return true;
     }
 
 }
