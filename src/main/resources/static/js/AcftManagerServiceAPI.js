@@ -115,7 +115,7 @@ export async function getTestGroupScoreData(testGroupId, raw, passcode, host){
     path
   ).then((response) => response).catch((error) => console.log(error));
   if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
-  return response.blob();
+  return response.json();
 }
 
 //Returns blob
