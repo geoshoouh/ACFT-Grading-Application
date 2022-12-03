@@ -158,6 +158,8 @@ public class AcftManagerService {
     }
 
     public Long populateDatabase(int size){
+        if (size > 100) size = 100;
+        else if (size < 0) size = 0;
         GenerateRandomData generateRandomData = new GenerateRandomData();
         String passcode = "";
         Long testGroupId = createNewTestGroup();

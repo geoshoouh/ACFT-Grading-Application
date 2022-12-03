@@ -108,7 +108,7 @@ export async function populateDatabase(size, host){
   return response.json();
 }
 
-//Returns blob
+
 export async function getTestGroupScoreData(testGroupId, raw, passcode, host){
   const path = (passcode === null) ? host + `/testGroup/${testGroupId}/get/scoreData/${raw}/default` : host + `/testGroup/${testGroupId}/get/scoreData/${raw}/${passcode}`;
   let response = await fetch(
