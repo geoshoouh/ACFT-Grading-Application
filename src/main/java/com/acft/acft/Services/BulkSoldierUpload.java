@@ -18,7 +18,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 @Component
 public class BulkSoldierUpload {
     
-    //Still need to implement rejection of improperly formatted input files
     public static List<List<String>> stripBulkSoldierData(File file) throws IOException {
         List<List<String>> values = new ArrayList<>();
         Workbook workbook = AcftDataConversion.getWorkbook(new FileInputStream(file));
