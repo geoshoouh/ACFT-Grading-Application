@@ -15,7 +15,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
@@ -32,11 +31,9 @@ public class BulkSoldierUploadTest {
 
     String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
-    @BeforeEach
-    void generateBulkUploadTestFile(){
+    void generateBulkUploadTestFile(int n){
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet();
-        int n = 5;
         List<List<String>> soldierNames = generateRandomData.getNames(n);
         Row header = sheet.createRow(0);
         Row example = sheet.createRow(1);
@@ -80,6 +77,8 @@ public class BulkSoldierUploadTest {
 
     @Test
     void stripBulkSoldierDataGetsStringMatrix() throws Exception{
+        int sz = 5;
+        generateBulkUploadTestFile(sz);
         List<List<String>> bulkUploadData = new ArrayList<>();
         File file = new File(testPath);
         bulkUploadData = BulkSoldierUpload.stripBulkSoldierData(file);
@@ -90,6 +89,8 @@ public class BulkSoldierUploadTest {
 
     @Test
     void validateBulkUploadCorrectlyValidatesUpload() throws Exception{
+        int sz = 5;
+        generateBulkUploadTestFile(sz);
         File file = new File(testPath);
         String exceptionMessage = "In validateBulkUploadCorrectlyValidatesUpload: unexpected validation result";
         List<List<String>> bulkUploadData = new ArrayList<>();

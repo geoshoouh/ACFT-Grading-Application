@@ -37,6 +37,8 @@ public class HttpRequestTest {
     @Autowired
     AcftManagerService acftManagerService;
 
+    BulkSoldierUploadTest bulkSoldierUploadTest = new BulkSoldierUploadTest();
+
     @Autowired
     MockMvc mockMvc;
 
@@ -340,5 +342,10 @@ public class HttpRequestTest {
         Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == size, "In populateDatePersistsData: unexpected testGroup population size after populate called");
     }
 
+    @Test
+    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception{
+        int sz = 5;
+        bulkSoldierUploadTest.generateBulkUploadTestFile(sz);
+    }
 
 }

@@ -4,8 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.List;
 
@@ -97,6 +99,33 @@ public class AcftManagerServiceController {
         exportXlsxFileUtility(request, response, file, false);
     }
 
+    //Might not need the response parater
+    @PostMapping("/bulkUpload/{testGroupId}/{passcode}")
+    public boolean bulkUpload(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
+        String path = "src/main/resources/data/bulkUpload.xlsx";
+        OutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream("src/main/resources/data/bulkUploadTest.xlsx");
+            FileCopyUtils.copy(request.getInputStream(), outputStream);
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+        File file = new File(path);
+        return acftManagerService.instantiateBulkUploadData(file, testGroupId, passcode);
+        
+    }
+
+    @PostMapping("/bulkUpload/{testGroupId}")
+    public boolean bulkUpload(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId){
+        return bulkUpload(request, response, testGroupId, "");
+    }
+
+    //Might not need the request parameter
     public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, File file, boolean delete){
         String mimeType = URLConnection.guessContentTypeFromName(file.getName());
         response.setContentType(mimeType);

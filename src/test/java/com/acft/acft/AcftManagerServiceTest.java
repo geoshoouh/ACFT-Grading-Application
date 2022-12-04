@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
 import com.acft.acft.Services.AcftManagerService;
+import com.acft.acft.Services.GenerateRandomData;
 
 import java.io.File;
 import java.time.Instant;
@@ -23,6 +24,12 @@ public class AcftManagerServiceTest {
 
     @Autowired
     AcftManagerService acftManagerService;
+
+    GenerateRandomData generateRandomData = new GenerateRandomData();
+
+    BulkSoldierUploadTest bulkSoldierUploadTest = new BulkSoldierUploadTest();
+
+    String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
     @Test
     void createNewTestGroupShouldReturnId(){
@@ -179,8 +186,19 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void instantiateBulkUploadDataInstantiatesSoldiers(){
-        
+    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception{
+        File file = new File(testPath);
+        int n = 10;
+        bulkSoldierUploadTest.generateBulkUploadTestFile(n);
+        String passcode = "passcode";
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        Long testGroupIdProtected = acftManagerService.createNewTestGroup(passcode);
+        acftManagerService.instantiateBulkUploadData(file, testGroupId);
+        acftManagerService.instantiateBulkUploadData(file, testGroupIdProtected, passcode);
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupIdProtected, passcode).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
+        file.delete();
     }
+    
 
 }

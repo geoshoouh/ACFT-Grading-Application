@@ -40,6 +40,8 @@ public class AcftManagerService {
 
     @Autowired
     private AcftDataExporter acftDataExporter;
+    
+    
 
 
     public Long createNewTestGroup(){
@@ -96,7 +98,6 @@ public class AcftManagerService {
         return soldierRepository.findByTestGroupId(testGroupId);
     }
     
-
     public List<Long> getAllTestGroups(){
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();
         List<Long> allTestGroupIds = new ArrayList<>();
@@ -230,6 +231,10 @@ public class AcftManagerService {
                 Boolean.parseBoolean(row.get(3)));
         });
         return true;
+    }
+
+    public boolean instantiateBulkUploadData(File file, Long testGroupId) throws InvalidBulkUploadException, InvalidPasscodeException, TestGroupNotFoundException {
+        return instantiateBulkUploadData(file, testGroupId, "");
     }
 
     public boolean flushDatabase(){
