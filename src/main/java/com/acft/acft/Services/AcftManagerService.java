@@ -227,7 +227,7 @@ public class AcftManagerService {
                 row.get(0), 
                 row.get(1), 
                 Integer.parseInt(row.get(2)), 
-                Boolean.parseBoolean(row.get(3)));
+                (row.get(3).equals("M") || row.get(3).equals("m")) ?  true : false);
         });
         file.delete();
         return true;

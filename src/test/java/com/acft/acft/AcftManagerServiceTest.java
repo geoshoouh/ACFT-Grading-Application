@@ -202,9 +202,11 @@ public class AcftManagerServiceTest {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long testGroupIdProtected = acftManagerService.createNewTestGroup(passcode);
         acftManagerService.instantiateBulkUploadData(file, testGroupId);
+        file = new File(testPath);
+        bulkSoldierUploadTest.generateBulkUploadTestFile(n);
         acftManagerService.instantiateBulkUploadData(file, testGroupIdProtected, passcode);
         Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
-        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupIdProtected, passcode).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupIdProtected, passcode).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation; size was");
         file.delete();
     }
 

@@ -27,11 +27,12 @@ import com.acft.acft.Services.GenerateRandomData;
 @SpringBootTest
 public class BulkSoldierUploadTest {
 
-    GenerateRandomData generateRandomData = new GenerateRandomData();
+    //GenerateRandomData generateRandomData = new GenerateRandomData();
 
     String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
     void generateBulkUploadTestFile(int n){
+        GenerateRandomData generateRandomData = new GenerateRandomData();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet();
         List<List<String>> soldierNames = generateRandomData.getNames(n);
