@@ -195,6 +195,11 @@ export function addSoldierInterfaceController(){
     }
 }
 
+export function bulkSoldierUploadController(){
+    const uploadElement = document.getElementById('uploadElement');
+    
+}
+
 //==============    Component Functions   ================
 
 function displayAccessUnauthorizedMessage(){

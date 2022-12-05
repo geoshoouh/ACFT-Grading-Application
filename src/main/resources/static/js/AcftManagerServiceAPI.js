@@ -128,6 +128,7 @@ export async function getBulkUploadTemplate(host){
   return response.blob();
 }
 
+
 //===================  NAV FUNCTIONS  ==========================
 
 export function getHomePageView(host){
