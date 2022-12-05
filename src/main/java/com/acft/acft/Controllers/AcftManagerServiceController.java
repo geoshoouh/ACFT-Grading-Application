@@ -103,9 +103,10 @@ public class AcftManagerServiceController {
     @PostMapping("/bulkUpload/{testGroupId}/{passcode}")
     public boolean bulkUpload(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
         String path = "src/main/resources/data/bulkUpload.xlsx";
+        File file = new File(path);
         OutputStream outputStream;
         try {
-            outputStream = new FileOutputStream("src/main/resources/data/bulkUploadTest.xlsx");
+            outputStream = new FileOutputStream(path);
             FileCopyUtils.copy(request.getInputStream(), outputStream);
             outputStream.close();
         } catch (FileNotFoundException e) {
@@ -115,7 +116,7 @@ public class AcftManagerServiceController {
             System.out.println(e.getMessage());
             return false;
         }
-        File file = new File(path);
+        file = new File(path);
         return acftManagerService.instantiateBulkUploadData(file, testGroupId, passcode);
         
     }

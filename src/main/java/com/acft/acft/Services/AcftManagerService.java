@@ -213,7 +213,7 @@ public class AcftManagerService {
         try {
             data = BulkSoldierUpload.stripBulkSoldierData(file);
         } catch (IOException e){
-            System.out.println(e.getMessage());
+            System.out.println("In instantiateBulkUploadData in AcftManagerService: " +  e.getMessage());
             return false;
         }
 

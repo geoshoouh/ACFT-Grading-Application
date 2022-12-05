@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.Assert;
 
@@ -27,6 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 
 
@@ -38,6 +40,8 @@ public class HttpRequestTest {
     AcftManagerService acftManagerService;
 
     BulkSoldierUploadTest bulkSoldierUploadTest = new BulkSoldierUploadTest();
+
+    String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
     @Autowired
     MockMvc mockMvc;
@@ -346,6 +350,25 @@ public class HttpRequestTest {
     void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception{
         int sz = 5;
         bulkSoldierUploadTest.generateBulkUploadTestFile(sz);
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        File file = new File(testPath);
+        InputStream inputStream = new FileInputStream(file);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("bulkUpload.xlsx", inputStream);
+        inputStream.close();
+        boolean responseBodyBoolean = Boolean.parseBoolean(
+            mockMvc.perform(
+                post("/bulkUpload/{testGroupId}", testGroupId).content(mockMultipartFile.getBytes())
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString()
+        );
+        Assert.isTrue(responseBodyBoolean, "In instantiateBulkUploadDataInstantiatesSoldiers for HTTP: unexpected response value, was " + responseBodyBoolean);
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == sz, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
+        file.delete();
+        File reqFile = new File("src/main/resources/data/bulkUpload.xlsx");
+        reqFile.delete();
     }
+
 
 }
