@@ -2,6 +2,9 @@ package com.acft.acft.Services;
 
 import java.util.Date;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
+import com.acft.acft.Exceptions.InvalidBulkUploadException;
 import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Exceptions.SoldierNotFoundException;
 import com.acft.acft.Exceptions.TestGroupNotFoundException;
@@ -36,6 +40,8 @@ public class AcftManagerService {
 
     @Autowired
     private AcftDataExporter acftDataExporter;
+    
+    
 
 
     public Long createNewTestGroup(){
@@ -92,7 +98,6 @@ public class AcftManagerService {
         return soldierRepository.findByTestGroupId(testGroupId);
     }
     
-
     public List<Long> getAllTestGroups(){
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();
         List<Long> allTestGroupIds = new ArrayList<>();
@@ -154,6 +159,8 @@ public class AcftManagerService {
     }
 
     public Long populateDatabase(int size){
+        if (size > 100) size = 100;
+        else if (size < 0) size = 0;
         GenerateRandomData generateRandomData = new GenerateRandomData();
         String passcode = "";
         Long testGroupId = createNewTestGroup();
@@ -174,9 +181,62 @@ public class AcftManagerService {
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         String path = acftDataExporter.createXlsxFile(workbook, testGroupId);
         File file = new File(path);
+        //Used to catch FileNotFoundException because File does not throw it
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.close();
+        } catch (FileNotFoundException fileNotFoundException){
+            file = null;
+        } catch (IOException ioException){
+            file = null;
+        }
         return file;
     }
-        
+
+    public File getBulkUploadTemplate() {
+        String path = "src/main/resources/data/bulkUploadTemplate.xlsx";
+        File file = new File(path);
+        //Used to catch FileNotFoundException because File does not throw it
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.close();
+        } catch (FileNotFoundException fileNotFoundException){
+            file = null;
+        } catch (IOException ioException){
+            file = null;
+        }
+        return file;
+    }
+   
+    public boolean instantiateBulkUploadData(File file, Long testGroupId, String passcode) throws InvalidBulkUploadException, InvalidPasscodeException, TestGroupNotFoundException{
+        List<List<String>> data;
+        try {
+            data = BulkSoldierUpload.stripBulkSoldierData(file);
+        } catch (IOException e){
+            System.out.println("In instantiateBulkUploadData in AcftManagerService: " +  e.getMessage());
+            return false;
+        }
+        //IO Operation is good; make sure stripped data is valid
+        BulkSoldierUpload.validateBulkUploadData(data);
+
+        //Valid; instantiate
+        data.forEach((row) -> {
+            createNewSoldier(
+                testGroupId, 
+                passcode, 
+                row.get(0), 
+                row.get(1), 
+                Integer.parseInt(row.get(2)), 
+                Boolean.parseBoolean(row.get(3)));
+        });
+        file.delete();
+        return true;
+    }
+
+    public boolean instantiateBulkUploadData(File file, Long testGroupId) throws InvalidBulkUploadException, InvalidPasscodeException, TestGroupNotFoundException {
+        return instantiateBulkUploadData(file, testGroupId, "");
+    }
+
     public boolean flushDatabase(){
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
@@ -201,7 +261,7 @@ public class AcftManagerService {
         return true;
     }
 
-    //Gets n * 8 array of scores with first column as soldier ID corresponding to the scores in the row
+    //Gets n x 8 array of scores with first column as soldier ID corresponding to the scores in the row
     public List<List<Long>> getTestGroupScoreData(Long testGroupId, String passcode, boolean raw) throws InvalidPasscodeException {
         List<List<Long>> data = new ArrayList<>();
         getSoldiersByTestGroupId(testGroupId, passcode).forEach((soldier) -> {

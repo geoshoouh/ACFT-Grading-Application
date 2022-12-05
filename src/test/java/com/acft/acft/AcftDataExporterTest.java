@@ -16,7 +16,7 @@ import com.acft.acft.Services.AcftManagerService;
 import org.springframework.util.Assert;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 @SpringBootTest
@@ -82,13 +82,14 @@ public class AcftDataExporterTest {
         List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId, "");
         XSSFWorkbook workbook = acftDataExporter.createXlsxWorkbook(soldiers);
         acftDataExporter.createXlsxFile(workbook, testGroupId);
-        FileInputStream file = acftDataConversion.getFile(path);
+        InputStream file = acftDataConversion.getFile(path);
         Assert.isTrue(file != null, "in createXlsxFileCreatesFileWithXlsxWorkbook: file was null");
-        Workbook derivedWorkbook = acftDataConversion.getWorkbook(file);
+        Workbook derivedWorkbook = AcftDataConversion.getWorkbook(file);
         for (int i = 0; i < workbook.getNumberOfSheets(); i++){
             Assert.isTrue(derivedWorkbook.getSheetAt(i).getSheetName().equals(workbook.getSheetAt(i).getSheetName()), "in createXlsxFileCreatesFileWithXlsxWorkbook: sheet mismatch in derived workbook");
         }
         new File(path).delete();
     }
 
+    
 }

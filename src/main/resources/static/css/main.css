@@ -137,5 +137,22 @@ body {
     width: 50px;
 }
 
+.avatar {
+    height: 35px;
+    padding: 0px;
+    background-color: #e0e0e0;
+}
+
+.avatarNavBarItem {
+    padding: 0px;
+    float: left;
+    border-right: 1px solid black;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.warningText {
+    color: red;
+}
 
 

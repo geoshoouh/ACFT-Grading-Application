@@ -1,6 +1,10 @@
 package com.acft.acft;
 
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,8 +14,13 @@ import org.springframework.util.Assert;
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
 import com.acft.acft.Services.AcftManagerService;
+import com.acft.acft.Services.GenerateRandomData;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -23,6 +32,12 @@ public class AcftManagerServiceTest {
 
     @Autowired
     AcftManagerService acftManagerService;
+
+    GenerateRandomData generateRandomData = new GenerateRandomData();
+
+    BulkSoldierUploadTest bulkSoldierUploadTest = new BulkSoldierUploadTest();
+
+    String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
     @Test
     void createNewTestGroupShouldReturnId(){
@@ -171,5 +186,64 @@ public class AcftManagerServiceTest {
             System.out.println();
         });
     }
+
+    @Test
+    void getBulkUploadTemplateReturnsFile(){
+        File file = acftManagerService.getBulkUploadTemplate();
+        Assert.notNull(file, "In getBulkUploadTemplateReturnsFile: File not found");
+    }
+
+    @Test
+    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception{
+        File file = new File(testPath);
+        int n = 10;
+        bulkSoldierUploadTest.generateBulkUploadTestFile(n);
+        String passcode = "passcode";
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        Long testGroupIdProtected = acftManagerService.createNewTestGroup(passcode);
+        acftManagerService.instantiateBulkUploadData(file, testGroupId);
+        acftManagerService.instantiateBulkUploadData(file, testGroupIdProtected, passcode);
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupIdProtected, passcode).size() == n, "In instantiateBulkUploadDataInstantiatesSoldiers: unexpected test group size after soldier instantiation");
+        file.delete();
+    }
+
+    @Test 
+    void bulkSoldierUploadRejectsBadFiles() throws Exception{
+        File file = new File(testPath);
+        int n = 10;
+        bulkSoldierUploadTest.generateBulkUploadTestFile(n);
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        InputStream inputStream = new FileInputStream(file);
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        inputStream.close();
+        OutputStream outputStream = new FileOutputStream(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Sheet originalSheet = sheet;
+        Row row = sheet.getRow(2);
+        row.getCell(0).setCellValue("");
+        workbook.write(outputStream);
+        Assert.isTrue(bulkUploadThrewException(file, testGroupId), "In bulkSoldierUploadRejectsBadFiles for Service: expected exception not thrown");
+        sheet = originalSheet;
+        row.getCell(2).setCellValue("data");
+        workbook.write(outputStream);
+        Assert.isTrue(bulkUploadThrewException(file, testGroupId), "In bulkSoldierUploadRejectsBadFiles for Service: expected exception not thrown");
+        row.getCell(3).setCellValue("Q");
+        workbook.write(outputStream);
+        Assert.isTrue(bulkUploadThrewException(file, testGroupId), "In bulkSoldierUploadRejectsBadFiles for Service: expected exception not thrown");
+        workbook.close();
+        file.delete();
+    }
+
+    boolean bulkUploadThrewException(File file, Long testGroupId){
+        boolean exceptionThrown = false;
+        try {
+            acftManagerService.instantiateBulkUploadData(file, testGroupId);
+        } catch (Exception e){
+            exceptionThrown = true;
+        }
+        return exceptionThrown;
+    }
+    
 
 }

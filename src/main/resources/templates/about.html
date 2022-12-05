@@ -17,6 +17,7 @@
     </head>
     <body>
         <ul class='navBar'>
+            <li id='githubLogo' class='avatarNavBarItem'><img class='avatar' th:src='@{images/githubAvatar.png}'></li>
             <li id='returnToIndexButton' class='navBarItem mainNavBarItem'>Home</li>
             <li id='editSoldierDataViewButton' class='navBarItem mainNavBarItem'>Edit Data</li>
             <li id='visualizeTestDataViewButton' class='navBarItem mainNavBarItem'>Visualize Data</li>
@@ -35,7 +36,7 @@
                     <ul>
                         <p>
                             <em>Admin Actions: </em>For demo purposes, the application database can be automatically populated or cleared using admin actions. 
-                            Select the desired admin action from the 'Admin Actions' dropdown menu and click execute. The the 'Population Size' field to customize 
+                            Select the desired admin action from the 'Admin Actions' dropdown menu and click execute. Use the 'Population Size' field to customize 
                             the number of soldiers that will be generated. 
                         </p>
                         <em>Create Test Group and Passcode Actions</em>
@@ -44,12 +45,22 @@
                             <li>Using the passcode actions dropdown menu, select 'Set User Passcode' and follow the same steps for test group creation. This will set the passcode that will be used to access test groups</li>
                             <li>Should you need to check the user passcode you set, select 'Show User Passcode' from the passcode actions dropdown menu and click 'Submit'</li>
                         </ul>
-                        <em>Create Soldier:</em>
+                        <em>Add Soldier:</em>
                         <ul>
-                            <li>Creating a soldier requires the associated test group to be non-passcode protected or for the user to have the correct user passcode</li>
+                            <li>Adding a soldier to a test group requires the associated test group to be non-passcode protected or for the user to have the correct user passcode</li>
                             <li>Ensure the desired test group ID is selected in the 'Test Group' dropdown menu.</li>
-                            <li>Fill out all soldier information fields.</li>
-                            <li>Click the 'Add Soldier' button. The soldier's assigned ID will be displayed.</li>
+                            <li>Select the desired upload method using the 'Method' dropdown menu</li>
+                            <li>For Single Additions:</li>
+                            <ul>
+                                <li>Fill out all soldier information fields.</li>
+                                <li>Click the 'Add Soldier' button. The soldier's assigned ID will be displayed.</li>
+                            </ul>
+                            <li>For Bulk Additions:</li>
+                            <ul>
+                                <li>Click 'Download Template' and fill in soldier data in accordance with the template format. <span class='warningText'>DO NOT REMOVE THE FIRST TWO ROWS</span></li>
+                                <li>Upload your soldier data file using the file upload field.</li>
+                                <li>Click the 'Upload Soldiers' button.</li>
+                            </ul>
                         </ul>
                         <em>Edit Testing Data:</em>
                         <ul>
@@ -76,8 +87,6 @@
                             <li>A dropdown menu will appear from which you can select any soldier from the test group</li>
                             <li>Click the 'Display' button to show a bar graph of that soldier's score by event</li>
                         </ul>
-                        
-                        
                     </ul>
                 </p>
             </div>

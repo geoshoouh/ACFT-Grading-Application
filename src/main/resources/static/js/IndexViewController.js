@@ -170,6 +170,7 @@ export async function indexOnLoad(){
         document.getElementById('existingTestGroups').value = selectedTestGroupId;
     }
     populateDataBaseSizeFieldController();
+    showAddIndividualSoldierInterface();
     sessionStorage.setItem('view', '0');
 }
 
@@ -180,6 +181,20 @@ export function adminActionSelectorOnChange(){
 export function getHost(){
     return location.protocol + '//' + location.host;
 }
+
+export function addSoldierInterfaceController(){
+    const methodSelectorValue = document.getElementById('addSoldierMethodSelector').value;
+    switch (methodSelectorValue){
+        case '1':
+            showAddIndividualSoldierInterface();
+            break;
+        case '2':
+            showBulkUploadInterface();
+            break;
+        default: break;
+    }
+}
+
 
 //==============    Component Functions   ================
 
@@ -325,4 +340,97 @@ function populateDataBaseSizeFieldController(){
             hidePopulateDatabaseSizeField();
         default: break;
     }
+}
+
+
+function showAddIndividualSoldierInterface(){
+    const anchorPoint = document.getElementById('addSoldierDiv');
+    while (anchorPoint.childElementCount > 0) anchorPoint.removeChild(anchorPoint.lastChild);
+    const createNewSoldierButton = document.getElementById('createNewSoldierButton');
+    createNewSoldierButton.textContent = 'Add Soldier';
+    createNewSoldierButton.removeEventListener('click', bulkUploadController);
+    createNewSoldierButton.addEventListener('click', createNewSoldierController);
+    let genderOptionState = true;
+    const elementTypeArray = ['label', 'input', 'label', 'input', 'label', 'input', 'label', 'select', 'option', 'option'];
+    const forAttributeArray = ['lastNameField', null, 'firstNameField', null, 'ageField', null, 'genderField', null, null, null];
+    const classAttributeArray = [null, 'field', null, 'field', null, 'field', null, 'dropdown', null, null];
+    const textContentArray = ['Last Name:', null, 'First Name:', null, 'Age:', null, 'Gender: ', null, 'Male', 'Female'];
+    const idArray = [null, 'lastNameField', null, 'firstNameField', null, 'ageField', null, 'genderField', null, null];
+    const valueTypeArray = [null, 'text', null, 'text', null, 'number', null, null, null, null];
+    for (let i = 0; i < 10; i++){
+        const element = document.createElement(elementTypeArray[i]);
+        if (forAttributeArray[i] !== null) element.htmlFor = forAttributeArray[i];
+        if (classAttributeArray[i] !== null) element.className = classAttributeArray[i];
+        if (textContentArray[i] !== null) element.textContent = textContentArray[i];
+        if (idArray[i] !== null) element.id = idArray[i];
+        if (valueTypeArray[i] !== null) element.setAttribute('type', valueTypeArray[i]);
+        if (element.tagName === 'OPTION'){
+            element.value = genderOptionState;
+            genderOptionState = !genderOptionState;
+            document.getElementById(idArray[7]).appendChild(element);
+        } else {
+            anchorPoint.appendChild(element);
+            if (element.tagName !== 'LABEL'){
+                anchorPoint.appendChild(document.createElement('br'));
+            }
+        }
+    }
+}
+
+function showBulkUploadInterface(){
+    const bulkUploadButton = document.getElementById('createNewSoldierButton');
+    bulkUploadButton.textContent = 'Upload Soldiers';
+    bulkUploadButton.removeEventListener('click', createNewSoldierController);
+    bulkUploadButton.addEventListener('click', bulkUploadController);
+    const anchorPoint = document.getElementById('addSoldierDiv');
+    while (anchorPoint.childElementCount > 0) anchorPoint.removeChild(anchorPoint.lastChild);
+    const templateDownloadButton = document.createElement('button');
+    templateDownloadButton.id = 'templateDownloadButton';
+    templateDownloadButton.className = 'button';
+    templateDownloadButton.textContent = 'Download Template';
+    templateDownloadButton.addEventListener('click', downloadTemplateController);
+    anchorPoint.appendChild(templateDownloadButton);
+    const uploadElement = document.createElement('input');
+    uploadElement.id = 'uploadElement';
+    uploadElement.className = 'field';
+    uploadElement.setAttribute('type', 'file');
+    anchorPoint.appendChild(uploadElement);
+}
+
+async function bulkUploadController(){
+    const host = getHost();
+    const uploadElement = document.getElementById('uploadElement');
+    const testGroupSelector = document.getElementById('existingTestGroups');
+    const errorText = document.getElementById('messageText');
+    const displayText = document.getElementById('displayText');
+    const userPasscode = sessionStorage.getItem('userPasscode');
+    errorText.textContent = null;
+    displayText.textContent = null;
+    if (uploadElement.files.length === 0 || testGroupSelector.length === 0){
+        errorText.textContent = 'No file selected or no available test groups';
+        return;
+    }
+    const file = document.getElementById('uploadElement').files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+        await API.addSoldiersInBulk(testGroupSelector.value, userPasscode, file, host);
+    } catch (error) {
+        console.log(error);
+        errorText.textContent = `Bulk upload file for test group ${testGroupSelector.value} was rejected`;
+        return;
+    }
+    sessionStorage.setItem('selectedTestGroup', testGroupSelector.value);
+    displayText.textContent = `Bulk upload for test group ${testGroupSelector.value} complete`
+}
+
+async function downloadTemplateController(){
+    const host = getHost();
+    try {
+        let response = await API.getBulkUploadTemplate(host);
+        download(response, 'bulkUploadTemplate.xlsx');
+    } catch (error) {
+        console.log(error);
+    }
+    
 }

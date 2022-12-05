@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class EntityNotFoundExceptionAdvice {
+public class AcftManagerExceptionControllerAdvice {
     
     @ResponseBody
     @ExceptionHandler(TestGroupNotFoundException.class)
@@ -22,4 +22,20 @@ public class EntityNotFoundExceptionAdvice {
     String soldierNotFoundHandler(SoldierNotFoundException ex){
         return ex.getMessage();
     }
+
+    @ResponseBody
+    @ExceptionHandler(InvalidPasscodeException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    String invalidPassCodeExceptionHandler(InvalidPasscodeException ex){
+        return ex.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(InvalidBulkUploadException.class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    String invalidBulkUploadExceptionHandler(InvalidBulkUploadException ex){
+        return ex.getMessage();
+    }
+    
+
 }

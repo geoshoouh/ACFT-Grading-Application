@@ -1,6 +1,6 @@
 package com.acft.acft;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,8 @@ public class AcftDataConversionTest {
 
     @Test
     void getFileNotNull(){
-        FileInputStream fileInputStream = acftDataConversion.getFile(path);
+
+        InputStream fileInputStream = acftDataConversion.getFile(path);
         Assert.notNull(fileInputStream, "call to file input stream host neutral was null");
     }
 

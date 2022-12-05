@@ -31,8 +31,6 @@ public class GenerateRandomData {
     }
 
     public List<List<String>> getNames(int size){
-        if (size > 100) size = 100;
-        else if (size < 0) size = 0;
         List<List<String>> names = new ArrayList<>();
         String body;
         try {

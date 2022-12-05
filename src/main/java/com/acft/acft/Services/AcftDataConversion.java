@@ -35,23 +35,23 @@ public class AcftDataConversion {
         }
     }
       
-    public FileInputStream getFile(String path) {
-        FileInputStream file; 
+    public InputStream getFile(String path) {
+        InputStream file; 
         try {
             file = new FileInputStream(new File(path));
         } catch (FileNotFoundException e) {
             System.out.println("In AcftDataConversion 'FileNotFoundException' caught for filepath " + path);
             file = null;
-        } 
+        }   
         return file;
     }
 
-    public Workbook getWorkbook(InputStream file){
+    public static Workbook getWorkbook(InputStream file){
         Workbook workbook;
         try {
             workbook = new XSSFWorkbook(file);
         } catch (IOException e){
-            System.out.println("In AcftDataConversion 'IOException' caught");
+            System.out.println(e.getMessage());
             workbook = null;
         }
         return workbook;
