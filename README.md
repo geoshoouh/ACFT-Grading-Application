@@ -9,7 +9,7 @@
 -Export testing group data to .xlsx [**Implemented**]<br/>
 -Mobile-friendly UI [**Implemented**]<br/>
 -UI Support for data visualization [**Implemented**]<br/>
--Computes and displays completion status of events<br/>
+-Add soldiers via excel spreadsheet [**Implemented**]<br/>
 
 
 **Tech stack:**<br/>
@@ -22,6 +22,7 @@
    Spring Data JPA<br/>
    H2 DB<br/>
    Apache POI<br/>
+   Thymeleaf<br/>
    Spring Boot Test<br/>
    Spring Boot Dev Tools
 
