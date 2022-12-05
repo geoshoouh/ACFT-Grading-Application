@@ -40,10 +40,7 @@ public class BulkSoldierUpload {
         String cellValue = "EMPTY";
         switch (cell.getCellType()){
             case NUMERIC:
-                String temp = cell.getDateCellValue().toString();
-                String[] tempArray = temp.split(" ");
-                cellValue = tempArray[3];
-                cellValue = cellValue.substring(0, 5);
+                cellValue = String.valueOf((int)Math.floor(cell.getNumericCellValue()));
                 break;
             case STRING:
                 cellValue = cell.getStringCellValue();

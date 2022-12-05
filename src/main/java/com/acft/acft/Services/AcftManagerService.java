@@ -216,7 +216,6 @@ public class AcftManagerService {
             System.out.println("In instantiateBulkUploadData in AcftManagerService: " +  e.getMessage());
             return false;
         }
-
         //IO Operation is good; make sure stripped data is valid
         BulkSoldierUpload.validateBulkUploadData(data);
 
@@ -230,6 +229,7 @@ public class AcftManagerService {
                 Integer.parseInt(row.get(2)), 
                 Boolean.parseBoolean(row.get(3)));
         });
+        file.delete();
         return true;
     }
 

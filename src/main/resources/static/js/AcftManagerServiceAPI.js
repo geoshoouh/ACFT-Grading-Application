@@ -128,6 +128,19 @@ export async function getBulkUploadTemplate(host){
   return response.blob();
 }
 
+export async function addSoldiersInBulk(testGroupId, passcode = "", file, host){
+  const path = (passcode === null) ? `/bulkUpload/${testGroupId}` : `/bulkUpload/${testGroupId}/${passcode}`;
+  let response = await fetch(
+    path,
+    {
+      method: 'POST',
+      body: file
+    }
+  ).then((response) => response).catch((error) => console.log(error));
+  if (!response.ok) throw Error(`Response to ${path} was ${response.status}`);
+  return response.json();
+}
+
 
 //===================  NAV FUNCTIONS  ==========================
 

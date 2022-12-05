@@ -290,8 +290,6 @@ public class HttpRequestTest {
         Assert.isTrue(response, "In flushDatabseDeletesAllEntities: unexpected boolean response");
     }
 
-    //Attempted to test using Set.contains() instead of Set.size(), but this failed and it 
-    //did not seem worth it to determine the cause yet
     @Test
     void deleteSoldierByIdPersistsDeletion() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();

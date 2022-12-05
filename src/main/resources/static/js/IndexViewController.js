@@ -195,10 +195,6 @@ export function addSoldierInterfaceController(){
     }
 }
 
-export function bulkSoldierUploadController(){
-    const uploadElement = document.getElementById('uploadElement');
-    
-}
 
 //==============    Component Functions   ================
 
@@ -269,6 +265,7 @@ async function flushDatabase(){
 }
 
 async function getAllTestGroupsController(){
+    console.log("getAllTestGroupsController called");
     const host = getHost();
     let dropDownMenu = document.getElementById('existingTestGroups');
     let testGroupIdArray;
@@ -401,7 +398,30 @@ function showBulkUploadInterface(){
 }
 
 async function bulkUploadController(){
-    console.log('bulkUploadController called');
+    const host = getHost();
+    const uploadElement = document.getElementById('uploadElement');
+    const testGroupSelector = document.getElementById('existingTestGroups');
+    const errorText = document.getElementById('messageText');
+    const displayText = document.getElementById('displayText');
+    const userPasscode = sessionStorage.getItem('userPasscode');
+    errorText.textContent = null;
+    displayText.textContent = null;
+    if (uploadElement.files.length === 0 || testGroupSelector.length === 0){
+        errorText.textContent = 'No file selected or no available test groups';
+        return;
+    }
+    const file = document.getElementById('uploadElement').files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+        await API.addSoldiersInBulk(testGroupSelector.value, userPasscode, file, host);
+    } catch (error) {
+        console.log(error);
+        errorText.textContent = `Bulk upload file for test group ${testGroupSelector.value} was rejected`;
+        return;
+    }
+    sessionStorage.setItem('selectedTestGroup', testGroupSelector.value);
+    displayText.textContent = `Bulk upload for test group ${testGroupSelector.value} complete`
 }
 
 async function downloadTemplateController(){

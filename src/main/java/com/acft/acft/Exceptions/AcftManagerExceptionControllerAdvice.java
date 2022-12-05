@@ -32,7 +32,7 @@ public class AcftManagerExceptionControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler(InvalidBulkUploadException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     String invalidBulkUploadExceptionHandler(InvalidBulkUploadException ex){
         return ex.getMessage();
     }
