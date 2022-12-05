@@ -265,7 +265,6 @@ async function flushDatabase(){
 }
 
 async function getAllTestGroupsController(){
-    console.log("getAllTestGroupsController called");
     const host = getHost();
     let dropDownMenu = document.getElementById('existingTestGroups');
     let testGroupIdArray;
@@ -349,6 +348,7 @@ function showAddIndividualSoldierInterface(){
     while (anchorPoint.childElementCount > 0) anchorPoint.removeChild(anchorPoint.lastChild);
     const createNewSoldierButton = document.getElementById('createNewSoldierButton');
     createNewSoldierButton.textContent = 'Add Soldier';
+    createNewSoldierButton.removeEventListener('click', bulkUploadController);
     createNewSoldierButton.addEventListener('click', createNewSoldierController);
     let genderOptionState = true;
     const elementTypeArray = ['label', 'input', 'label', 'input', 'label', 'input', 'label', 'select', 'option', 'option'];
