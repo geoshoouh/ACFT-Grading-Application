@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,6 +38,7 @@ public class TestGroup {
     private Date expirationDate;
 
     @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("lastName")
     public List<Soldier> soldierPopulation = new ArrayList<>();
 
     public TestGroup(){
