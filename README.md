@@ -15,7 +15,7 @@
 **Tech stack:**<br/>
    Postgres<br/>
    JPA/Hibernate<br/>
-   Springboot<br/>
+   Spring MVC<br/>
    
 **Dependencies:**<br/>
    Gson<br/>
