@@ -13,8 +13,8 @@
 
 
 **Tech stack:**<br/>
-   Hibernate<br/>
-   Maven<br/>
+   Postgres<br/>
+   JPA/Hibernate<br/>
    Springboot<br/>
    
 **Dependencies:**<br/>
