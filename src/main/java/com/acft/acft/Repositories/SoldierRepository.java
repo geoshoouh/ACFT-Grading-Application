@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface SoldierRepository extends JpaRepository<Soldier, Long>{
     
-    List<Soldier> findByTestGroupIdOrderByIdAsc(Long testGroupId);
+    List<Soldier> findByTestGroupIdOrderByLastNameAsc(Long testGroupId);
 }
