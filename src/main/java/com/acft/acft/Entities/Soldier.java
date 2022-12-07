@@ -27,11 +27,8 @@ public class Soldier {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "testgroup")
+    @JoinColumn(name = "testgroup_id")
     private TestGroup testGroup;
-
-    @Column(name = "test_group_id")
-    private Long testGroupId;
 
     @Column(name = "last_name")
     private String lastName;
@@ -87,7 +84,6 @@ public class Soldier {
 
     public Soldier(TestGroup testGroup, String lastName, String firstName, int age, boolean isMale) {
         this.testGroup = testGroup;
-        this.testGroupId = testGroup.getId();
         this.lastName = lastName;
         this.firstName = firstName;
         this.age = age;
@@ -102,10 +98,6 @@ public class Soldier {
 
     public TestGroup getTestGroup() {
         return testGroup;
-    }
-
-    public Long getTestGroupId() {
-        return testGroupId;
     }
 
     public String getLastName() {
@@ -142,7 +134,7 @@ public class Soldier {
 
     @Override
     public String toString() {
-        return "Soldier [age=" + age + ", firstName=" + firstName + ", groupId=" + testGroupId + ", id=" + id + ", isMale="
+        return "Soldier [age=" + age + ", firstName=" + firstName + ", groupId=" + testGroup.getId() + ", id=" + id + ", isMale="
                 + isMale + ", lastName=" + lastName + "]";
     }
 

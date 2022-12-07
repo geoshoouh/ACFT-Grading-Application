@@ -78,7 +78,7 @@ public class AcftManagerService {
     public Soldier getSoldierById(Long soldierId, String passcode) throws SoldierNotFoundException, InvalidPasscodeException{
         Soldier soldier = soldierRepository.findById(soldierId)
             .orElseThrow(() -> new SoldierNotFoundException(soldierId));
-        getTestGroup(soldier.getTestGroupId(), passcode);
+        getTestGroup(soldier.getTestGroup().getId(), passcode);
         return soldier;
     }
 
@@ -143,7 +143,7 @@ public class AcftManagerService {
         return scaledScore;
     }
 
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.DAYS)
+    @Scheduled(fixedDelay = 12, timeUnit = TimeUnit.HOURS)
     public void deleteTestGroupsOnSchedule(){
         Date cutoff = Date.from(Instant.now().minus(2, ChronoUnit.DAYS));
         System.out.println("Cutoff date: " + cutoff);
