@@ -22,12 +22,12 @@ public class Soldier {
 
     @Id 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SOLDIER_SEQ")
-    @Column(name = "id")
+    @Column(name = "soldier_id")
     private Long id;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "test_group")
+    @JoinColumn(name = "testgroup_id", referencedColumnName = "id")
     private TestGroup testGroup;
 
     @Column(name = "test_group_id")
