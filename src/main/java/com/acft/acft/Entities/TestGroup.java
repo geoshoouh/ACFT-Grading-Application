@@ -42,12 +42,12 @@ public class TestGroup {
     public List<Soldier> soldierPopulation = new ArrayList<>();
 
     public TestGroup(){
-        this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
+        this.expirationDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
     }
 
     public TestGroup(String passcode){
         this.passcode = passcode;
-        this.expirationDate = Date.from(Instant.now().plus(2, ChronoUnit.DAYS));
+        this.expirationDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
     }
 
     public List<Soldier> getSoldierPopulation(){
