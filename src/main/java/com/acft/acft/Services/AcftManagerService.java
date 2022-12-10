@@ -143,6 +143,7 @@ public class AcftManagerService {
         return scaledScore;
     }
 
+
     @Scheduled(fixedDelay = 12, timeUnit = TimeUnit.HOURS)
     public void deleteTestGroupsOnSchedule(){
         Date cutoff = Date.from(Instant.now().minus(2, ChronoUnit.DAYS));
@@ -151,12 +152,15 @@ public class AcftManagerService {
         System.out.println("size of tg pull is: " + expiredTestGroups.size());
         expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
         expiredTestGroups.forEach((testGroup) -> {
+            /* 
             testGroup.getSoldierPopulation().forEach((soldier) -> {
                 soldierRepository.delete(soldier);
             });
+            */
             testGroupRepository.delete(testGroup);
         });
     }
+
 
     public Long populateDatabase(int size){
         if (size > 100) size = 100;
