@@ -143,10 +143,26 @@ public class AcftManagerService {
         return scaledScore;
     }
 
-
+    /* 
     @Scheduled(fixedDelay = 12, timeUnit = TimeUnit.HOURS)
     public void deleteTestGroupsOnSchedule(){
         Date cutoff = Date.from(Instant.now().minus(2, ChronoUnit.DAYS));
+        System.out.println("Cutoff date: " + cutoff);
+        List<TestGroup> expiredTestGroups = testGroupRepository.findByExpirationDateBefore(cutoff);
+        System.out.println("size of tg pull is: " + expiredTestGroups.size());
+        expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
+        expiredTestGroups.forEach((testGroup) -> {
+            testGroup.getSoldierPopulation().forEach((soldier) -> {
+                soldierRepository.delete(soldier);
+            });  
+            testGroupRepository.delete(testGroup);
+        });
+    }
+    */
+
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
+    public void deleteTestGroupsOnSchedule(){
+        Date cutoff = Date.from(Instant.now().minus(2, ChronoUnit.HOURS));
         System.out.println("Cutoff date: " + cutoff);
         List<TestGroup> expiredTestGroups = testGroupRepository.findByExpirationDateBefore(cutoff);
         System.out.println("size of tg pull is: " + expiredTestGroups.size());
