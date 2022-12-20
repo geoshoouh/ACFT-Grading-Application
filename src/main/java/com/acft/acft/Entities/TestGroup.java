@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit;
 
 
 @Entity
-@Table
+@Table(name = "Testgroup")
 public class TestGroup {
     
     @Id

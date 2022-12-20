@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @SequenceGenerator(name="SOLDIER_SEQ", sequenceName = "soldier_sequence")
-@Table(name = "SOLDIERS")
+@Table(name = "Soldier")
 public class Soldier {
 
     @Id 

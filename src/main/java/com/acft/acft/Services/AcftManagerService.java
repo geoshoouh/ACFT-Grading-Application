@@ -315,8 +315,8 @@ public class AcftManagerService {
     }
 
     public TestGroup getTestGroupByPseudoId(Long pseudoId, String passcode){
-        TestGroup testgroup = testGroupRepository.findByPseudoId(pseudoId);
-        return getTestGroup(testgroup.getId(), passcode);
+        List<TestGroup> testgroup = testGroupRepository.findByPseudoId(pseudoId);
+        return getTestGroup(testgroup.get(0).getId(), passcode);
     }
 
     public Soldier getSoldierByPseudoId(Long pseudoId, String passcode){
