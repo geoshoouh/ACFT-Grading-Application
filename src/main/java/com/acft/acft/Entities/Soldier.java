@@ -262,7 +262,7 @@ public class Soldier {
     }
 
     public int getTotalScore(){
-        return maxDeadlift + standingPowerThrow + handReleasePushups + sprintDragCarry + plank + twoMileRun;
+        return this.totalScore;
     }
 
     public int[] getScoresAsArray(boolean raw){
