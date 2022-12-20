@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @SequenceGenerator(name="SOLDIER_SEQ", sequenceName = "soldier_sequence")
-@Table(name = "Soldier")
+@Table(name = "soldier")
 public class Soldier {
 
     @Id 
@@ -30,7 +30,7 @@ public class Soldier {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "test_group")
+    @JoinColumn(name = "testgroup_id")
     private TestGroup testGroup;
 
     @Column(name = "last_name")

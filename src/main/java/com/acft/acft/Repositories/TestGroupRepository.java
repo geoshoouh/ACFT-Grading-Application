@@ -12,5 +12,5 @@ public interface TestGroupRepository extends JpaRepository<TestGroup, Long>{
 
     List<TestGroup> findByExpirationDateBefore(Date date);
 
-    TestGroup findByPseudoId(Long pseudoId);
+    List<TestGroup> findByPseudoId(Long pseudoId);
 }
