@@ -30,7 +30,7 @@ public class Soldier {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "testgroup")
+    @JoinColumn(name = "TESTGROUP")
     private TestGroup testGroup;
 
     @Column(name = "last_name")
