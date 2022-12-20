@@ -314,8 +314,9 @@ public class AcftManagerService {
         return this.testGroupPseudoIdQueue;
     }
 
-    public TestGroup getTestGroupByPseudoId(Long pseudoId, String passcode){
+    public TestGroup getTestGroupByPseudoId(Long pseudoId, String passcode) throws TestGroupNotFoundException{
         List<TestGroup> testgroup = testGroupRepository.findByPseudoId(pseudoId);
+        if (testgroup.size() == 0) throw new TestGroupNotFoundException(pseudoId);
         return getTestGroup(testgroup.get(0).getId(), passcode);
     }
 

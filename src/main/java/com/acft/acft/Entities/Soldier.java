@@ -1,6 +1,5 @@
 package com.acft.acft.Entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,73 +15,57 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
+@Table
 @SequenceGenerator(name="SOLDIER_SEQ", sequenceName = "soldier_sequence")
-@Table(name = "Soldier")
 public class Soldier {
 
     @Id 
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SOLDIER_SEQ")
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "pseudo_id")
     private Long pseudoId;
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "test_group")
+    @JoinColumn(name = "TESTGROUP")
     private TestGroup testGroup;
 
-    @Column(name = "last_name")
+
     private String lastName;
 
-    @Column(name = "first_name")
+
     private String firstName;
 
-    @Column(name = "age")
     private int age;
 
-    @Column(name = "is_male")
+
     private boolean isMale;
 
     //These are scores
-    @Column(name = "max_deadlift")
     private int maxDeadlift = 0;
 
-    @Column(name = "max_deadlist_raw")
     private int maxDeadliftRaw = 0;
 
-    @Column(name = "standing_power_throw")
     private int standingPowerThrow = 0;
 
-    @Column(name = "standing_power_throw_raw")
     private int standingPowerThrowRaw = 0;
 
-    @Column(name = "hand_release_pushups")
     private int handReleasePushups = 0;
 
-    @Column(name = "hand_realease_pushups_raw")
     private int handReleasePushupsRaw = 0;
 
-    @Column(name = "sprint_drag_carry")
     private int sprintDragCarry = 0;
 
-    @Column(name = "sprint_drag_carry_raw")
     private int sprintDragCarryRaw = 0;
 
-    @Column(name = "plank")
     private int plank = 0;
 
-    @Column(name = "plank_raw")
     private int plankRaw = 0;
 
-    @Column(name = "two_mile_run")
     private int twoMileRun = 0;
 
-    @Column(name = "two_mile_run_raw")
     private int twoMileRunRaw = 0;
 
-    @Column(name = "total_score")
     private int totalScore = 0;
 
     public Soldier(TestGroup testGroup, String lastName, String firstName, int age, boolean isMale) {
@@ -283,7 +266,7 @@ public class Soldier {
     }
 
     public int getTotalScore(){
-        return maxDeadlift + standingPowerThrow + handReleasePushups + sprintDragCarry + plank + twoMileRun;
+        return this.totalScore;
     }
 
     public int[] getScoresAsArray(boolean raw){
