@@ -25,6 +25,9 @@ public class Soldier {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "pseudo_id")
+    private Long pseudoId;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "testgroup_id")
@@ -94,6 +97,14 @@ public class Soldier {
     
     public Long getId() {
         return id;
+    }
+
+    public void setPseudoId(Long pseudoId){
+        this.pseudoId = pseudoId;
+    }
+
+    public Long getPseudoId(){
+        return this.pseudoId;
     }
 
     public TestGroup getTestGroup() {

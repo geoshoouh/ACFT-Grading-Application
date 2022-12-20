@@ -28,6 +28,9 @@ public class TestGroup {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "pseudo_id")
+    private Long pseudoId;
+
     @JsonIgnore
     @Column(name = "passcode")
     private String passcode = "";
@@ -81,6 +84,14 @@ public class TestGroup {
 
     public void setExpirationDate(Date expirationDate){
         this.expirationDate = expirationDate;
+    }
+
+    public void setPseudoId(Long pseudoId){
+        this.pseudoId = pseudoId;
+    }
+
+    public Long getPseudoId(){
+        return this.pseudoId;
     }
 
 }

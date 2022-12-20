@@ -1,6 +1,7 @@
 package com.acft.acft.Services;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,6 +9,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -41,17 +44,30 @@ public class AcftManagerService {
     @Autowired
     private AcftDataExporter acftDataExporter;
     
-    
+    private Queue<Long> soldierPseudoIdQueue = new LinkedList<>();
 
+    public Queue<Long> testGroupPseudoIdQueue = new LinkedList<>();
 
     public Long createNewTestGroup(){
         TestGroup testGroup = new TestGroup();
+        testGroupRepository.save(testGroup);
+        try {
+            testGroup.setPseudoId(testGroupPseudoIdQueue.remove());
+        } catch (NoSuchElementException e){
+            testGroup.setPseudoId(testGroup.getId());
+        }
         testGroupRepository.save(testGroup);
         return testGroup.getId();
     }
 
     public Long createNewTestGroup(String passcode){
         TestGroup testGroup = new TestGroup(passcode);
+        testGroupRepository.save(testGroup);
+        try {
+            testGroup.setPseudoId(testGroupPseudoIdQueue.remove());
+        } catch (NoSuchElementException e){
+            testGroup.setPseudoId(testGroup.getId());
+        }
         testGroupRepository.save(testGroup);
         return testGroup.getId();
     }
@@ -67,6 +83,12 @@ public class AcftManagerService {
     public Long createNewSoldier(Long testGroupId, String passcode, String lastName, String firstName, int age, boolean isMale) throws TestGroupNotFoundException, InvalidPasscodeException{
         TestGroup testGroup = getTestGroup(testGroupId, passcode);
         Soldier soldier = new Soldier(testGroup, lastName, firstName, age, isMale);
+        soldierRepository.save(soldier);
+        try {
+            soldier.setPseudoId(soldierPseudoIdQueue.remove());
+        } catch (NoSuchElementException e){
+            soldier.setPseudoId(soldier.getId());
+        }
         soldierRepository.save(soldier);
         return soldier.getId();
     }
@@ -154,6 +176,7 @@ public class AcftManagerService {
         expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
         expiredTestGroups.forEach((testGroup) -> {
             testGroupRepository.delete(testGroup);
+            testGroupPseudoIdQueue.add(testGroup.getId());
         });
     }
 
@@ -251,13 +274,18 @@ public class AcftManagerService {
         return testGroupRepository.count();
     }
 
-    public boolean deleteSoldierById(Long testGroupId, String passcode, Long soldierId) throws SoldierNotFoundException, InvalidPasscodeException {
+    public boolean deleteSoldierById(Long testGroupId, String passcode, Long soldierId) throws InvalidPasscodeException {
         //Check for TestGroup access
         getTestGroup(testGroupId, passcode);
-        
-        Soldier soldier = soldierRepository.findById(soldierId)
-            .orElseThrow(() -> new SoldierNotFoundException(soldierId));
-        soldierRepository.delete(soldier);
+        Soldier soldier;
+        try {
+            soldier = soldierRepository.findById(soldierId).orElseThrow(() -> new SoldierNotFoundException(soldierId));
+        } catch (SoldierNotFoundException e){
+            System.out.println(e);
+            return false;
+        }
+        soldierRepository.delete(soldier);   
+        soldierPseudoIdQueue.add(soldier.getId());
         return true;
     }
 
@@ -278,5 +306,28 @@ public class AcftManagerService {
         return getTestGroupScoreData(testGroupId, "", raw);
     }
 
+    public Queue<Long> getSoldierPseudoIdQueue(){
+        return this.soldierPseudoIdQueue;
+    }
     
+    public Queue<Long> getTestGroupPseudoIdQueue(){
+        return this.testGroupPseudoIdQueue;
+    }
+
+    public TestGroup getTestGroupByPseudoId(Long pseudoId, String passcode){
+        TestGroup testgroup = testGroupRepository.findByPseudoId(pseudoId);
+        return getTestGroup(testgroup.getId(), passcode);
+    }
+
+    public Soldier getSoldierByPseudoId(Long pseudoId, String passcode){
+        Soldier soldier = soldierRepository.findByPseudoId(pseudoId);
+        return getSoldierById(soldier.getId(), passcode);
+    }
+
+    public Soldier getSoldierByPseudoId(Long pseudoId){
+        Soldier soldier = soldierRepository.findByPseudoId(pseudoId);
+        return getSoldierById(soldier.getId());
+    }
+
+
 }

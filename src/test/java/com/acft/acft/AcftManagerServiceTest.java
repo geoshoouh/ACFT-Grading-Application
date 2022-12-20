@@ -40,13 +40,13 @@ public class AcftManagerServiceTest {
     String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
     @Test
-    void createNewTestGroupShouldReturnId(){
+    void createNewTestGroupShouldReturnId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         Assert.notNull(testGroupId, "createNewTestGroup returned null");
     }
 
     @Test
-    void createNewTestGroupWithPasscodeShouldReturnId(){
+    void createNewTestGroupWithPasscodeShouldReturnId() throws Exception{
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
@@ -55,7 +55,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getTestGroupShouldReturnTestGroup(){
+    void getTestGroupShouldReturnTestGroup() throws Exception{
         //case w/passode
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
@@ -68,7 +68,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void createNewSoldierShouldReturnId(){
+    void createNewSoldierShouldReturnId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
@@ -76,7 +76,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test 
-    void getSoldierByIdShouldReturnSoldier(){
+    void getSoldierByIdShouldReturnSoldier() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
@@ -87,7 +87,7 @@ public class AcftManagerServiceTest {
     //Added initial query to establish reference
     //This is perhaps a lazy solution to mitigate a lack of familiarity with how Spring Boot tests execute
     @Test
-    void getAllTestGroupsShouldReturnAllExistingTestGroupIds(){
+    void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception{
         int reference = acftManagerService.getAllTestGroups().size();
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
@@ -96,7 +96,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId(){
+    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
@@ -111,7 +111,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void updateSoldierScoreShouldReturnCorrectScaledScore(){
+    void updateSoldierScoreShouldReturnCorrectScaledScore() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate" , "Joshua", 31, true);
         acftManagerService.updateSoldierScore(soldierId, 1, 110, "");
@@ -130,7 +130,7 @@ public class AcftManagerServiceTest {
     
     @Test
     @Transactional
-    void deleteTestGroupsOnScheduleDeletesExpiredTestGroups(){
+    void deleteTestGroupsOnScheduleDeletesExpiredTestGroups() throws Exception{
         int reference = acftManagerService.getAllTestGroups().size();
         Long testGroupId1 = acftManagerService.createNewTestGroup();
         Long testGroupId2 = acftManagerService.createNewTestGroup();
@@ -145,7 +145,7 @@ public class AcftManagerServiceTest {
 
 
     @Test
-    void getXlsxFileForTestGroupDataGetsExpectedFile(){
+    void getXlsxFileForTestGroupDataGetsExpectedFile() throws Exception{
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(size);
         File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, "");
@@ -154,7 +154,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void flushDatabaseDeletesAllEntities(){
+    void flushDatabaseDeletesAllEntities() throws Exception{
         int size = 5;
         acftManagerService.populateDatabase(size);
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() > 0 && acftManagerService.getTestGroupRepositorySize() > 0, "In flushDatabseDeletesAllEntities: database population failed");
@@ -164,7 +164,7 @@ public class AcftManagerServiceTest {
 
     @Test
     @Transactional
-    void deleteSoldiersByIdPersistsDeletion(){
+    void deleteSoldiersByIdPersistsDeletion() throws Exception{
         String passcode = "";
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
@@ -175,7 +175,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getTestGroupDataReturnsExpectedData(){
+    void getTestGroupDataReturnsExpectedData() throws Exception{
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(5);
         List<List<Long>> testGroupData = acftManagerService.getTestGroupScoreData(testGroupId, false);
@@ -190,7 +190,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getBulkUploadTemplateReturnsFile(){
+    void getBulkUploadTemplateReturnsFile() throws Exception{
         File file = acftManagerService.getBulkUploadTemplate();
         Assert.notNull(file, "In getBulkUploadTemplateReturnsFile: File not found");
     }
@@ -249,5 +249,27 @@ public class AcftManagerServiceTest {
         return exceptionThrown;
     }
     
+    @Test
+    @Transactional
+    void psuedoIdMechanismRecyclesIds() throws Exception{
+        Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        testGroup.setExpirationDate(Date.from(Instant.now().minus(1, ChronoUnit.DAYS)));
+        acftManagerService.deleteTestGroupsOnSchedule();
+        System.out.println("After scheduled deletion in pseudoIdTest, test group queue size is " + acftManagerService.getTestGroupPseudoIdQueue().size());
+        Long newTestGroupId = acftManagerService.createNewTestGroup();
+        TestGroup newTestGroup = acftManagerService.getTestGroup(newTestGroupId, "");
+        System.out.println("Pseudo: " + newTestGroup.getPseudoId() + ", ID: " + testGroup.getId());
+        Assert.isTrue(newTestGroup.getPseudoId() == testGroup.getId(), "In psuedoIdMechanismRecyclesIds: pseudo ID of new group was " + newTestGroup.getPseudoId() + " while ID of deleted testGroup was " + testGroup.getId());
+        Long soldierId = acftManagerService.createNewSoldier(newTestGroupId, "Tate", "Joshua", 26, true);
+        Soldier soldier = acftManagerService.getSoldierById(soldierId);
+        acftManagerService.deleteSoldierById(newTestGroupId, "", soldierId);
+        Long newSoldierId = acftManagerService.createNewSoldier(newTestGroupId, "Tate", "Joshua", 26, true);
+        Soldier newSoldier = acftManagerService.getSoldierById(newSoldierId);
+        Assert.isTrue(newSoldier.getPseudoId() == soldier.getId(), "In psuedoIdMechanismRecyclesIds: pseudo ID of new soldier did not match ID of deleted soldier");
 
+    }
+
+
+    
 }

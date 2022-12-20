@@ -31,35 +31,39 @@ public class AcftManagerServiceController {
 
     @Autowired
     AcftManagerService acftManagerService;
-    
-    @PostMapping("/testGroup/new")
-    Long postNewTestGroup(){
-        return acftManagerService.createNewTestGroup();
-    }
 
     @PostMapping("/testGroup/new/{passcode}")
     Long postNewTestGroup(@PathVariable String passcode){
-        return acftManagerService.createNewTestGroup(passcode);
+        Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
+        return testGroup.getPseudoId();
+    }
+    
+    @PostMapping("/testGroup/new")
+    Long postNewTestGroup(){
+        return postNewTestGroup("");
     }
 
     @GetMapping("/testGroup/get/{testGroupId}/{passcode}")
     TestGroup getTestGroup(@PathVariable Long testGroupId, @PathVariable String passcode){
-        return acftManagerService.getTestGroup(testGroupId, passcode);
+        return acftManagerService.getTestGroupByPseudoId(testGroupId, passcode);
     }
 
     @PostMapping("/testGroup/post/{testGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}")
     Long createNewSoldier(@PathVariable Long testGroupId, @PathVariable String passcode, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
-        return acftManagerService.createNewSoldier(testGroupId, passcode, lastName, firstName, age, isMale);
+        Long soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, lastName, firstName, age, isMale);
+        Soldier soldier = acftManagerService.getSoldierById(soldierId, passcode);
+        return soldier.getPseudoId();
     }
 
     @PostMapping("/testGroup/post/{testGroupId}/{lastName}/{firstName}/{age}/{isMale}")
     Long createNewSoldier(@PathVariable Long testGroupId, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
-        return acftManagerService.createNewSoldier(testGroupId, lastName, firstName, age, isMale);
+        return createNewSoldier(testGroupId, "", lastName, firstName, age, isMale);
     }
 
     @GetMapping("/soldier/get/{soldierId}/{passcode}")
     Soldier getSoldierById(@PathVariable Long soldierId, @PathVariable String passcode){
-        return acftManagerService.getSoldierById(soldierId, passcode);
+        return acftManagerService.getSoldierByPseudoId(soldierId);
     }
 
     @GetMapping("/soldier/get/{soldierId}")
@@ -173,5 +177,8 @@ public class AcftManagerServiceController {
     public Long populateDatabase(@PathVariable int size){
         return acftManagerService.populateDatabase(size);
     }
+
+
+
 
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface SoldierRepository extends JpaRepository<Soldier, Long>{
     
     List<Soldier> findByTestGroupIdOrderByLastNameAsc(Long testGroupId);
+
+    Soldier findByPseudoId(Long pseudoId);
 }
