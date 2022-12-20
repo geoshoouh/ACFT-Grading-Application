@@ -86,6 +86,8 @@ public class Soldier {
     private int totalScore = 0;
 
     public Soldier(TestGroup testGroup, String lastName, String firstName, int age, boolean isMale) {
+        lastName = lastName.substring(0, 1).toUpperCase() + lastName.substring(1).toLowerCase();
+        firstName = firstName.substring(0, 1).toUpperCase() + firstName.substring(1).toLowerCase();
         this.testGroup = testGroup;
         this.lastName = lastName;
         this.firstName = firstName;

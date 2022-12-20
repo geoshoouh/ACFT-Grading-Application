@@ -34,6 +34,7 @@ public class AcftManagerServiceController {
 
     @PostMapping("/testGroup/new/{passcode}")
     Long postNewTestGroup(@PathVariable String passcode){
+        //No psuedo IDs passed; all queries done by true ID
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
         return testGroup.getPseudoId();
@@ -44,14 +45,15 @@ public class AcftManagerServiceController {
         return postNewTestGroup("");
     }
 
-    @GetMapping("/testGroup/get/{testGroupId}/{passcode}")
-    TestGroup getTestGroup(@PathVariable Long testGroupId, @PathVariable String passcode){
-        return acftManagerService.getTestGroupByPseudoId(testGroupId, passcode);
+    @GetMapping("/testGroup/get/{pseudoTestGroupId}/{passcode}")
+    TestGroup getTestGroup(@PathVariable Long pseudoTestGroupId, @PathVariable String passcode){
+        //pseudo test group ID passed; queries performed by pseudo ID
+        return acftManagerService.getTestGroupByPseudoId(pseudoTestGroupId, passcode);
     }
 
-    @PostMapping("/testGroup/post/{testGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}")
-    Long createNewSoldier(@PathVariable Long testGroupId, @PathVariable String passcode, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
-        Long soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, lastName, firstName, age, isMale);
+    @PostMapping("/testGroup/post/{pseudoTestGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}")
+    Long createNewSoldier(@PathVariable Long pseudoTestGroupId, @PathVariable String passcode, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
+        Long soldierId = acftManagerService.createNewSoldier(pseudoTestGroupId, passcode, lastName, firstName, age, isMale);
         Soldier soldier = acftManagerService.getSoldierById(soldierId, passcode);
         return soldier.getPseudoId();
     }
@@ -63,6 +65,9 @@ public class AcftManagerServiceController {
 
     @GetMapping("/soldier/get/{soldierId}/{passcode}")
     Soldier getSoldierById(@PathVariable Long soldierId, @PathVariable String passcode){
+        Soldier soldier = acftManagerService.getSoldierByPseudoId(soldierId, passcode);
+        //Throws exception to be caught by controller advice
+        acftManagerService.getTestGroup(soldier.getTestGroup().getId(), passcode);
         return acftManagerService.getSoldierByPseudoId(soldierId);
     }
 
@@ -73,7 +78,8 @@ public class AcftManagerServiceController {
 
     @GetMapping("/testGroup/getSoldiers/{testGroupId}/{passcode}")
     List<Soldier> getSoldiersByTestGroupId(@PathVariable Long testGroupId, @PathVariable String passcode){
-        return acftManagerService.getSoldiersByTestGroupId(testGroupId, passcode);
+        TestGroup testGroup = acftManagerService.getTestGroupByPseudoId(testGroupId, passcode);
+        return acftManagerService.getSoldiersByTestGroupId(testGroup.getId(), passcode);
     }
 
     @GetMapping("/testGroup/get/all")
