@@ -260,11 +260,13 @@ public class AcftManagerService {
         return instantiateBulkUploadData(file, testGroupId, "");
     }
 
+    @Transactional
     public boolean flushDatabase(){
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
     }
+
 
     public Long getSoldierRepositorySize(){
         return soldierRepository.count();
