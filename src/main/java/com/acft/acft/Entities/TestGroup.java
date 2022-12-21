@@ -1,7 +1,6 @@
 package com.acft.acft.Entities;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,16 +24,15 @@ public class TestGroup {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
+    private Long pseudoId;
+
     @JsonIgnore
-    @Column(name = "passcode")
     private String passcode = "";
 
     //Lack of zone in Date expression can cause ambiguity with precise deletion time, but no more than 24 hour discrepancy possible
     //This is the case when server IP is in a different timezone. 
-    @Column(name = "expiration_date")
     private Date expirationDate;
 
     @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -81,6 +79,14 @@ public class TestGroup {
 
     public void setExpirationDate(Date expirationDate){
         this.expirationDate = expirationDate;
+    }
+
+    public void setPseudoId(Long pseudoId){
+        this.pseudoId = pseudoId;
+    }
+
+    public Long getPseudoId(){
+        return this.pseudoId;
     }
 
 }

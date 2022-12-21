@@ -338,9 +338,10 @@ async function populateSoldiersByTestGroupIdController(){
     let soldierArray = testGroup.soldierPopulation;
     let soldierMenu = document.getElementById('soldierIdSelector');
     soldierMenu.textContent = "";
+    console.log(soldierArray);
     soldierArray.forEach((soldier) => {
         let element = document.createElement('option');
-        element.textContent = soldier.id + `: ${soldier.lastName}, ${soldier.firstName}`
+        element.textContent = soldier.pseudoId + `: ${soldier.lastName}, ${soldier.firstName}`
         element.value = soldier.id;
         soldierMenu.appendChild(element);
     });

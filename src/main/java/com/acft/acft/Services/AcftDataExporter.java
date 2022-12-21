@@ -35,7 +35,7 @@ public class AcftDataExporter {
             Row scaledRow = scaledSheet.createRow(i+1);
             Row rawRow = rawSheet.createRow(i+1);
             Soldier soldier = soldiers.get(i);
-            scaledRow.createCell(0).setCellValue(soldiers.get(i).getId());
+            scaledRow.createCell(0).setCellValue(soldiers.get(i).getPseudoId());
             scaledRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
             scaledRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
             scaledRow.createCell(3).setCellValue(soldiers.get(i).getAge());

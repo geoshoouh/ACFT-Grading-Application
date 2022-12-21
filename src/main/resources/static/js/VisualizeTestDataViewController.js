@@ -49,7 +49,7 @@ async function dataTypeSelectionInterfaceController(){
             soldierIdSelector.className = 'dropdown';
             soldierPopulation.forEach((soldier) => {
                 let element = document.createElement('option');
-                element.textContent = soldier.id + `: ${soldier.lastName}, ${soldier.firstName}`
+                element.textContent = soldier.pseudoId + `: ${soldier.lastName}, ${soldier.firstName}`
                 element.value = soldier.id;
                 soldierIdSelector.appendChild(element);
             });
