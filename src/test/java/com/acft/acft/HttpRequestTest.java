@@ -141,10 +141,11 @@ public class HttpRequestTest {
     @Test
     void createNewSoldierShouldReturnSoldierId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = Long.parseLong(
             mockMvc.perform(
-                post("/testGroup/post/{testGroup}/{lastName}/{firstName}/{age}/{isMale}",
-                testGroupId, "Tate", "Joshua", 26, true)
+                post("/testGroup/post/{pseudoTestGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}",
+                testGroup.getPseudoId(), "default", "Tate", "Joshua", 26, true)
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -297,11 +298,12 @@ public class HttpRequestTest {
     @Test
     void deleteSoldierByIdPersistsDeletion() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == 1, "In deleteSoldierByIdPersistsDeletion: testGroup had unexpected population size after soldier creation");
         boolean response = Boolean.parseBoolean(
             mockMvc.perform(
-                delete("/soldier/delete/{testGroupId}/{soldierId}", testGroupId, soldierId)
+                delete("/soldier/delete/{testGroupId}/{soldierId}", testGroup.getPseudoId(), soldierId)
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()

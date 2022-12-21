@@ -53,15 +53,12 @@ public class AcftManagerServiceController {
 
     @PostMapping("/testGroup/post/{pseudoTestGroupId}/{passcode}/{lastName}/{firstName}/{age}/{isMale}")
     Long createNewSoldier(@PathVariable Long pseudoTestGroupId, @PathVariable String passcode, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
-        Long soldierId = acftManagerService.createNewSoldier(pseudoTestGroupId, passcode, lastName, firstName, age, isMale);
+        TestGroup testGroup = acftManagerService.getTestGroupByPseudoId(pseudoTestGroupId, passcode);
+        Long soldierId = acftManagerService.createNewSoldier(testGroup.getId(), passcode, lastName, firstName, age, isMale);
         Soldier soldier = acftManagerService.getSoldierById(soldierId, passcode);
         return soldier.getPseudoId();
     }
 
-    @PostMapping("/testGroup/post/{psuedoTestGroupId}/{lastName}/{firstName}/{age}/{isMale}")
-    Long createNewSoldier(@PathVariable Long pseudoTestGroupId, @PathVariable String lastName, @PathVariable String firstName, @PathVariable int age, @PathVariable boolean isMale){
-        return createNewSoldier(pseudoTestGroupId, "", lastName, firstName, age, isMale);
-    }
 
     @GetMapping("/soldier/get/{soldierId}/{passcode}")
     Soldier getSoldierById(@PathVariable Long soldierId, @PathVariable String passcode){
@@ -169,6 +166,7 @@ public class AcftManagerServiceController {
     public boolean deleteSoldierById(@PathVariable Long pseudoTestGroupId, @PathVariable Long soldierId){
         return deleteSoldierById(pseudoTestGroupId, soldierId, "");
     }
+    
 
     @GetMapping("/testGroup/{pseudoTestGroupId}/get/scoreData/{raw}/{passcode}")
     public List<List<Long>> getTestGroupScoreData(@PathVariable Long pseudoTestGroupId, @PathVariable boolean raw, @PathVariable String passcode){
