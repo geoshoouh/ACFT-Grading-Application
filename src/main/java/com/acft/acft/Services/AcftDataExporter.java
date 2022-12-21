@@ -35,16 +35,16 @@ public class AcftDataExporter {
             Row scaledRow = scaledSheet.createRow(i+1);
             Row rawRow = rawSheet.createRow(i+1);
             Soldier soldier = soldiers.get(i);
-            scaledRow.createCell(0).setCellValue(soldiers.get(i).getPseudoId());
-            scaledRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
-            scaledRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
-            scaledRow.createCell(3).setCellValue(soldiers.get(i).getAge());
-            scaledRow.createCell(4).setCellValue((soldiers.get(i).isMale()) ? "M" : "F");
-            rawRow.createCell(0).setCellValue(soldiers.get(i).getId());
-            rawRow.createCell(1).setCellValue(soldiers.get(i).getLastName());
-            rawRow.createCell(2).setCellValue(soldiers.get(i).getFirstName());
-            rawRow.createCell(3).setCellValue(soldiers.get(i).getAge());
-            rawRow.createCell(4).setCellValue((soldiers.get(i).isMale()) ? "M" : "F");
+            scaledRow.createCell(0).setCellValue(soldier.getPseudoId());
+            scaledRow.createCell(1).setCellValue(soldier.getLastName());
+            scaledRow.createCell(2).setCellValue(soldier.getFirstName());
+            scaledRow.createCell(3).setCellValue(soldier.getAge());
+            scaledRow.createCell(4).setCellValue((soldier.isMale()) ? "M" : "F");
+            rawRow.createCell(0).setCellValue(soldier.getPseudoId());
+            rawRow.createCell(1).setCellValue(soldier.getLastName());
+            rawRow.createCell(2).setCellValue(soldier.getFirstName());
+            rawRow.createCell(3).setCellValue(soldier.getAge());
+            rawRow.createCell(4).setCellValue((soldier.isMale()) ? "M" : "F");
             for (int j = 0; j < 6; j++){
                 scaledRow.createCell(j + 5).setCellValue(soldier.getScoreByEventId(j, false));
                 rawRow.createCell(j + 5).setCellValue(soldier.getRawScoreAsString(j));
