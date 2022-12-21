@@ -262,7 +262,9 @@ public class AcftManagerService {
 
     @Transactional
     public boolean flushDatabase(){
-        testGroupRepository.deleteAll();
+        //Deletion won't not cascade with deleteAll; using this as a workaround
+        List<TestGroup> testGroups = testGroupRepository.findAll();
+        for (TestGroup testGroup : testGroups) testGroupRepository.delete(testGroup);
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
     }
@@ -291,12 +293,12 @@ public class AcftManagerService {
         return true;
     }
 
-    //Gets n x 8 array of scores with first column as soldier ID corresponding to the scores in the row
+    //Gets n x 8 array of scores with first column as soldier pseudo ID corresponding to the scores in the row
     public List<List<Long>> getTestGroupScoreData(Long testGroupId, String passcode, boolean raw) throws InvalidPasscodeException {
         List<List<Long>> data = new ArrayList<>();
         getSoldiersByTestGroupId(testGroupId, passcode).forEach((soldier) -> {
             List<Long> scores = new ArrayList<>();
-            scores.add(soldier.getId());
+            scores.add(soldier.getPseudoId());
             for (int score : soldier.getScoresAsArray(raw)) scores.add(Long.valueOf(score));
             scores.add(Long.valueOf(soldier.getTotalScore()));
             data.add(scores);
