@@ -192,7 +192,7 @@ public class HttpRequestTest {
 
     @Test
     void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception{
-        int reference = acftManagerService.getAllTestGroups().size();
+        int reference = acftManagerService.getAllTestGroupPseudoIds().size();
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
         Type listOfTestGroupIds = new TypeToken<ArrayList<Long>>() {}.getType();

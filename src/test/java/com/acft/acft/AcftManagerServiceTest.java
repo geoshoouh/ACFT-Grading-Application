@@ -87,11 +87,11 @@ public class AcftManagerServiceTest {
     //Added initial query to establish reference
     //This is perhaps a lazy solution to mitigate a lack of familiarity with how Spring Boot tests execute
     @Test
-    void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception{
-        int reference = acftManagerService.getAllTestGroups().size();
+    void getAllTestGroupPseudoIdsShouldReturnAllExistingTestGroupPseudoIds() throws Exception{
+        int reference = acftManagerService.getAllTestGroupPseudoIds().size();
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
-        List<Long> allExistingTestGroupIds = acftManagerService.getAllTestGroups();
+        List<Long> allExistingTestGroupIds = acftManagerService.getAllTestGroupPseudoIds();
         Assert.isTrue(allExistingTestGroupIds.size() == reference + n, "getAllTestGroups returned array of unexpected size");
     }
 
@@ -131,7 +131,7 @@ public class AcftManagerServiceTest {
     @Test
     @Transactional
     void deleteTestGroupsOnScheduleDeletesExpiredTestGroups() throws Exception{
-        int reference = acftManagerService.getAllTestGroups().size();
+        int reference = acftManagerService.getAllTestGroupPseudoIds().size();
         Long testGroupId1 = acftManagerService.createNewTestGroup();
         Long testGroupId2 = acftManagerService.createNewTestGroup();
         TestGroup testGroup1 = acftManagerService.getTestGroup(testGroupId1, "");
@@ -139,7 +139,7 @@ public class AcftManagerServiceTest {
         testGroup1.setExpirationDate(Date.from(Instant.now().minus(5, ChronoUnit.DAYS)));
         testGroup2.setExpirationDate(Date.from(Instant.now().plus(5, ChronoUnit.DAYS)));
         acftManagerService.deleteTestGroupsOnSchedule();
-        Assert.isTrue(acftManagerService.getAllTestGroups().size() == reference + 1, "deleteTestGroupsOnSchedule did not produce expected results. Expected repo size " + 1 + ", size was actually " + acftManagerService.getAllTestGroups().size());
+        Assert.isTrue(acftManagerService.getAllTestGroupPseudoIds().size() == reference + 1, "deleteTestGroupsOnSchedule did not produce expected results. Expected repo size " + 1 + ", size was actually " + acftManagerService.getAllTestGroupPseudoIds().size());
     }
     
 

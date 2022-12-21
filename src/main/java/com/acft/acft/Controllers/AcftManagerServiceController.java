@@ -84,7 +84,7 @@ public class AcftManagerServiceController {
 
     @GetMapping("/testGroup/get/all")
     List<Long> getAllTestGroupIds(){
-        return acftManagerService.getAllTestGroups();
+        return acftManagerService.getAllTestGroupPseudoIds();
     }
 
     @PostMapping("/soldier/updateScore/{soldierId}/{eventId}/{rawScore}/{passcode}")
