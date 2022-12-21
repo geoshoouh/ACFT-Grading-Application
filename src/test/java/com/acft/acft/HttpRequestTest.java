@@ -273,7 +273,7 @@ public class HttpRequestTest {
         Assert.isTrue(response.getContentType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"), "In getBulkUploadTemplateReturnsFile: unexpected content type in servlet response");
     }
 
-    //@Test
+    @Test
     void flushDatabaseDeletesAllEntities() throws Exception{
         int size = 5;
         acftManagerService.populateDatabase(size);

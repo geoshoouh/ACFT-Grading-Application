@@ -153,13 +153,17 @@ public class AcftManagerServiceTest {
         file.delete();
     }
 
-    //@Test
+    @Test
+    @Transactional
     void flushDatabaseDeletesAllEntities() throws Exception{
+        Long soldierReference = acftManagerService.getSoldierRepositorySize();
+        Long testGroupReference = acftManagerService.getTestGroupRepositorySize();
         int size = 5;
         acftManagerService.populateDatabase(size);
-        Assert.isTrue(acftManagerService.getSoldierRepositorySize() > 0 && acftManagerService.getTestGroupRepositorySize() > 0, "In flushDatabseDeletesAllEntities: database population failed");
-        //acftManagerService.flushDatabase();
-        Assert.isTrue(acftManagerService.getSoldierRepositorySize() == 0 && acftManagerService.getTestGroupRepositorySize() == 0, "In flushDatabseDeletesAllEntities: flushDatabase() failed");
+        Assert.isTrue(acftManagerService.getSoldierRepositorySize() > soldierReference && acftManagerService.getTestGroupRepositorySize() > testGroupReference, "In flushDatabseDeletesAllEntities: database population failed");
+        acftManagerService.flushDatabase();
+        
+        Assert.isTrue(acftManagerService.getTestGroupRepositorySize() == testGroupReference && acftManagerService.getSoldierRepositorySize() == soldierReference, "In flushDatabseDeletesAllEntities: flushDatabase() failed");
     }
 
     @Test
