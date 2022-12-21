@@ -23,7 +23,7 @@ import java.time.temporal.ChronoUnit;
 public class TestGroup {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private Long pseudoId;
