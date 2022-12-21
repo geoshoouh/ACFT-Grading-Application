@@ -251,15 +251,22 @@ public class AcftManagerService {
         
 
         //Valid; instantiate
-        data.forEach((row) -> {
-            createNewSoldier(
-                testGroupId, 
-                passcode, 
-                row.get(0), 
-                row.get(1), 
-                Integer.parseInt(row.get(2)), 
-                (row.get(3).equals("M") || row.get(3).equals("m")) ?  true : false);
-        });
+        try {
+            data.forEach((row) -> {
+                createNewSoldier(
+                    testGroupId, 
+                    passcode, 
+                    row.get(0), 
+                    row.get(1), 
+                    Integer.parseInt(row.get(2)), 
+                    (row.get(3).equals("M") || row.get(3).equals("m")) ?  true : false);
+            });
+        } catch (InvalidPasscodeException e){
+            System.out.println(e.getMessage());
+            file.delete();
+            throw new InvalidPasscodeException(testGroupId);
+        }
+        
         file.delete();
         return true;
     }
