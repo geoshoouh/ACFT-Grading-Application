@@ -35,7 +35,7 @@ public class TestGroup {
     //This is the case when server IP is in a different timezone. 
     private Date expirationDate;
 
-    @OneToMany(mappedBy = "testGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("lastName")
     public List<Soldier> soldierPopulation = new ArrayList<>();
 
