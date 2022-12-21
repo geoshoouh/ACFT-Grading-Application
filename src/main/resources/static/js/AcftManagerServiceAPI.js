@@ -11,8 +11,8 @@ export async function createNewTestGroup(passcode = "", host){
   return response.json();
 }
 
-export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale, passcode = "", host){
-  const path = (passcode.length > 0) ? `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}` : `${host}/testGroup/post/${testGroupId}/${lastName}/${firstName}/${age}/${isMale}`;
+export async function createNewSoldier(testGroupId, lastName, firstName, age, isMale, passcode = "default", host){
+  const path = `${host}/testGroup/post/${testGroupId}/${passcode}/${lastName}/${firstName}/${age}/${isMale}`;
   let response = await fetch(
     path,
     {method: 'POST'})
