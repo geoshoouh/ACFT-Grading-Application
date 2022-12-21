@@ -359,7 +359,7 @@ async function yesButtonClicked(){
     }
     removeSafeguard();
     populateSoldiersByTestGroupIdController();
-    document.getElementById('messageText').textContent = `Soldier with ID ${soldierId} deleted`;
+    document.getElementById('messageText').textContent = `Soldier successfully deleted`;
 }
 
 function noButtonClicked(){
