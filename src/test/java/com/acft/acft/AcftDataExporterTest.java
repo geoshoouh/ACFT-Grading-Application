@@ -55,8 +55,8 @@ public class AcftDataExporterTest {
                 Row row = sheet.getRow(j + 1);
                 //when running all tests at once; there's some leftover persistence from some tests
                 //So, must use id's of soldiers retrieved by the query in the top portion of this function
-                Soldier soldier = acftManagerService.getSoldierById(soldiers.get(j).getId());
-                Assert.isTrue(Long.valueOf((long)row.getCell(0).getNumericCellValue()) == soldier.getId(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: expected cell value " + soldier.getId() + ", was  " + Long.valueOf((long)row.getCell(0).getNumericCellValue()));
+                Soldier soldier = soldiers.get(j);
+                Assert.isTrue(Long.valueOf((long)row.getCell(0).getNumericCellValue()) == soldier.getPseudoId(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: expected cell value " + soldier.getPseudoId() + ", was  " + Long.valueOf((long)row.getCell(0).getNumericCellValue()));
                 Assert.isTrue(row.getCell(1).getStringCellValue().equals(soldier.getLastName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 Assert.isTrue(row.getCell(2).getStringCellValue().equals(soldier.getFirstName()), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");
                 Assert.isTrue(Integer.valueOf((int)row.getCell(3).getNumericCellValue()) == soldier.getAge(), "In createXlsxWorkbookCreatesWorkbookWithExpectedData: unexpected cell value");

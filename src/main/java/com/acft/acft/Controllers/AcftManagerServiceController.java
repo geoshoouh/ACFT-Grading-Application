@@ -181,7 +181,10 @@ public class AcftManagerServiceController {
 
     @PostMapping("/populateDatabase/{size}")
     public Long populateDatabase(@PathVariable int size){
-        return acftManagerService.populateDatabase(size);
+        Long testGroupId = acftManagerService.populateDatabase(size);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
+        System.out.println("Created test group with pseudo ID " + testGroup.getPseudoId());
+        return testGroup.getPseudoId();
     }
 
 

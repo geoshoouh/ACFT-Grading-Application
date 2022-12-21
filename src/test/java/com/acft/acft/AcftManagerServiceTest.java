@@ -230,10 +230,14 @@ public class AcftManagerServiceTest {
         row.getCell(0).setCellValue("");
         workbook.write(outputStream);
         Assert.isTrue(bulkUploadThrewException(file, testGroupId), "In bulkSoldierUploadRejectsBadFiles for Service: expected exception not thrown");
+        bulkSoldierUploadTest.generateBulkUploadTestFile(n);
+        outputStream = new FileOutputStream(file);
         sheet = originalSheet;
         row.getCell(2).setCellValue("data");
         workbook.write(outputStream);
         Assert.isTrue(bulkUploadThrewException(file, testGroupId), "In bulkSoldierUploadRejectsBadFiles for Service: expected exception not thrown");
+        bulkSoldierUploadTest.generateBulkUploadTestFile(n);
+        outputStream = new FileOutputStream(file);
         row.getCell(3).setCellValue("Q");
         workbook.write(outputStream);
         Assert.isTrue(bulkUploadThrewException(file, testGroupId), "In bulkSoldierUploadRejectsBadFiles for Service: expected exception not thrown");
@@ -250,6 +254,7 @@ public class AcftManagerServiceTest {
         }
         return exceptionThrown;
     }
+
     
     @Test
     @Transactional
@@ -258,18 +263,20 @@ public class AcftManagerServiceTest {
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         testGroup.setExpirationDate(Date.from(Instant.now().minus(1, ChronoUnit.DAYS)));
         acftManagerService.deleteTestGroupsOnSchedule();
+        Assert.isTrue(acftManagerService.getTestGroupPseudoIdQueue().contains(testGroup.getPseudoId()), "In psuedoIdMechanismRecyclesIds: service did not store ID of deleted testGroup in queue");
         System.out.println("After scheduled deletion in pseudoIdTest, test group queue size is " + acftManagerService.getTestGroupPseudoIdQueue().size());
+        Long testGroupQueueHead = acftManagerService.getTestGroupPseudoIdQueue().peek();
         Long newTestGroupId = acftManagerService.createNewTestGroup();
         TestGroup newTestGroup = acftManagerService.getTestGroup(newTestGroupId, "");
-        System.out.println("Pseudo: " + newTestGroup.getPseudoId() + ", ID: " + testGroup.getId());
-        Assert.isTrue(newTestGroup.getPseudoId() == testGroup.getId(), "In psuedoIdMechanismRecyclesIds: pseudo ID of new group was " + newTestGroup.getPseudoId() + " while ID of deleted testGroup was " + testGroup.getId());
+        Assert.isTrue(newTestGroup.getPseudoId() == testGroupQueueHead, "In psuedoIdMechanismRecyclesIds: pseudo ID of new group was " + newTestGroup.getPseudoId() + " while ID of deleted testGroup was " + testGroup.getId());
         Long soldierId = acftManagerService.createNewSoldier(newTestGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
         acftManagerService.deleteSoldierById(newTestGroupId, "", soldierId);
+        Assert.isTrue(acftManagerService.getSoldierPseudoIdQueue().contains(soldier.getPseudoId()), "In psuedoIdMechanismRecyclesIds: service did not store ID of deleted soldier in queue");
+        Long soldierQueueHead = acftManagerService.getSoldierPseudoIdQueue().peek();
         Long newSoldierId = acftManagerService.createNewSoldier(newTestGroupId, "Tate", "Joshua", 26, true);
         Soldier newSoldier = acftManagerService.getSoldierById(newSoldierId);
-        Assert.isTrue(newSoldier.getPseudoId() == soldier.getId(), "In psuedoIdMechanismRecyclesIds: pseudo ID of new soldier did not match ID of deleted soldier");
-
+        Assert.isTrue(newSoldier.getPseudoId() == soldierQueueHead, "In psuedoIdMechanismRecyclesIds: pseudo ID of new soldier did not match ID of deleted soldier");
     }
 
 

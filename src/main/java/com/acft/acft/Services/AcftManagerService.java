@@ -1,7 +1,6 @@
 package com.acft.acft.Services;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,6 +9,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
@@ -44,15 +44,16 @@ public class AcftManagerService {
     @Autowired
     private AcftDataExporter acftDataExporter;
     
-    private Queue<Long> soldierPseudoIdQueue = new LinkedList<>();
+    private Queue<Long> soldierPseudoIdQueue = new PriorityQueue<>();
 
-    public Queue<Long> testGroupPseudoIdQueue = new LinkedList<>();
+    public Queue<Long> testGroupPseudoIdQueue = new PriorityQueue<>();
 
     public Long createNewTestGroup(){
         TestGroup testGroup = new TestGroup();
         testGroupRepository.save(testGroup);
         try {
             testGroup.setPseudoId(testGroupPseudoIdQueue.remove());
+            testGroupPseudoIdQueue.add(testGroup.getId());
         } catch (NoSuchElementException e){
             testGroup.setPseudoId(testGroup.getId());
         }
@@ -65,6 +66,7 @@ public class AcftManagerService {
         testGroupRepository.save(testGroup);
         try {
             testGroup.setPseudoId(testGroupPseudoIdQueue.remove());
+            testGroupPseudoIdQueue.add(testGroup.getId());
         } catch (NoSuchElementException e){
             testGroup.setPseudoId(testGroup.getId());
         }
@@ -86,6 +88,7 @@ public class AcftManagerService {
         soldierRepository.save(soldier);
         try {
             soldier.setPseudoId(soldierPseudoIdQueue.remove());
+            soldierPseudoIdQueue.add(soldier.getId());
         } catch (NoSuchElementException e){
             soldier.setPseudoId(soldier.getId());
         }
@@ -124,7 +127,7 @@ public class AcftManagerService {
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();
         List<Long> allTestGroupIds = new ArrayList<>();
         for (TestGroup testGroup : allTestGroups){
-            allTestGroupIds.add(testGroup.getId());
+            allTestGroupIds.add(testGroup.getPseudoId());
         }
         return allTestGroupIds;
     }
@@ -177,7 +180,7 @@ public class AcftManagerService {
         expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
         expiredTestGroups.forEach((testGroup) -> {
             testGroupRepository.delete(testGroup);
-            testGroupPseudoIdQueue.add(testGroup.getId());
+            testGroupPseudoIdQueue.add(testGroup.getPseudoId());
         });
     }
 
@@ -249,7 +252,6 @@ public class AcftManagerService {
             throw new InvalidBulkUploadException();
         }
         
-
         //Valid; instantiate
         try {
             data.forEach((row) -> {
@@ -277,11 +279,10 @@ public class AcftManagerService {
 
     @Transactional
     public boolean flushDatabase(){
-        //Deletion won't not cascade with deleteAll; using this as a workaround
-        /* 
         List<TestGroup> testGroups = testGroupRepository.findAll();
-        for (TestGroup testGroup : testGroups) testGroupRepository.delete(testGroup);
-        */
+        List<Soldier> soldiers = soldierRepository.findAll();
+        for (TestGroup testGroup : testGroups) testGroupPseudoIdQueue.add(testGroup.getPseudoId());
+        for (Soldier soldier : soldiers) soldierPseudoIdQueue.add(soldier.getPseudoId());
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
@@ -307,7 +308,7 @@ public class AcftManagerService {
             return false;
         }
         soldierRepository.delete(soldier);   
-        soldierPseudoIdQueue.add(soldier.getId());
+        soldierPseudoIdQueue.add(soldier.getPseudoId());
         return true;
     }
 

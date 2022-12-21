@@ -86,9 +86,10 @@ public class HttpRequestTest {
         //testGroup instantiated w/passcode
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
         TestGroup testGroupFromResponse = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/get/{testGroupId}/{passcode}", testGroupId, passcode)
+                get("/testGroup/get/{testGroupId}/{passcode}", testGroup.getPseudoId(), passcode)
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -99,9 +100,10 @@ public class HttpRequestTest {
 
         //testGroup instantiated w/o passcode
         Long testGroupIdEmptyPasscode = acftManagerService.createNewTestGroup();
+        TestGroup testGroupEmptyPasscode = acftManagerService.getTestGroup(testGroupIdEmptyPasscode, "");
         TestGroup testGroupFromResponseEmptyPasscode = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/get/{testGroupId}/randomText", testGroupIdEmptyPasscode)
+                get("/testGroup/get/{testGroupId}/randomText", testGroupEmptyPasscode.getPseudoId())
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -117,9 +119,10 @@ public class HttpRequestTest {
     void testGroupPasscodeNotVisibleInJsonRepresentiation() throws Exception{
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
         TestGroup testGroupFromResponse = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/get/{testGroupId}/{passcode}", testGroupId, passcode)
+                get("/testGroup/get/{testGroupId}/{passcode}", testGroup.getPseudoId(), passcode)
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -169,6 +172,7 @@ public class HttpRequestTest {
     @Test
     void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
         Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
         String[] firstNames = {"Jeff", "Timothy", "Darnell", "Fredrick", "Katherine"};
@@ -181,7 +185,7 @@ public class HttpRequestTest {
         List<Soldier> queryResult = gson.fromJson(
             mockMvc.perform(
                 get("/testGroup/getSoldiers/{testGroupId}/randomText",
-                testGroupId)
+                testGroup.getPseudoId())
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()
