@@ -120,7 +120,7 @@ public class AcftManagerService {
         return soldierRepository.findByTestGroupIdOrderByLastNameAsc(testGroupId);
     }
     
-    public List<Long> getAllTestGroups(){
+    public List<Long> getAllTestGroupPseudoIds(){
         List<TestGroup> allTestGroups =  testGroupRepository.findAll();
         List<Long> allTestGroupIds = new ArrayList<>();
         for (TestGroup testGroup : allTestGroups){
@@ -128,6 +128,7 @@ public class AcftManagerService {
         }
         return allTestGroupIds;
     }
+
 
     public int updateSoldierScore(Long soldierId, int eventId, int rawScore, String passcode) throws SoldierNotFoundException, TestGroupNotFoundException, InvalidPasscodeException{
         //getSoldier will throw invalid passcode exception
@@ -240,7 +241,14 @@ public class AcftManagerService {
             return false;
         }
         //IO Operation is good; make sure stripped data is valid
-        BulkSoldierUpload.validateBulkUploadData(data);
+        try {
+            BulkSoldierUpload.validateBulkUploadData(data);
+        } catch (InvalidBulkUploadException e){
+            System.out.println(e.getMessage());
+            file.delete();
+            throw new InvalidBulkUploadException();
+        }
+        
 
         //Valid; instantiate
         data.forEach((row) -> {
@@ -263,8 +271,11 @@ public class AcftManagerService {
     @Transactional
     public boolean flushDatabase(){
         //Deletion won't not cascade with deleteAll; using this as a workaround
+        /* 
         List<TestGroup> testGroups = testGroupRepository.findAll();
         for (TestGroup testGroup : testGroups) testGroupRepository.delete(testGroup);
+        */
+        testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
     }
