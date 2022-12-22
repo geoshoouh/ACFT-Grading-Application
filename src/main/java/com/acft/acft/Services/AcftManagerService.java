@@ -282,7 +282,6 @@ public class AcftManagerService {
         return instantiateBulkUploadData(file, testGroupId, "");
     }
 
-    @Transactional
     public boolean flushDatabase(){
         List<TestGroup> testGroups = testGroupRepository.findAll();
         List<Soldier> soldiers = soldierRepository.findAll();
