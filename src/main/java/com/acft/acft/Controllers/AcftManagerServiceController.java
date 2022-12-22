@@ -89,15 +89,16 @@ public class AcftManagerServiceController {
         return acftManagerService.updateSoldierScore(soldierId, eventId, rawScore, passcode);
     }
 
-    @GetMapping("/testGroup/getXlsxFile/{testGroupId}/{passcode}")
-    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId, @PathVariable String passcode){
-        File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, passcode);
+    @GetMapping("/testGroup/getXlsxFile/{pseudoTestGroupId}/{passcode}")
+    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long pseudoTestGroupId, @PathVariable String passcode){
+        TestGroup testGroup = acftManagerService.getTestGroupByPseudoId(pseudoTestGroupId, passcode);
+        File file = acftManagerService.getXlsxFileForTestGroupData(testGroup.getId(), passcode);
         exportXlsxFileUtility(request, response, file, true);
     }
 
-    @GetMapping("/testGroup/getXlsxFile/{testGroupId}")
-    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId){
-        exportXlsxFileForTestGroup(request, response, testGroupId, "");
+    @GetMapping("/testGroup/getXlsxFile/{pseudoTestGroupId}")
+    public void exportXlsxFileForTestGroup(HttpServletRequest request, HttpServletResponse response, @PathVariable Long pseudoTestGroupId){
+        exportXlsxFileForTestGroup(request, response, pseudoTestGroupId, "");
     }
 
     @GetMapping("/getBulkUploadTemplate")
@@ -124,14 +125,17 @@ public class AcftManagerServiceController {
             return false;
         }
         file = new File(path);
-        return acftManagerService.instantiateBulkUploadData(file, testGroupId, passcode);
+        TestGroup testGroup = acftManagerService.getTestGroupByPseudoId(testGroupId, passcode);
+        return acftManagerService.instantiateBulkUploadData(file, testGroup.getId(), passcode);
         
     }
+
 
     @PostMapping("/bulkUpload/{testGroupId}")
     public boolean bulkUpload(HttpServletRequest request, HttpServletResponse response, @PathVariable Long testGroupId){
         return bulkUpload(request, response, testGroupId, "");
     }
+    
 
     //Might not need the request parameter
     public void exportXlsxFileUtility(HttpServletRequest request, HttpServletResponse response, File file, boolean delete){
@@ -150,6 +154,7 @@ public class AcftManagerServiceController {
         }   
         if (delete) file.delete();
     }
+    
 
     @DeleteMapping("/deleteAll")
     public boolean flushDatabase(){

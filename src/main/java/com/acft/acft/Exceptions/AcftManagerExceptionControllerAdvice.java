@@ -24,6 +24,13 @@ public class AcftManagerExceptionControllerAdvice {
     }
 
     @ResponseBody
+    @ExceptionHandler(PseudoIdNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    String pseudoIdNotFoundHandler(PseudoIdNotFoundException ex){
+        return ex.getMessage();
+    }
+
+    @ResponseBody
     @ExceptionHandler(InvalidPasscodeException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     String invalidPassCodeExceptionHandler(InvalidPasscodeException ex){

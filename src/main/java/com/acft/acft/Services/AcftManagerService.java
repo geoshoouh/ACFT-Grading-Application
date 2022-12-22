@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,12 +16,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.acft.acft.Entities.PseudoId;
 import com.acft.acft.Entities.Soldier;
 import com.acft.acft.Entities.TestGroup;
 import com.acft.acft.Exceptions.InvalidBulkUploadException;
 import com.acft.acft.Exceptions.InvalidPasscodeException;
 import com.acft.acft.Exceptions.SoldierNotFoundException;
 import com.acft.acft.Exceptions.TestGroupNotFoundException;
+import com.acft.acft.Repositories.PseudoIdRepository;
 import com.acft.acft.Repositories.SoldierRepository;
 import com.acft.acft.Repositories.TestGroupRepository;
 
@@ -36,6 +35,9 @@ public class AcftManagerService {
     private TestGroupRepository testGroupRepository;
 
     @Autowired
+    private PseudoIdRepository pseudoIdRepository;
+
+    @Autowired
     private SoldierRepository soldierRepository;
 
     @Autowired
@@ -44,17 +46,15 @@ public class AcftManagerService {
     @Autowired
     private AcftDataExporter acftDataExporter;
     
-    private Queue<Long> soldierPseudoIdQueue = new PriorityQueue<>();
-
-    public Queue<Long> testGroupPseudoIdQueue = new PriorityQueue<>();
 
     public Long createNewTestGroup(){
         TestGroup testGroup = new TestGroup();
         testGroupRepository.save(testGroup);
-        try {
-            testGroup.setPseudoId(testGroupPseudoIdQueue.remove());
-            testGroupPseudoIdQueue.add(testGroup.getId());
-        } catch (NoSuchElementException e){
+        if (pseudoIdRepository.count() > 0){
+            PseudoId pseudoId = pseudoIdRepository.findFirstByOrderByPseudoId();
+            testGroup.setPseudoId(pseudoId.getPseudoId());
+            pseudoIdRepository.deleteById(pseudoId.getId());
+        } else{
             testGroup.setPseudoId(testGroup.getId());
         }
         testGroupRepository.save(testGroup);
@@ -64,16 +64,18 @@ public class AcftManagerService {
     public Long createNewTestGroup(String passcode){
         TestGroup testGroup = new TestGroup(passcode);
         testGroupRepository.save(testGroup);
-        try {
-            testGroup.setPseudoId(testGroupPseudoIdQueue.remove());
-            testGroupPseudoIdQueue.add(testGroup.getId());
-        } catch (NoSuchElementException e){
+        if (pseudoIdRepository.count() > 0){
+            PseudoId pseudoId = pseudoIdRepository.findFirstByOrderByPseudoId();
+            testGroup.setPseudoId(pseudoId.getPseudoId());
+            pseudoIdRepository.deleteById(pseudoId.getId());
+        } else{
             testGroup.setPseudoId(testGroup.getId());
         }
         testGroupRepository.save(testGroup);
         return testGroup.getId();
     }
 
+    
     public TestGroup getTestGroup(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{
         TestGroup testGroup = testGroupRepository.findById(testGroupId)
             .orElseThrow(() -> new TestGroupNotFoundException(testGroupId));
@@ -86,10 +88,11 @@ public class AcftManagerService {
         TestGroup testGroup = getTestGroup(testGroupId, passcode);
         Soldier soldier = new Soldier(testGroup, lastName, firstName, age, isMale);
         soldierRepository.save(soldier);
-        try {
-            soldier.setPseudoId(soldierPseudoIdQueue.remove());
-            soldierPseudoIdQueue.add(soldier.getId());
-        } catch (NoSuchElementException e){
+        if (pseudoIdRepository.count() > 0){
+            PseudoId pseudoId = pseudoIdRepository.findFirstByOrderByPseudoId();
+            soldier.setPseudoId(pseudoId.getPseudoId());
+            pseudoIdRepository.deleteById(pseudoId.getId());
+        } else {
             soldier.setPseudoId(soldier.getId());
         }
         soldierRepository.save(soldier);
@@ -179,8 +182,10 @@ public class AcftManagerService {
         System.out.println("size of tg pull is: " + expiredTestGroups.size());
         expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
         expiredTestGroups.forEach((testGroup) -> {
+            List<Soldier> soldiers = soldierRepository.findByTestGroupIdOrderByLastNameAsc(testGroup.getId());
+            soldiers.forEach((soldier) -> {pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));});
             testGroupRepository.delete(testGroup);
-            testGroupPseudoIdQueue.add(testGroup.getPseudoId());
+            pseudoIdRepository.save(new PseudoId(testGroup.getPseudoId()));
         });
     }
 
@@ -277,12 +282,11 @@ public class AcftManagerService {
         return instantiateBulkUploadData(file, testGroupId, "");
     }
 
-    @Transactional
     public boolean flushDatabase(){
         List<TestGroup> testGroups = testGroupRepository.findAll();
         List<Soldier> soldiers = soldierRepository.findAll();
-        for (TestGroup testGroup : testGroups) testGroupPseudoIdQueue.add(testGroup.getPseudoId());
-        for (Soldier soldier : soldiers) soldierPseudoIdQueue.add(soldier.getPseudoId());
+        for (TestGroup testGroup : testGroups) pseudoIdRepository.save(new PseudoId(testGroup.getPseudoId()));
+        for (Soldier soldier : soldiers) pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
@@ -308,7 +312,7 @@ public class AcftManagerService {
             return false;
         }
         soldierRepository.delete(soldier);   
-        soldierPseudoIdQueue.add(soldier.getPseudoId());
+        pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));
         return true;
     }
 
@@ -329,12 +333,8 @@ public class AcftManagerService {
         return getTestGroupScoreData(testGroupId, "", raw);
     }
 
-    public Queue<Long> getSoldierPseudoIdQueue(){
-        return this.soldierPseudoIdQueue;
-    }
-    
-    public Queue<Long> getTestGroupPseudoIdQueue(){
-        return this.testGroupPseudoIdQueue;
+    public Long getPseudoIdQueueSize(){
+        return pseudoIdRepository.count();
     }
 
     public TestGroup getTestGroupByPseudoId(Long pseudoId, String passcode) throws TestGroupNotFoundException{
@@ -351,6 +351,17 @@ public class AcftManagerService {
     public Soldier getSoldierByPseudoId(Long pseudoId){
         Soldier soldier = soldierRepository.findByPseudoId(pseudoId);
         return getSoldierById(soldier.getId());
+    }
+
+    public boolean pseudoIdRepositoryContains(Long pseudoId){
+        boolean result = true;
+        List<PseudoId> pseudoIds = pseudoIdRepository.findByPseudoId(pseudoId);
+        if (pseudoIds.size() == 0) result = false;
+        return result;
+    }
+
+    public Long peekPseudoIdRepositoryTop(){
+        return pseudoIdRepository.findFirstByOrderByPseudoId().getPseudoId();
     }
 
 

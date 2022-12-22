@@ -69,8 +69,8 @@ export async function updateSoldierScore(soldierId, eventId, rawScore, passcode 
     return response.json();
 }
 
-export async function downloadTestGroupData(testGroupId, passcode = "", host){
-  const path = (passcode === "") ? `${host}/testGroup/getXlsxFile/${testGroupId}` : `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}`;
+export async function downloadTestGroupData(testGroupId, passcode, host){
+  const path = `${host}/testGroup/getXlsxFile/${testGroupId}/${passcode}`;
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));
