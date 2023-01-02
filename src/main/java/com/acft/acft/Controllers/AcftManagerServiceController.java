@@ -65,13 +65,9 @@ public class AcftManagerServiceController {
         Soldier soldier = acftManagerService.getSoldierById(soldierId, passcode);
         //Throws exception to be caught by controller advice
         acftManagerService.getTestGroup(soldier.getTestGroup().getId(), passcode);
-        return acftManagerService.getSoldierById(soldierId);
+        return acftManagerService.getSoldierById(soldierId, passcode);
     }
 
-    @GetMapping("/soldier/get/{soldierId}")
-    Soldier getSoldierById(@PathVariable Long soldierId){
-        return acftManagerService.getSoldierById(soldierId);
-    }
 
     @GetMapping("/testGroup/getSoldiers/{pseudoTestGroupId}/{passcode}")
     List<Soldier> getSoldiersByTestGroupId(@PathVariable Long pseudoTestGroupId, @PathVariable String passcode){
