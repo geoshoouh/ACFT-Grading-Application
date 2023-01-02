@@ -28,8 +28,8 @@ export async function getAllTestGroupIds(host){
   return response.json();
 }
 
-export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host){
-  const path = (passcode === null) ? `${host}/testGroup/getSoldiers/${testGroupId}/null` : `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}`;
+export async function getSoldiersByTestGroupId(testGroupId, passcode, host){
+  const path = `${host}/testGroup/getSoldiers/${testGroupId}/${passcode}`;
   if (testGroupId === null || testGroupId === undefined){
     console.log(`getSoldiersByTestGroupId in ACFTManagerAPI expected Number; ${typeof testGroupId} passed`);
     return;
@@ -41,8 +41,8 @@ export async function getSoldiersByTestGroupId(testGroupId, passcode = "", host)
   return response.json();
 }
 
-export async function getSoldierById(soldierId, passcode = "", host){
-  const path = (passcode !== "") ? `${host}/soldier/get/${soldierId}/${passcode}` : `${host}/soldier/get/${soldierId}`;
+export async function getSoldierById(soldierId, passcode, host){
+  const path = `${host}/soldier/get/${soldierId}/${passcode}`;
   let response = await fetch(
     path
   ).then((response) => response).catch((error) => console.log(error));

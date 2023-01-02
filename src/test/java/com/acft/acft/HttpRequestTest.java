@@ -160,7 +160,7 @@ public class HttpRequestTest {
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = gson.fromJson(
             mockMvc.perform(
-                get("/soldier/get/{soldierId}", soldierId)
+                get("/soldier/get/{soldierId}/null", soldierId)
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -168,6 +168,19 @@ public class HttpRequestTest {
              Soldier.class
             );
         Assert.isTrue(soldier.getId() == soldierId, "/soldier/get/{soldierId} responded with incorrect Soldier");
+        String passcode = "password";
+        testGroupId = acftManagerService.createNewTestGroup(passcode);
+        soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, "Tate", "Joshua", 26, true);
+        soldier = gson.fromJson(
+            mockMvc.perform(
+                get("/soldier/get/{soldierId}/{passcode}", soldierId, passcode)
+            ).andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(),
+             Soldier.class
+            );
+        Assert.isTrue(soldier.getId() == soldierId, "/soldier/get/{soldierId}/{passcode} responded with incorrect Soldier");
     }
 
     @Test

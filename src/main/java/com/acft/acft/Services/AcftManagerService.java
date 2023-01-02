@@ -79,7 +79,6 @@ public class AcftManagerService {
     public TestGroup getTestGroup(Long testGroupId, String passcode) throws TestGroupNotFoundException, InvalidPasscodeException{
         TestGroup testGroup = testGroupRepository.findById(testGroupId)
             .orElseThrow(() -> new TestGroupNotFoundException(testGroupId));
-        
         if (testGroup.getPasscode().length() > 0 && !passcode.equals(testGroup.getPasscode())) throw new InvalidPasscodeException(testGroupId);
         return testGroup;
     }

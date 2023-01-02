@@ -81,6 +81,11 @@ public class AcftManagerServiceTest {
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
         Assert.isTrue(soldier.getId() == soldierId, "getSoldierById returned the incorrect Soldier");
+        String passcode = "password";
+        testGroupId = acftManagerService.createNewTestGroup("password");
+        soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, "Tate", "Joshua", 26, true);
+        soldier = acftManagerService.getSoldierById(soldierId, passcode);
+        Assert.isTrue(soldier.getId() == soldierId, "getSoldierById returned the incorrect Soldier");
     }
 
     //Tests like this passed when run alone, but failed when all methods in the class are executed
