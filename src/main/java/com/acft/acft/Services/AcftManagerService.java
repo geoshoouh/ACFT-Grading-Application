@@ -126,7 +126,7 @@ public class AcftManagerService {
     }
     
     public List<Long> getAllTestGroupPseudoIds(){
-        List<TestGroup> allTestGroups =  testGroupRepository.findAll();
+        List<TestGroup> allTestGroups =  testGroupRepository.findAllByOrderByPseudoId();
         List<Long> allTestGroupIds = new ArrayList<>();
         for (TestGroup testGroup : allTestGroups){
             allTestGroupIds.add(testGroup.getPseudoId());
