@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class PseudoId {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pseudo_id_sequence_generator")
     @SequenceGenerator(name = "pseudo_id_sequence_generator", sequenceName = "post_id_sequence")
     private Long id;
 
