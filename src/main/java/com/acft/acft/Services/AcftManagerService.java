@@ -90,7 +90,7 @@ public class AcftManagerService {
         if (pseudoIdRepository.count() > 0){
             PseudoId pseudoId = pseudoIdRepository.findFirstByOrderByPseudoId();
             soldier.setPseudoId(pseudoId.getPseudoId());
-            pseudoIdRepository.deleteById(pseudoId.getId());
+            pseudoIdRepository.delete(pseudoId);
         } else {
             soldier.setPseudoId(soldier.getId());
         }
@@ -182,9 +182,13 @@ public class AcftManagerService {
         expiredTestGroups.forEach((group) -> System.out.println(group.toString()));
         expiredTestGroups.forEach((testGroup) -> {
             List<Soldier> soldiers = soldierRepository.findByTestGroupIdOrderByLastNameAsc(testGroup.getId());
-            soldiers.forEach((soldier) -> {pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));});
+            soldiers.forEach((soldier) -> {
+                pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));
+                if (!soldier.getPseudoId().equals(soldier.getId())) pseudoIdRepository.save(new PseudoId(soldier.getId()));
+            });
             testGroupRepository.delete(testGroup);
             pseudoIdRepository.save(new PseudoId(testGroup.getPseudoId()));
+            if (!testGroup.getPseudoId().equals(testGroup.getId())) pseudoIdRepository.save(new PseudoId(testGroup.getId()));
         });
     }
 
@@ -284,8 +288,14 @@ public class AcftManagerService {
     public boolean flushDatabase(){
         List<TestGroup> testGroups = testGroupRepository.findAll();
         List<Soldier> soldiers = soldierRepository.findAll();
-        for (TestGroup testGroup : testGroups) pseudoIdRepository.save(new PseudoId(testGroup.getPseudoId()));
-        for (Soldier soldier : soldiers) pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));
+        for (TestGroup testGroup : testGroups){
+            pseudoIdRepository.save(new PseudoId(testGroup.getPseudoId()));
+            if (!testGroup.getPseudoId().equals(testGroup.getId())) pseudoIdRepository.save(new PseudoId(testGroup.getId()));
+        }
+        for (Soldier soldier : soldiers){
+            pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));
+            if (!soldier.getPseudoId().equals(soldier.getId())) pseudoIdRepository.save(new PseudoId(soldier.getId()));
+        }
         testGroupRepository.deleteAll();
         if (soldierRepository.count() == 0 && testGroupRepository.count() == 0) return true;
         return false;
@@ -312,6 +322,7 @@ public class AcftManagerService {
         }
         soldierRepository.delete(soldier);   
         pseudoIdRepository.save(new PseudoId(soldier.getPseudoId()));
+        if (!soldier.getPseudoId().equals(soldier.getId())) pseudoIdRepository.save(new PseudoId(soldier.getId()));
         return true;
     }
 
