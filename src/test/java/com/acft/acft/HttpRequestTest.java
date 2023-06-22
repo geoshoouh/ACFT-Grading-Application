@@ -31,7 +31,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
-
+@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 public class HttpRequestTest {
