@@ -1,6 +1,5 @@
 package com.acft.acft;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
-@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 public class HttpRequestTest {
@@ -51,7 +49,7 @@ public class HttpRequestTest {
     Gson gson;
 
     @Test
-    void postNewTestGroupShouldReturnGroupIdAndPasswordNotIncludedInResponse() throws Exception{
+    void postNewTestGroupShouldReturnGroupIdAndPasswordNotIncludedInResponse() throws Exception {
 
         Long testGroupId = Long.parseLong(
             mockMvc.perform(
@@ -66,7 +64,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void postNewTestGroupWithPasscodeShouldReturnGroupId() throws Exception{
+    void postNewTestGroupWithPasscodeShouldReturnGroupId() throws Exception {
         String passcode = "password";
         Long testGroupId = Long.parseLong(
             mockMvc.perform(
@@ -77,13 +75,13 @@ public class HttpRequestTest {
                 .getContentAsString()
                 );
         Assert.notNull(testGroupId, "Response to /testGroup/new was null");
-        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
+        TestGroup testGroup = acftManagerService.getTestGroupByPseudoId(testGroupId, passcode);
         Assert.isTrue(testGroup.getPasscode().equals(passcode), "in postNewTestGroup w/passcode, expected passcode was " + passcode + ",actual passcode was " + testGroup.getPasscode());
     }
 
     //Ensures a test group's passcode cannot be fetched by making a getAllTestGroups request and inspecting the Json
     @Test
-    void getTestGroupShouldReturnTestGroup() throws Exception{
+    void getTestGroupShouldReturnTestGroup() throws Exception {
         //testGroup instantiated w/passcode
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
@@ -97,7 +95,7 @@ public class HttpRequestTest {
                 .getContentAsString(), 
             TestGroup.class
             );
-        Assert.isTrue(testGroupFromResponse.getId() == testGroupId, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
+        Assert.isTrue(testGroupFromResponse.getPseudoId() == testGroup.getPseudoId(), "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
 
         //testGroup instantiated w/o passcode
         Long testGroupIdEmptyPasscode = acftManagerService.createNewTestGroup();
@@ -111,13 +109,13 @@ public class HttpRequestTest {
                 .getContentAsString(), 
             TestGroup.class
             );
-        Assert.isTrue(testGroupFromResponseEmptyPasscode.getId() == testGroupIdEmptyPasscode, "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
+        Assert.isTrue(testGroupFromResponseEmptyPasscode.getPseudoId() == testGroupEmptyPasscode.getPseudoId(), "Response to /testGroup/get/{testGroupId} returned incorrect TestGroup");
     }
 
      //Ensures a test group's passcode cannot be fetched by making a getAllTestGroups request and inspecting the Json
      //Test group passcodes never reach the client side after instantiation
     @Test
-    void testGroupPasscodeNotVisibleInJsonRepresentiation() throws Exception{
+    void testGroupPasscodeNotVisibleInJsonRepresentiation() throws Exception {
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
@@ -140,7 +138,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void createNewSoldierShouldReturnSoldierId() throws Exception{
+    void createNewSoldierShouldReturnSoldierId() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = Long.parseLong(
@@ -156,7 +154,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void getSoldierByIdShouldReturnSoldier() throws Exception{
+    void getSoldierByIdShouldReturnSoldier() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = gson.fromJson(
@@ -168,7 +166,7 @@ public class HttpRequestTest {
             .getContentAsString(),
              Soldier.class
             );
-        Assert.isTrue(soldier.getId() == soldierId, "/soldier/get/{soldierId} responded with incorrect Soldier");
+        Assert.isTrue(soldier.getId().equals(soldierId), "/soldier/get/{soldierId} responded with incorrect Soldier; expected " + soldier.getId() + ", was " + soldierId);
         String passcode = "password";
         testGroupId = acftManagerService.createNewTestGroup(passcode);
         soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, "Tate", "Joshua", 26, true);
@@ -181,11 +179,11 @@ public class HttpRequestTest {
             .getContentAsString(),
              Soldier.class
             );
-        Assert.isTrue(soldier.getId() == soldierId, "/soldier/get/{soldierId}/{passcode} responded with incorrect Soldier");
+        Assert.isTrue(soldier.getId().equals(soldierId), "/soldier/get/{soldierId}/{passcode} responded with incorrect Soldier");
     }
 
     @Test
-    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
+    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         int n = 5;
@@ -210,7 +208,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception{
+    void getAllTestGroupsShouldReturnAllExistingTestGroupIds() throws Exception {
         int reference = acftManagerService.getAllTestGroupPseudoIds().size();
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
@@ -226,7 +224,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void updateSoldierScoreShouldReturnCorrectConvertedScore() throws Exception{
+    void updateSoldierScoreShouldReturnCorrectConvertedScore() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         int eventId = 0;
@@ -245,7 +243,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void updateSoldierScoreOnProtectedTestGroupShouldReturnCorrectConvertedScore() throws Exception{
+    void updateSoldierScoreOnProtectedTestGroupShouldReturnCorrectConvertedScore() throws Exception {
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, passcode, "Tate", "Joshua", 26, true);  
@@ -268,12 +266,13 @@ public class HttpRequestTest {
     }
 
     @Test
-    void exportXlsxFileForTestGroupShouldExportExpectedFile() throws Exception{
+    void exportXlsxFileForTestGroupShouldExportExpectedFile() throws Exception {
         int size = 5;
         //No passcode used in populateDatabase utility function
         Long testGroupId = acftManagerService.populateDatabase(size);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         HttpServletResponse response = mockMvc.perform(
-            get("/testGroup/getXlsxFile/{testGroupId}", testGroupId)
+            get("/testGroup/getXlsxFile/{testGroupId}", testGroup.getPseudoId())
         ).andExpect(status().isOk())
         .andReturn()
         .getResponse();
@@ -283,7 +282,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void getBulkUploadTemplateReturnsFile() throws Exception{
+    void getBulkUploadTemplateReturnsFile() throws Exception {
         HttpServletResponse response = mockMvc.perform(
             get("/getBulkUploadTemplate")
         ).andExpect(status().isOk())
@@ -293,7 +292,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void flushDatabaseDeletesAllEntities() throws Exception{
+    void flushDatabaseDeletesAllEntities() throws Exception {
         int size = 5;
         acftManagerService.populateDatabase(size);
         Assert.isTrue(acftManagerService.getSoldierRepositorySize() > 0 && acftManagerService.getTestGroupRepositorySize() > 0, "In flushDatabseDeletesAllEntities: database population failed");
@@ -310,7 +309,7 @@ public class HttpRequestTest {
     }
 
     @Test
-    void deleteSoldierByIdPersistsDeletion() throws Exception{
+    void deleteSoldierByIdPersistsDeletion() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
@@ -328,13 +327,14 @@ public class HttpRequestTest {
     }
 
     @Test
-    void getTestGroupDataReturnsExpectedData() throws Exception{
+    void getTestGroupDataReturnsExpectedData() throws Exception {
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(size);
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         Type testGroupDataType = new TypeToken<ArrayList<ArrayList<Long>>>() {}.getType();
         List<List<Long>> testGroupData = gson.fromJson(
             mockMvc.perform(
-                get("/testGroup/{testGroupId}/get/scoreData/{raw}", testGroupId, true)
+                get("/testGroup/{testGroupId}/get/scoreData/{raw}", testGroup.getPseudoId(), true)
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -352,30 +352,32 @@ public class HttpRequestTest {
     }
 
     @Test
-    void populateDatePersistsData() throws Exception{
+    void populateDatePersistsData() throws Exception {
         int size = 11;
-        Long testGroupId = Long.parseLong(
+        Long testGroupPseudoId = Long.parseLong(
             mockMvc.perform(
                 post("/populateDatabase/{size}", size)
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString());
-        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroupId).size() == size, "In populateDatePersistsData: unexpected testGroup population size after populate called");
+        TestGroup testGroup = acftManagerService.getTestGroupByPseudoId(testGroupPseudoId, "");
+        Assert.isTrue(acftManagerService.getSoldiersByTestGroupId(testGroup.getId()).size() == size, "In populateDatePersistsData: unexpected testGroup population size after populate called");
     }
 
     @Test
-    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception{
+    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception {
         int sz = 5;
         bulkSoldierUploadTest.generateBulkUploadTestFile(sz);
         Long testGroupId = acftManagerService.createNewTestGroup();
+        TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         File file = new File(testPath);
         InputStream inputStream = new FileInputStream(file);
         MockMultipartFile mockMultipartFile = new MockMultipartFile("bulkUpload.xlsx", inputStream);
         inputStream.close();
         boolean responseBodyBoolean = Boolean.parseBoolean(
             mockMvc.perform(
-                post("/bulkUpload/{testGroupId}", testGroupId).content(mockMultipartFile.getBytes())
+                post("/bulkUpload/{testGroupId}", testGroup.getPseudoId()).content(mockMultipartFile.getBytes())
             ).andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -387,7 +389,4 @@ public class HttpRequestTest {
         File reqFile = new File("src/main/resources/data/bulkUpload.xlsx");
         reqFile.delete();
     }
-
-    
-
 }
