@@ -32,10 +32,8 @@ public class AcftDataExporterTest {
     @Autowired
     AcftDataConversion acftDataConversion;
 
-
-
     @Test
-    void createXlsxWorkbookCreatesWorkbookWithExpectedData(){
+    void createXlsxWorkbookCreatesWorkbookWithExpectedData() {
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(size);
         List<Soldier> soldiers = acftManagerService.getSoldiersByTestGroupId(testGroupId);
@@ -90,6 +88,4 @@ public class AcftDataExporterTest {
         }
         new File(path).delete();
     }
-
-    
 }

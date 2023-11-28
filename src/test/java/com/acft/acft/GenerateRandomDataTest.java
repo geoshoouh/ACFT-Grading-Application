@@ -18,18 +18,16 @@ public class GenerateRandomDataTest {
     GenerateRandomData generateRandomData;
 
     @Test
-    void inputStreamNotNull(){
+    void inputStreamNotNull() {
         Assert.notNull(this.generateRandomData.getInputStream(), "In getInputStreamNotNull: input stream was null...");
     }
 
     @Test
-    void constructorGeneratesNameArrayOfCorrectSizeAndContent(){
+    void constructorGeneratesNameArrayOfCorrectSizeAndContent() {
         List<List<String>> names = generateRandomData.getNames(size);
         Assert.isTrue(names.size() == this.size, "In constructorGeneratesNameArrayOfCorrectSizeAndContent: expected size was " + this.size + ", was " + names.size());
         String expectedName = "Hardin";
         String actualName = names.get(10).get(0);
         Assert.isTrue(actualName.equals(expectedName), "In constructorGeneratesNameArrayOfCorrectSizeAndContent: expected " + expectedName + ", was " + actualName);
     }
-
-
 }

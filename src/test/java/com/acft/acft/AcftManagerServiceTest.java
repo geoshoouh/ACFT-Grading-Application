@@ -26,7 +26,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
-
 @SpringBootTest
 public class AcftManagerServiceTest {
 
@@ -40,13 +39,13 @@ public class AcftManagerServiceTest {
     String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
     @Test
-    void createNewTestGroupShouldReturnId() throws Exception{
+    void createNewTestGroupShouldReturnId() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Assert.notNull(testGroupId, "createNewTestGroup returned null");
     }
 
     @Test
-    void createNewTestGroupWithPasscodeShouldReturnId() throws Exception{
+    void createNewTestGroupWithPasscodeShouldReturnId() throws Exception {
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, passcode);
@@ -55,7 +54,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getTestGroupShouldReturnTestGroup() throws Exception{
+    void getTestGroupShouldReturnTestGroup() throws Exception {
         //case w/passode
         String passcode = "password";
         Long testGroupId = acftManagerService.createNewTestGroup(passcode);
@@ -68,7 +67,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void createNewSoldierShouldReturnId() throws Exception{
+    void createNewSoldierShouldReturnId() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Assert.notNull(soldierId, "createNewSoldier returned null ID");
@@ -76,7 +75,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test 
-    void getSoldierByIdShouldReturnSoldier() throws Exception{
+    void getSoldierByIdShouldReturnSoldier() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
         Soldier soldier = acftManagerService.getSoldierById(soldierId);
@@ -92,7 +91,7 @@ public class AcftManagerServiceTest {
     //Added initial query to establish reference
     //This is perhaps a lazy solution to mitigate a lack of familiarity with how Spring Boot tests execute
     @Test
-    void getAllTestGroupPseudoIdsShouldReturnAllExistingTestGroupPseudoIds() throws Exception{
+    void getAllTestGroupPseudoIdsShouldReturnAllExistingTestGroupPseudoIds() throws Exception {
         int reference = acftManagerService.getAllTestGroupPseudoIds().size();
         int n = 5;
         for (int i = 0; i < n; i++) acftManagerService.createNewTestGroup();
@@ -101,7 +100,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception{
+    void getSoldiersByTestGroupIdShouldReturnListOfSoldiersWithPassedId() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         int n = 5;
         String[] lastNames = {"Smith", "Jones", "Samuels", "Smith", "Conway"};
@@ -116,7 +115,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void updateSoldierScoreShouldReturnCorrectScaledScore() throws Exception{
+    void updateSoldierScoreShouldReturnCorrectScaledScore() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate" , "Joshua", 31, true);
         acftManagerService.updateSoldierScore(soldierId, 1, 110, "");
@@ -131,11 +130,10 @@ public class AcftManagerServiceTest {
         int convertedScore2 = acftManagerService.updateSoldierScore(soldierId, 3, 120, "");
         Assert.isTrue(convertedScore2 == expectedScore2, "expected score was " + expectedScore2 + " and actual score was " + convertedScore2);
     }
-
     
     @Test
     @Transactional
-    void deleteTestGroupsOnScheduleDeletesExpiredTestGroups() throws Exception{
+    void deleteTestGroupsOnScheduleDeletesExpiredTestGroups() throws Exception {
         int reference = acftManagerService.getAllTestGroupPseudoIds().size();
         Long testGroupId1 = acftManagerService.createNewTestGroup();
         Long testGroupId2 = acftManagerService.createNewTestGroup();
@@ -150,7 +148,7 @@ public class AcftManagerServiceTest {
 
 
     @Test
-    void getXlsxFileForTestGroupDataGetsExpectedFile() throws Exception{
+    void getXlsxFileForTestGroupDataGetsExpectedFile() throws Exception {
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(size);
         File file = acftManagerService.getXlsxFileForTestGroupData(testGroupId, "");
@@ -159,7 +157,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void flushDatabaseDeletesAllEntities() throws Exception{
+    void flushDatabaseDeletesAllEntities() throws Exception {
         Long soldierReference = acftManagerService.getSoldierRepositorySize();
         Long testGroupReference = acftManagerService.getTestGroupRepositorySize();
         int size = 5;
@@ -171,7 +169,7 @@ public class AcftManagerServiceTest {
 
     @Test
     @Transactional
-    void deleteSoldiersByIdPersistsDeletion() throws Exception{
+    void deleteSoldiersByIdPersistsDeletion() throws Exception {
         String passcode = "";
         Long testGroupId = acftManagerService.createNewTestGroup();
         Long soldierId = acftManagerService.createNewSoldier(testGroupId, "Tate", "Joshua", 26, true);
@@ -182,7 +180,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getTestGroupDataReturnsExpectedData() throws Exception{
+    void getTestGroupDataReturnsExpectedData() throws Exception {
         int size = 5;
         Long testGroupId = acftManagerService.populateDatabase(5);
         List<List<Long>> testGroupData = acftManagerService.getTestGroupScoreData(testGroupId, false);
@@ -197,13 +195,13 @@ public class AcftManagerServiceTest {
     }
 
     @Test
-    void getBulkUploadTemplateReturnsFile() throws Exception{
+    void getBulkUploadTemplateReturnsFile() throws Exception {
         File file = acftManagerService.getBulkUploadTemplate();
         Assert.notNull(file, "In getBulkUploadTemplateReturnsFile: File not found");
     }
 
     @Test
-    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception{
+    void instantiateBulkUploadDataInstantiatesSoldiers() throws Exception {
         File file = new File(testPath);
         int n = 10;
         bulkSoldierUploadTest.generateBulkUploadTestFile(n);
@@ -220,7 +218,7 @@ public class AcftManagerServiceTest {
     }
 
     @Test 
-    void bulkSoldierUploadRejectsBadFiles() throws Exception{
+    void bulkSoldierUploadRejectsBadFiles() throws Exception {
         File file = new File(testPath);
         int n = 10;
         bulkSoldierUploadTest.generateBulkUploadTestFile(n);
@@ -250,7 +248,7 @@ public class AcftManagerServiceTest {
         file.delete();
     }
 
-    boolean bulkUploadThrewException(File file, Long testGroupId){
+    boolean bulkUploadThrewException(File file, Long testGroupId) {
         boolean exceptionThrown = false;
         try {
             acftManagerService.instantiateBulkUploadData(file, testGroupId);
@@ -259,11 +257,10 @@ public class AcftManagerServiceTest {
         }
         return exceptionThrown;
     }
-
     
     @Test
     @Transactional
-    void psuedoIdMechanismRecyclesIds() throws Exception{
+    void psuedoIdMechanismRecyclesIds() throws Exception {
         Long testGroupId = acftManagerService.createNewTestGroup();
         TestGroup testGroup = acftManagerService.getTestGroup(testGroupId, "");
         testGroup.setExpirationDate(Date.from(Instant.now().minus(1, ChronoUnit.DAYS)));
@@ -282,7 +279,4 @@ public class AcftManagerServiceTest {
         Soldier newSoldier = acftManagerService.getSoldierById(newSoldierId);
         Assert.isTrue(newSoldier.getPseudoId() == soldierQueueHead, "In psuedoIdMechanismRecyclesIds: pseudo ID of new soldier did not match ID of deleted soldier");
     }
-
-
-    
 }
