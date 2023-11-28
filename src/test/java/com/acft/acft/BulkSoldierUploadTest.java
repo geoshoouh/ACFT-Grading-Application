@@ -23,7 +23,6 @@ import com.acft.acft.Exceptions.InvalidBulkUploadException;
 import com.acft.acft.Services.BulkSoldierUpload;
 import com.acft.acft.Services.GenerateRandomData;
 
-
 @SpringBootTest
 public class BulkSoldierUploadTest {
 
@@ -31,7 +30,7 @@ public class BulkSoldierUploadTest {
 
     String testPath = "src/main/resources/data/bulkUploadTest.xlsx";
 
-    void generateBulkUploadTestFile(int n){
+    void generateBulkUploadTestFile(int n) {
         GenerateRandomData generateRandomData = new GenerateRandomData();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet();
@@ -77,7 +76,7 @@ public class BulkSoldierUploadTest {
     }
 
     @Test
-    void stripBulkSoldierDataGetsStringMatrix() throws Exception{
+    void stripBulkSoldierDataGetsStringMatrix() throws Exception {
         int sz = 5;
         generateBulkUploadTestFile(sz);
         List<List<String>> bulkUploadData = new ArrayList<>();
@@ -89,7 +88,7 @@ public class BulkSoldierUploadTest {
     }
 
     @Test
-    void validateBulkUploadCorrectlyValidatesUpload() throws Exception{
+    void validateBulkUploadCorrectlyValidatesUpload() throws Exception {
         int sz = 5;
         generateBulkUploadTestFile(sz);
         File file = new File(testPath);
@@ -138,6 +137,4 @@ public class BulkSoldierUploadTest {
         workbook.close();
         file.delete();
     }
-
-
 }

@@ -9,5 +9,4 @@ class AcftApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

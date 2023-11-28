@@ -19,14 +19,14 @@ public class AcftDataConversionTest {
     String path = "src/main/resources/data/acftScoreTable.xlsx";
 
     @Test
-    void getFileNotNull(){
+    void getFileNotNull() {
 
         InputStream fileInputStream = acftDataConversion.getFile(path);
         Assert.notNull(fileInputStream, "call to file input stream host neutral was null");
     }
 
     @Test
-    void getSheetValuesShouldReturnNonEmptyMatrix(){
+    void getSheetValuesShouldReturnNonEmptyMatrix() {
         List<List<String>> sheetValues = acftDataConversion.getSheetValues(0, path);
         for (List<String> row : sheetValues){
             for (String item : row){
@@ -38,14 +38,14 @@ public class AcftDataConversionTest {
     }
     
     @Test
-    void parseTimePropertyDerivesTotalSeconds(){
+    void parseTimePropertyDerivesTotalSeconds() {
         Assert.isTrue(AcftDataConversion.parseTime("2:31") == 2 * 60 + 31, "AcftDataConversion.parseTime returned incorrect value");
         Assert.isTrue(AcftDataConversion.parseTime("18:53") == 18 * 60 + 53, "AcftDataConversion.parseTime returned incorrect value");
     }
 
     //Prints resulting matrix, no assertions
     @Test
-    void convertSheetValuesToIntMatrixShouldReturnIntMatrix(){
+    void convertSheetValuesToIntMatrixShouldReturnIntMatrix() {
         int eventId = 5;
         List<List<String>> sheetValues = acftDataConversion.getSheetValues(eventId, path);
         int[][] intMatrix = acftDataConversion.convertSheetValuesToIntMatrix(sheetValues, eventId);
@@ -59,14 +59,14 @@ public class AcftDataConversionTest {
 
     //Prints resulting matrix, no assertions
     @Test
-    void AcftDataConversionConstructorCreatesScoreChart(){
+    void AcftDataConversionConstructorCreatesScoreChart() {
         for (int i = 0; i < 6; i++){
             acftDataConversion.printTable(i);
         }
     }
 
     @Test
-    void getScoreReturnsProperScore(){
+    void getScoreReturnsProperScore() {
 
         //Test typical case above 60 points
         int correctScore = 89;
