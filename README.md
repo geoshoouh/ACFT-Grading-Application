@@ -27,8 +27,7 @@
 
 **How to Run:**
 1. Clone the repository
-2. From the repository root run `mvn clean package`
-3. Then run `java -jar target/acft-0.0.1-SNAPSHOT.jar`
+2. From the repository root run `docker-compose up`
 
 
 
